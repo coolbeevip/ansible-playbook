@@ -1,6 +1,7 @@
 - name: include vars
   include_vars: "vars_elasticsearch.yml"
 
+# 初始化目录
 - name: create others directories
   file:
     path: "{{ item }}"
@@ -14,7 +15,8 @@
     - "{{ es_heap_dump_path }}"
     - "{{ es_temp_dir }}"
   check_mode: no
-  
+
+# 上传配置文件  
 - name: copy configuration file
   template:
     src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"

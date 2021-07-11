@@ -10,5 +10,5 @@ es_cluster_name: "nc-elasticsearch"
 es_action_auto_create: "true"
 es_http_port: 9200
 es_transport_port: 9010
-es_bootstrap_memory_lock: true
+es_bootstrap_memory_lock: false
 es_heap_size: 4g
