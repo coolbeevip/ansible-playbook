@@ -1,3 +1,6 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
+  
 # 初始化目录
 - name: create elasticsearch home
   file:

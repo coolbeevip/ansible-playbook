@@ -4,9 +4,7 @@
   become_user: root
   become_method: su
   vars:
-    es_home_dir: "/opt/elasticsearch"
-    es_user: "elasticsearch"
-    es_group: "elasticsearch"
+    es_network_host: "10.1.207.180"
     es_node_name: "node-180"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
@@ -18,9 +16,7 @@
   become_user: root
   become_method: su
   vars:
-    es_home_dir: "/opt/elasticsearch"
-    es_user: "elasticsearch"
-    es_group: "elasticsearch"
+    es_network_host: "10.1.207.181"
     es_node_name: "node-181"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
@@ -32,9 +28,7 @@
   become_user: root
   become_method: su
   vars:
-    es_home_dir: "/opt/elasticsearch"
-    es_user: "elasticsearch"
-    es_group: "elasticsearch"
+    es_network_host: "10.1.207.182"
     es_node_name: "node-182"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml

@@ -1,32 +1,21 @@
+# ------------------------------------ Cluster ------------------------------------
+cluster.name: {{ es_cluster_name }}
 
-cluster.name: nc-elasticsearch
-
-#
 # ------------------------------------ Node ------------------------------------
-#
-# Use a descriptive name for the node:
-#
-#node.name: node-1
-#
+node.name: {{ es_node_name }}
+
 # Add custom attributes to the node:
-#
 #node.attr.rack: r1
-#
+
 # ----------------------------------- Paths ------------------------------------
-#
-# Path to directory where to store the data (separate multiple locations by comma):
-#
-path.data: /opt/elasticsearch/data
-#
-# Path to log files:
-#
-path.logs: /opt/elasticsearch/logs
-#
+path.data: {{ es_data_dir }}
+path.logs: {{ es_log_dir }}
+
+action.auto_create_index: {{ es_action_auto_create }}
+
 # ----------------------------------- Memory -----------------------------------
-#
-# Lock the memory on startup:
-#
-bootstrap.memory_lock: true
+bootstrap.memory_lock: {{ es_bootstrap_memory_lock }}
+
 #
 # Make sure that the heap size is set to about half the memory available
 # on the system and that the owner of the process is allowed to use this
@@ -35,27 +24,20 @@ bootstrap.memory_lock: true
 # Elasticsearch performs poorly when the system is swapping the memory.
 #
 # ---------------------------------- Network -----------------------------------
-network.host: 0.0.0.0
-http.port: 9200
+network.host: {{ es_network_host }}
+http.port: {{ es_http_port }}
 
 # --------------------------------- Discovery ----------------------------------
-transport.port: 9010
+transport.port: {{ es_transport_port }}
 discovery.seed_hosts: ["10.1.207.180:9010", "10.1.207.181:9010","10.1.207.182:9010"]
-#
+
 # Bootstrap the cluster using an initial set of master-eligible nodes:
-#
 #cluster.initial_master_nodes: ["node-1", "node-2"]
-#
-# For more information, consult the discovery and cluster formation module documentation.
-#
+
 # ---------------------------------- Gateway -----------------------------------
-#
 # Block initial recovery after a full cluster restart until N nodes are started:
-#
 #gateway.recover_after_nodes: 3
-#
-# For more information, consult the gateway module documentation.
-#
+
 # ---------------------------------- Various -----------------------------------
 #
 # Require explicit names when deleting indices:

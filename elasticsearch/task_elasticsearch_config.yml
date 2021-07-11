@@ -1,12 +1,14 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
 - name: copy configuration file
-  copy:
-    src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config"
+  template:
+    src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"
+    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config/elasticsearch.yml"
   check_mode: no
 - name: copy jvm file
-  copy:
-    src: "/ansible-playbook/elasticsearch/config/jvm.options"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config"
+  template:
+    src: "/ansible-playbook/elasticsearch/config/jvm.options.j2"
+    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config/jvm.options"
   check_mode: no
 - name: copy gc options
   copy:

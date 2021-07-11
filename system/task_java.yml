@@ -5,7 +5,7 @@
   register: check_result
 - name: upload java
   synchronize:
-    src: /ansible-playbook/system/jdk-8u202-linux-x64.tar.gz
+    src: /ansible-playbook/packages/jdk-8u202-linux-x64.tar.gz
     dest: /opt/jdk-8u202-linux-x64.tar.gz
   when: not check_result.stat.exists
   check_mode: no
