@@ -82,6 +82,8 @@ ansible-playbook -C /ansible-playbook/system/main.yml
 * 安装 java
 * 安装 docker & docker-compose
 
+[更多说明](system/README.md)
+
 ## 安装 Elasticsearch
 
 
