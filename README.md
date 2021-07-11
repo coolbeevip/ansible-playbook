@@ -21,7 +21,7 @@ git clone git@github.com:coolbeevip/ansible-playbook.git
 * 10.1.207.181 用户名 root，密码 root
 * 10.1.207.182 用户名 root，密码 root
 
-将 /ansible-playbook 目录映射到镜像内 /ansible-playbook 目录
+自动部署工具，将 /ansible-playbook 目录映射到镜像内 /ansible-playbook 目录
 
 ```shell
 docker run --name ansible --rm -it \
