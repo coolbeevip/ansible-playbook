@@ -28,8 +28,8 @@ docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=root,root,root \
-  -e ANSIBLE_SSH_PASSS=root,root,root \
-  -e ANSIBLE_SU_PASSS=root,root,root \
+  -e ANSIBLE_SSH_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
   -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \
   /bin/bash
@@ -85,6 +85,20 @@ ansible-playbook -C /ansible-playbook/system/main.yml
 [更多说明](system/README.md)
 
 ## 安装 Elasticsearch
+
+使用 elasticsearch 账号，启动安装工具
+
+```shell
+docker run --name ansible --rm -it \
+  -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
+  -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
+  -e ANSIBLE_SSH_USERS=elasticsearch,elasticsearch,elasticsearch \
+  -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
+  -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
+  coolbeevip/ansible:2.8.11-alpine \
+  /bin/bash
+```
 
 执行以下脚本，安装 ES 集群
 

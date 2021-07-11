@@ -1,0 +1,35 @@
+# 初始化目录
+- name: create elasticsearch home
+  file:
+    path: "{{ es_home_dir }}"
+    state: directory
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+  become: yes
+  check_mode: no
+
+# 上传安装包
+- name: check upload elasticsearch
+  stat:
+    path: "{{ es_home_dir }}/elasticsearch-7.8.1-linux-x86_64.tar.gz"
+  register: check_result
+  check_mode: no
+- name: upload elasticsearch
+  synchronize:
+    src: /ansible-playbook/packages/elasticsearch-7.8.1-linux-x86_64.tar.gz
+    dest: "{{ es_home_dir }}/elasticsearch-7.8.1-linux-x86_64.tar.gz"
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 解压缩安装包
+- name: check unzip elasticsearch
+  stat:
+    path: "{{ es_home_dir }}/elasticsearch-7.8.1"
+  register: check_result
+  check_mode: no
+- name: unzip elasticsearch
+  shell: |
+    cd "{{ es_home_dir }}"
+    tar zxf elasticsearch-7.8.1-linux-x86_64.tar.gz
+  check_mode: no
+  when: not check_result.stat.exists
