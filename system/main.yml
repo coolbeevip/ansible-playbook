@@ -3,6 +3,6 @@
   become_user: root
   become_method: su
   tasks:
-    #- include_tasks: task_os.yml
+    - include_tasks: task_os.yml
     - include_tasks: task_docker.yml
     #- include_tasks: task_java.yml
