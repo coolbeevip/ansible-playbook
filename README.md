@@ -118,6 +118,15 @@ ansible all -m shell -a '/opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearc
 ansible all -m shell -a 'kill $(cat /tmp/elasticsearch-pid && echo)'
 ```
 
+集群监控 `http://10.1.207.180:5000/`
+
+```shell
+docker run -d --rm \
+--name elasticsearch-hq \
+-p 5000:5000 \
+elastichq/elasticsearch-hq
+```
+
 [更多说明](elasticsearch/README.md)
 
 ## 附件

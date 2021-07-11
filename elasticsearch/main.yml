@@ -4,7 +4,6 @@
   become_user: root
   become_method: su
   vars:
-    es_network_host: "10.1.207.180"
     es_node_name: "node-180"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
@@ -16,7 +15,6 @@
   become_user: root
   become_method: su
   vars:
-    es_network_host: "10.1.207.181"
     es_node_name: "node-181"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
@@ -27,8 +25,7 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    es_network_host: "10.1.207.182"
+  vars:    
     es_node_name: "node-182"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml

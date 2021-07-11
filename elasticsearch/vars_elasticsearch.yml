@@ -8,6 +8,7 @@ es_heap_dump_path: "/opt/elasticsearch/dump"
 es_temp_dir: "/opt/elasticsearch/temp"
 es_cluster_name: "nc-elasticsearch"
 es_action_auto_create: "true"
+es_network_host: "0.0.0.0"
 es_http_port: 9200
 es_transport_port: 9010
 es_bootstrap_memory_lock: false
