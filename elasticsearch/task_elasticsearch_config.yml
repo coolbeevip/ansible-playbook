@@ -1,5 +1,20 @@
 - name: include vars
   include_vars: "vars_elasticsearch.yml"
+
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ es_log_dir }}"
+    - "{{ es_data_dir }}"
+    - "{{ es_heap_dump_path }}"
+    - "{{ es_temp_dir }}"
+  check_mode: no
+  
 - name: copy configuration file
   template:
     src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"

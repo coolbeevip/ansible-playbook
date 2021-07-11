@@ -1,8 +1,8 @@
 # Turn off all previous logging configuratons
--Xlog:disable
+#-Xlog:disable
 
 # Default settings from JEP 158, but with `utctime` instead of `uptime` to match the next line
--Xlog:all=warning:stderr:utctime,level,tags
+#-Xlog:all=warning:stderr:utctime,level,tags
 
 # Enable GC logging to a custom location with a variety of options
--Xlog:gc*,gc+age=trace,safepoint:file=/opt/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m
+#-Xlog:gc*,gc+age=trace,safepoint:file=/opt/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m
