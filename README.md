@@ -1,4 +1,4 @@
-# ElasticSearch 安装
+# Ansible 自动化安装脚本
 
 ## 安装介质
 
@@ -15,7 +15,7 @@ git clone git@github.com:coolbeevip/ansible-playbook.git
 
 ## 启动安装工具
 
-假设本地安装的服务器为
+假设目标服务器为
 
 * 10.1.207.180 用户名 root，密码 root
 * 10.1.207.181 用户名 root，密码 root
@@ -35,7 +35,7 @@ docker run --name ansible --rm -it \
   /bin/bash
 ```
 
-测试服务器是否正常连通
+使用 `ansible all -m ping` 命令测试服务器是否正常连通
 
 ```shell
 bash-5.0# ansible all -m ping
@@ -65,7 +65,13 @@ bash-5.0#
 
 ## 操作系统配置
 
-执行以下脚本批量操作系统，此脚本批量执行以下操作
+执行以下脚本批量操作系统
+
+```shell
+ansible-playbook -C /ansible-playbook/system/main.yml
+```
+
+此脚本批量执行以下操作
 
 * 禁用防火墙
 * 禁用交换分区
@@ -76,9 +82,7 @@ bash-5.0#
 * 安装 java
 * 安装 docker & docker-compose
 
-```shell
-ansible-playbook -C /ansible-playbook/system/main.yml
-```
+## 安装 Elasticsearch
 
 
 
