@@ -32,7 +32,7 @@ transport.port: {{ es_transport_port }}
 discovery.seed_hosts: ["10.1.207.180:9010", "10.1.207.181:9010","10.1.207.182:9010"]
 
 # Bootstrap the cluster using an initial set of master-eligible nodes:
-#cluster.initial_master_nodes: ["node-1", "node-2"]
+cluster.initial_master_nodes: ["node-180", "node-181", "node-182"]
 
 # ---------------------------------- Gateway -----------------------------------
 # Block initial recovery after a full cluster restart until N nodes are started:
