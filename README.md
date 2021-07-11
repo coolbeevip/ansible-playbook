@@ -143,6 +143,7 @@ ansible all -m shell -a 'source /etc/profile && java -version'
 
 ```shell
 ansible all -m shell -a 'docker -version'
+ansible all -m shell -a 'docker-compose -v'
 ```
 
 ## 附件
