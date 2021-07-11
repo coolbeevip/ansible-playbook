@@ -65,7 +65,7 @@ bash-5.0#
 
 ## 操作系统配置
 
-执行以下脚本批量操作系统
+执行以下脚本，批量配置系统
 
 ```shell
 ansible-playbook -C /ansible-playbook/system/main.yml
