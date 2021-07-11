@@ -1,0 +1,17 @@
+- hosts: 10.1.207.180,10.1.207.181,10.1.207.182
+  user: elasticsearch
+  become: no
+  become_user: root
+  become_method: su
+  vars:
+    es_conf_dir: "/opt/elasticsearch-7.8.1"
+    es_user: root
+    es_group: root
+    es_pid_dir: "/opt/elasticsearch/run"
+    es_tmp_dir: "/opt/elasticsearch/tmp"
+    es_data_dirs:
+      - "/opt/elasticsearch/data"
+    es_log_dir: "/opt/elasticsearch/logs"
+  tasks:
+    - include_tasks: task_java_install.yml
+    - include_tasks: task_elasticsearch_install.yml

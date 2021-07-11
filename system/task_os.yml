@@ -1,0 +1,90 @@
+# 安装常用工具
+- name: install packages
+  yum:
+    name:
+      - rsync
+      - wget
+      - curl
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - git
+    state: present
+  check_mode: no
+
+# 禁用系统交换空间
+- name: check disable all swap files
+  shell: swapon -s
+  register: check_result
+  check_mode: no
+- name: disable all swap files
+  shell: |
+    swapoff -a
+    sed -i "s/^.*swap/#&/g" /etc/fstab
+  when: check_result.stdout != ""
+  check_mode: no
+
+# 设置交换优先级和虚拟内存
+- name: check configure vm
+  shell: sysctl vm.swappiness | awk '{print $3}'
+  register: check_result
+  check_mode: no
+- name: configure vm
+  shell: echo {{ item }} >> /etc/sysctl.conf && sysctl -p
+  with_items:
+    - vm.swappiness=1
+    - vm.max_map_count=262144
+  when: check_result.stdout == "" or check_result.stdout != "1"
+  check_mode: no
+
+# 设置 Linux PAM limits
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: 65535
+  check_mode: no
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+  check_mode: no
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nproc
+    value: 65535
+  check_mode: no
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nproc
+    value: 65535
+  check_mode: no
+
+# 增加用户
+- name: create user elasticsearch
+  group:
+    name: elasticsearch
+    state: present
+  check_mode: no
+- name: create user elasticsearch
+  user:
+    name: elasticsearch
+    password: '$5$YHiEQaLUzPAugJ3q$GqymyJkWMw1nNu.C.hf6ZSwCecd8H8TzLdaRhqehBM/' # 使用 mkpasswd --method=sha-512 生成
+    comment: elasticsearch by nc
+    group: elasticsearch
+  check_mode: no
+
+# 禁用防火墙
+- name: disable firewalld
+  shell: |
+    systemctl stop firewalld.service
+    systemctl disable firewalld.service
+    systemctl stop iptables.service
+    systemctl disable iptables.service

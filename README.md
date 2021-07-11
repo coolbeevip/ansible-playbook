@@ -14,7 +14,7 @@ docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=root,root,root \
   -e ANSIBLE_SSH_PASSS=root,root,root \
-  -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -e ANSIBLE_SU_PASSS=xxx,xxx,xxx \
   -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \
   /bin/bash

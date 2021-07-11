@@ -1,0 +1,52 @@
+- name: add docker repo
+  shell: wget https://download.docker.com/linux/centos/docker-ce.repo -P /etc/yum.repos.d/
+  check_mode: no
+
+- name: enable docker edge repo
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: 'docker-ce-edge'
+    option: enabled
+    value: 0
+  check_mode: no
+
+- name: enable docker test repo
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: 'docker-ce-test'
+    option: enabled
+    value: 0
+  check_mode: no
+
+- name: install docker
+  package:
+    name: docker-ce>=2.4
+    state: latest
+  check_mode: no
+
+- name: upload docker daemon.json
+  synchronize:
+    src: /ansible-playbook/system/daemon.json
+    dest: /opt/docker/daemon.json
+  check_mode: no
+
+- name: start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  check_mode: no
+
+- name: add user elasticsearch to docker group
+  user:
+    name: elasticsearch
+    groups: docker
+    append: yes
+  check_mode: no
+
+- name: install docker
+  shell: |
+    curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  check_mode: no
