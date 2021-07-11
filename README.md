@@ -63,7 +63,7 @@ bash-5.0# ansible all -m ping
 bash-5.0#
 ```
 
-## 操作系统配置
+## 配置操作系统
 
 执行以下脚本，批量配置系统
 
@@ -86,8 +86,13 @@ ansible-playbook -C /ansible-playbook/system/main.yml
 
 ## 安装 Elasticsearch
 
+执行以下脚本，安装 ES 集群
 
+```shell
+ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
+```
 
+[更多说明](elasticsearch/README.md)
 
 ## 附件
 
