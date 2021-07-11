@@ -20,7 +20,7 @@
 
 - name: install docker
   package:
-    name: docker-ce>=2.4
+    name: docker-ce>20.10.0
     state: latest
   check_mode: no
 
