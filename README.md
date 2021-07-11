@@ -127,6 +127,12 @@ docker run -d --rm \
 elastichq/elasticsearch-hq
 ```
 
+基准测试
+
+```shell
+docker run elastic/rally race --track=nyc_taxis --test-mode --pipeline=benchmark-only --target-hosts=10.1.207.181:9200
+```
+
 [更多说明](elasticsearch/README.md)
 
 ## 附件
