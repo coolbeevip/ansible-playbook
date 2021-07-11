@@ -6,6 +6,13 @@
 10.1.207.181
 10.1.207.182
 
+## 安装介质
+
+将以下安装包放到 `ansible-playbook/packages` 目录下
+
+* jdk-8u202-linux-x64.tar.gz
+* elasticsearch-7.8.1-linux-x86_64.tar.gz
+
 ## Ansible
 
 ```shell
