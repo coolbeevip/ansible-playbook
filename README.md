@@ -109,13 +109,13 @@ ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 启动
 
 ```shell
-ansible all -m shell -a '/opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch -d'
+ansible all -m shell -a '/opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch -p /tmp/elasticsearch-pid -d'
 ```
 
 停止
 
 ```shell
-ansible all -m shell -a 'kill $(jps | grep Elasticsearch | awk "{print $1}")'
+ansible all -m shell -a 'kill $(cat /tmp/elasticsearch-pid && echo)'
 ```
 
 [更多说明](elasticsearch/README.md)
