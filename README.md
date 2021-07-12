@@ -120,11 +120,26 @@ ansible all -m shell -a 'kill $(cat /tmp/elasticsearch-pid && echo)'
 
 集群监控 `http://10.1.207.180:5000/`
 
-```shell
-docker run -d --rm \
---name elasticsearch-hq \
--p 5000:5000 \
-elastichq/elasticsearch-hq
+```yml
+version: '3.2'
+services:
+  elasticsearch-hq:
+    image: elastichq/elasticsearch-hq
+    hostname: elasticsearch-hq
+    container_name: elasticsearch-hq
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    environment:
+      HQ_DEFAULT_URL: "http://10.1.207.180:9200"
+    ports:
+      - 5000:5000
 ```
 
 基准测试
