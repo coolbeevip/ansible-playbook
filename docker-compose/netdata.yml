@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  nc-netdata:
+    image: netdata/netdata
+    hostname: netdata
+    container_name: netdata
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    ports:
+      - 19999:19999
+    volumes:
+      #- /opt/nc-latest/volume/netdata/netdataconfig:/var/lib/mysql
+      #- /opt/nc-latest/volume/netdata/netdataconfig:/etc/netdata
+      #- /opt/nc-latest/volume/netdata/netdatalib:/var/lib/netdata
+      #- /opt/nc-latest/volume/netdata/netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
