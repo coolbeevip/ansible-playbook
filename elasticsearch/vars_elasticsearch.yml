@@ -12,4 +12,4 @@ es_network_host: "0.0.0.0"
 es_http_port: 9200
 es_transport_port: 9010
 es_bootstrap_memory_lock: false
-es_heap_size: 4g
+es_heap_size: 8g
