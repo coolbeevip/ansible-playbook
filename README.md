@@ -1,5 +1,7 @@
 # Ansible 自动化安装脚本
 
+提供了一套 ansible playbook 脚本，以及基于 docker 的 ansible 客户端命令行工具；包含系统参数修改、Java、Docker、Elasticsearch 安装
+
 ## 安装介质
 
 下载安装脚本
