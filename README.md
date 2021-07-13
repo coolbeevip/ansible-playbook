@@ -111,7 +111,7 @@ ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 启动
 
 ```shell
-ansible all -m shell -a '/opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch -p /tmp/elasticsearch-pid -d'
+ansible all -m shell -a 'nohup /opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch -p /tmp/elasticsearch-pid -d >/dev/null 2>&1 &'
 ```
 
 停止
