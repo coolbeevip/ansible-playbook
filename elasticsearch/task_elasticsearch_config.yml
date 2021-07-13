@@ -14,9 +14,10 @@
     - "{{ es_data_dir }}"
     - "{{ es_heap_dump_path }}"
     - "{{ es_temp_dir }}"
+  become: yes
   check_mode: no
 
-# 上传配置文件  
+# 上传配置文件
 - name: copy configuration file
   template:
     src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"
