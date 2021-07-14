@@ -43,3 +43,11 @@ cluster.initial_master_nodes: ["node-180", "node-181", "node-182"]
 # Require explicit names when deleting indices:
 #
 #action.destructive_requires_name: true
+
+# ---------------------------------- Customs -----------------------------------
+indices.memory.index_buffer_size: 30%
+indices.queries.cache.size: 30%
+
+thread_pool.search.queue_size: 10000
+thread_pool.get.queue_size: 1000
+thread_pool.write.queue_size: 10000
