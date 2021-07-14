@@ -28,8 +28,8 @@ path.logs: /data01/elasticsearch/logs
 * 不能大于物理内存的 50%
 
 ```properties
--Xms4g
--Xmx4g
+-Xms8g
+-Xmx8g
 ```
 
 * 设置 dump 存储路径
