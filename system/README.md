@@ -1,6 +1,6 @@
 # Installing and configuring Linux System
 
-Execute this command system configuration
+Execute this command to complete the configuration
 
 ```shell
 ansible-playbook -C /ansible-playbook/system/main.yml
