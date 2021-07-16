@@ -1,64 +1,52 @@
-# 安装 Elasticsearch 集群
+# Install Elasticsearch Cluster
 
-## 数据目录
+## Installation directory
 
-> 我们将执行文件和数据文件分开，创建以下目录
+You can define these variables in file `vars_elasticsearch.yml`, In production, we strongly recommend you set the `data` `logs` `dump` and `temp` directory
 
-* ES 根目录 `/opt/elasticsearch`
-* ES 安装目录 `/opt/elasticsearch/elasticsearch-7.8.1`
-* ES 配置文件 `/opt/elasticsearch/elasticsearch-7.8.1/config/elasticsearch.yml`
-* ES 配置文件(jvm) `/opt/elasticsearch/elasticsearch-7.8.1/config/jvm.options`
-* ES 配置文件(log) `/opt/elasticsearch/elasticsearch-7.8.1/config/log4j.properties`
-* 日志文件路径 `/data01/elasticsearch/logs`
-* 数据文件路径 `/data01/elasticsearch/data`
-* DUMP 文件路径  `/data01/elasticsearch/dump`
-* 临时文件目录 `/data01/elasticsearch/temp`
-
-## elasticsearch.yml
-
-自定义数据和日志存储路径
-
-```properties
-path.data: /data01/elasticsearch/data
-path.logs: /data01/elasticsearch/logs
+```
+es_home_dir: "/opt/elasticsearch"
+es_log_dir: "/data01/elasticsearch/logs"
+es_data_dir: "/data01/elasticsearch/data"
+es_heap_dump_path: "/data01/elasticsearch/dump"
+es_temp_dir: "/data01/elasticsearch/temp"
 ```
 
-## jvm.options
+## User & Group
 
-* 不能大于物理内存的 50%
-
-```properties
--Xms8g
--Xmx8g
+```
+es_user: "elasticsearch"
+es_group: "elasticsearch"
 ```
 
-* 设置 dump 存储路径
+## Clustr name
 
-```properties
--XX:HeapDumpPath=/data01/elasticsearch/dump
+```
+es_cluster_name: "nc-elasticsearch"
 ```
 
-* 设置临时目录路径
+## VM options
 
-```properties
--Djava.io.tmpdir=/data01/elasticsearch/temp
+```
+es_heap_size: 8g
 ```
 
-* 设置 JVM fatal error logs 路径
+## Networks
 
-```properties
--XX:ErrorFile=/data01/elasticsearch/logs/hs_err_pid%p.log
+```
+es_network_host: "0.0.0.0"
+es_http_port: 9200
+es_transport_port: 9010
 ```
 
-* JDK9 GC 日志目录
+## Others
 
-```properties
-9-:-Xlog:gc*,gc+age=trace,safepoint:file=/data01/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m
+```
+es_action_auto_create: "true"
+es_bootstrap_memory_lock: false
 ```
 
-## 集群监控
-
-`http://10.1.207.180:5000/`
+## Monitoring and Management Elasticsearch
 
 ```yml
 version: '3.2'
@@ -82,11 +70,7 @@ services:
       - 5000:5000
 ```
 
-## 附件
-
-https://www.elastic.co/guide/en/elasticsearch/reference/7.8/system-config.html
-
-## 基准测试
+## Benchmark
 
 ```shell
 docker run elastic/rally race --track=nyc_taxis --test-mode --pipeline=benchmark-only --target-hosts=10.1.207.181:9200

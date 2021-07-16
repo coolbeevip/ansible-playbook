@@ -1,11 +1,11 @@
 ---
 es_home_dir: "/opt/elasticsearch"
-es_user: "elasticsearch"
-es_group: "elasticsearch"
 es_log_dir: "/data01/elasticsearch/logs"
 es_data_dir: "/data01/elasticsearch/data"
 es_heap_dump_path: "/data01/elasticsearch/dump"
 es_temp_dir: "/data01/elasticsearch/temp"
+es_user: "elasticsearch"
+es_group: "elasticsearch"
 es_cluster_name: "nc-elasticsearch"
 es_action_auto_create: "true"
 es_network_host: "0.0.0.0"
