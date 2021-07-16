@@ -5,7 +5,7 @@
 
 ## Prerequisites
 
-### Download ansible playbook
+Download ansible playbook
 
 create directory `/opt/myansible` and git clone playbook
 
@@ -14,7 +14,7 @@ mkdir /opt/myansible && cd /opt/myansible
 git clone git@github.com:coolbeevip/ansible-playbook.git
 ```
 
-### Start an Ansible container with a volume
+Start an Ansible container with volume `/opt/myansible/ansible-playbook`
 
 ```shell
 docker run --name ansible --rm -it \
