@@ -91,8 +91,6 @@ ansible-playbook -C /ansible-playbook/system/main.yml
 
 ### Install Elasticsearch Cluster
 
-## 安装 Elasticsearch
-
 Download elasticsearch-7.8.1-linux-x86_64.tar.gz into /opt/myansible/ansible-playbook/packages directory
 
 Start an Ansible container with 'elasticsearch' user
