@@ -5,14 +5,16 @@
 
 ## Prerequisites
 
-### Download ansible playbook script
+### Download ansible playbook
+
+create directory `/opt/myansible` and git clone playbook
 
 ```shell
 mkdir /opt/myansible && cd /opt/myansible
 git clone git@github.com:coolbeevip/ansible-playbook.git
 ```
 
-### Start an Ansible container with a volume `/opt/myansible/ansible-playbook`
+### Start an Ansible container with a volume
 
 ```shell
 docker run --name ansible --rm -it \
@@ -28,19 +30,13 @@ docker run --name ansible --rm -it \
 
 Build your ansbile inventory with environment variables
 
-**ANSIBLE_SSH_HOSTS** host IP address
-
-**ANSIBLE_SSH_PORTS** host SSH port
-
-**ANSIBLE_SSH_USERS** host SSH username
-
-**ANSIBLE_SSH_PASSS** host SSH password
-
-**ANSIBLE_SU_PASSS** host root password
+* ANSIBLE_SSH_HOSTS: host IP address
+* ANSIBLE_SSH_PORTS: host SSH port
+* ANSIBLE_SSH_USERS: host SSH username
+* ANSIBLE_SSH_PASSS: host SSH password
+* ANSIBLE_SU_PASSS: host root password
 
 User `ansible all -m ping` Try to connect to host
-
-使用  命令测试服务器是否正常连通
 
 ```shell
 bash-5.0# ansible all -m ping
