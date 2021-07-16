@@ -36,7 +36,7 @@ Build your ansbile inventory with environment variables
 * ANSIBLE_SSH_PASSS: SSH password
 * ANSIBLE_SU_PASSS: su password
 
-User `ansible all -m ping` Try to connect to host
+Use `ansible all -m ping` Try to connect to host
 
 ```shell
 bash-5.0# ansible all -m ping
