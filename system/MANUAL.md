@@ -37,6 +37,26 @@ path.data: /data01/elasticsearch/data
 path.logs: /data01/elasticsearch/logs
 ```
 
+写缓冲比例（堆外空间）
+
+```properties
+indices.memory.index_buffer_size: 50%
+```
+
+读缓冲比例（堆外空间）
+
+```properties
+indices.queries.cache.size: 30%
+```
+
+线程队列空间
+
+```properties
+thread_pool.search.queue_size: 10000
+thread_pool.get.queue_size: 1000
+thread_pool.write.queue_size: 10000
+```
+
 ## jvm.options
 
 * 不能大于物理内存的 50%

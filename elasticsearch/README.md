@@ -56,7 +56,41 @@ path.logs: /data01/elasticsearch/logs
 9-:-Xlog:gc*,gc+age=trace,safepoint:file=/data01/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m
 ```
 
+## 集群监控
+
+`http://10.1.207.180:5000/`
+
+```yml
+version: '3.2'
+services:
+  elasticsearch-hq:
+    image: elastichq/elasticsearch-hq
+    hostname: elasticsearch-hq
+    container_name: elasticsearch-hq
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    environment:
+      HQ_DEFAULT_URL: "http://10.1.207.180:9200"
+    ports:
+      - 5000:5000
+```
+
+## 附件
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.8/system-config.html
+
 ## 基准测试
+
+```shell
+docker run elastic/rally race --track=nyc_taxis --test-mode --pipeline=benchmark-only --target-hosts=10.1.207.181:9200
+```
 
 ```
 |                                                         Metric |                           Task |       Value |    Unit |
