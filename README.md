@@ -30,11 +30,11 @@ docker run --name ansible --rm -it \
 
 Build your ansbile inventory with environment variables
 
-* ANSIBLE_SSH_HOSTS: host IP address
-* ANSIBLE_SSH_PORTS: host SSH port
-* ANSIBLE_SSH_USERS: host SSH username
-* ANSIBLE_SSH_PASSS: host SSH password
-* ANSIBLE_SU_PASSS: host root password
+* ANSIBLE_SSH_HOSTS: IP address
+* ANSIBLE_SSH_PORTS: SSH port
+* ANSIBLE_SSH_USERS: SSH username
+* ANSIBLE_SSH_PASSS: SSH password
+* ANSIBLE_SU_PASSS: su password
 
 User `ansible all -m ping` Try to connect to host
 
