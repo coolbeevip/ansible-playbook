@@ -21,20 +21,20 @@
 - name: copy configuration file
   template:
     src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config/elasticsearch.yml"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/elasticsearch.yml"
   check_mode: no
 - name: copy jvm file
   template:
     src: "/ansible-playbook/elasticsearch/config/jvm.options.j2"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config/jvm.options"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/jvm.options"
   check_mode: no
 - name: copy gc options
   copy:
     src: "/ansible-playbook/elasticsearch/config/jvm.options.d/gc.options"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config/jvm.options.d/gc.options"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/jvm.options.d/gc.options"
   check_mode: no
 - name: copy log4j file
   copy:
     src: "/ansible-playbook/elasticsearch/config/log4j2.properties"
-    dest: "{{ es_home_dir }}/elasticsearch-7.8.1/config"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config"
   check_mode: no

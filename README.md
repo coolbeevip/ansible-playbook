@@ -91,7 +91,7 @@ ansible-playbook -C /ansible-playbook/system/main.yml
 
 ### Install Elasticsearch Cluster
 
-Download elasticsearch-7.8.1-linux-x86_64.tar.gz into /opt/myansible/ansible-playbook/packages directory
+Download elasticsearch-7.13.3-linux-x86_64.tar.gz into /opt/myansible/ansible-playbook/packages directory
 
 Start an Ansible container with 'elasticsearch' user
 
@@ -116,7 +116,7 @@ ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 Star Elasticsearch Cluster
 
 ```shell
-ansible all -m shell -a 'nohup /opt/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch -p /tmp/elasticsearch-pid -d >/dev/null 2>&1 &'
+ansible all -m shell -a 'nohup /opt/elasticsearch/elasticsearch-7.13.3/bin/elasticsearch -p /tmp/elasticsearch-pid -d >/dev/null 2>&1 &'
 ```
 
 Stop Elasticsearch Cluster

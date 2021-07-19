@@ -5,6 +5,8 @@
 You can define these variables in file `vars_elasticsearch.yml`, In production, we strongly recommend you set the `data` `logs` `dump` and `temp` directory
 
 ```
+es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.13.3"
 es_home_dir: "/opt/elasticsearch"
 es_log_dir: "/data01/elasticsearch/logs"
 es_data_dir: "/data01/elasticsearch/data"
