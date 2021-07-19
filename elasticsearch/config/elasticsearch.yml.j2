@@ -39,10 +39,11 @@ cluster.initial_master_nodes: ["node-180", "node-181", "node-182"]
 #gateway.recover_after_nodes: 3
 
 # ---------------------------------- Various -----------------------------------
-#
 # Require explicit names when deleting indices:
-#
 #action.destructive_requires_name: true
+
+# ---------------------------------- Security -----------------------------------
+xpack.security.enabled: {{ es_xpack_security_enabled }}
 
 # ---------------------------------- Customs -----------------------------------
 indices.memory.index_buffer_size: 50%
