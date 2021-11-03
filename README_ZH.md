@@ -118,12 +118,12 @@ Swap:            0B          0B          0B
 bash-5.0#
 ```
 
-至此你已经掌握了如何启动 ansible 工具连接多台目标服务器，并执行一些简单的命令
+至此你已经掌握了如何启动 ansible 工具连接多台目标服务器，并执行了一些简单的命令，我们可以通过 playbook 脚本可以编排更复杂脚本。
 
 ## 使用 Ansible Playbook 脚本安装中间件
 
 本仓库提供了常用系统设置和中间件的批量安装脚本
 
-* [常用 Linux 系统配置]()
-* [Elasticsearch 三节点集群]()
-* [Redis 三节点主从哨兵模式集群]()
+* [常用 Linux 系统配置](./system/README_ZH.md)
+* [Elasticsearch 三节点集群](./elasticsearch/README_ZH.md)
+* [Redis 三节点主从哨兵模式集群](./redis/README_ZH.md)

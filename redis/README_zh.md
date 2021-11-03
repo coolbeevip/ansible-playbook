@@ -1,4 +1,4 @@
-# 使用 Ansible 在 Linux 系统安装中间件 | [English](README.md)
+# Ansible Playbook 安装 Redis 主从哨兵集群 | [English](README.md)
 
 本文提供了常用中间件的自动化安装脚本，使用基于 Docker 的 [ansible](https://hub.docker.com/repository/docker/coolbeevip/ansible) 工具，可自动化快速安装中间件
 
