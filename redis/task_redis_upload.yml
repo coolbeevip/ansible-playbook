@@ -17,6 +17,7 @@
     path: "{{ redis_home_dir }}/{{ redis_tar }}"
   register: check_result
   check_mode: no
+  become: no
 - name: upload redis
   synchronize:
     src: /ansible-playbook/packages/{{ redis_tar }}

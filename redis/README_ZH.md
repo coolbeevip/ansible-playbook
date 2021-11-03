@@ -1,6 +1,6 @@
 # Ansible Playbook 安装 Redis 主从哨兵集群 | [English](README.md)
 
-此脚本将安装一主两从三哨兵的集群，会在目标服务器自动创建 `redis` 用户，使用源代码编译的方式安装
+请现在目标服务器创建 `redis` 用户，此脚本在此用户下使用源代码编译的方式安装一主两从三哨兵的集群
 
 ## 下载安装包和 Playbook 脚本
 
@@ -25,32 +25,22 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## 配置安装脚本
 
-打开 `redis/main.yml 脚本`，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，并将 `10.1.207.180` 服务器设置为 master 节点
+打开 `redis/main.yml 脚本`，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
 
 ```yaml
 - hosts: 10.1.207.180
+  user: redis
   ...
   vars:
     im_master: true
   tasks:
     ...
 - hosts: 10.1.207.181
+  user: redis
   ...
-
 - hosts: 10.1.207.182
+  user: redis
   ...
-```
-
-脚本会自动创建操作系统 `redis` 用户，默认密码是 `123456`。可以使用 `mkpasswd -m sha-512 <密码>` 生成新的默认密码，并更新配置 `redis/task_os.yml` 文件的 password 值
-
-```yaml
-- name: create user redis
-  user:
-    name: redis
-    password: '$5$ifViA9H1qSuePNTJ$MnRkCiUR5rnnyPowU5xty9C9dOVirUvz6HotU/MTbXB'
-    comment: redis by coolbeevip
-    group: redis
-  check_mode: no
 ```
 
 在 `var_redis.yml` 文件中定义了安装目录，版本，端口，默认主节点地址等配置信息。其中 **redis_port**、**redis_master_ip** 和您的真实规划有关
@@ -84,13 +74,13 @@ redis_sentinel_parallel_syncs: 2
 
 ## 开始安装
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中
+启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中，**注意这里 ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置为 redis 用户名密码**
 
 ```shell
 docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
-  -e ANSIBLE_SSH_USERS=coolbee,coolbee,coolbee \
+  -e ANSIBLE_SSH_USERS=redis,redis,redis \
   -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
   -e ANSIBLE_SU_PASSS=root123,root123,root123 \
   -v ~/my-docker-volume/ansible-playbook:/ansible-playbook \
@@ -358,30 +348,30 @@ bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-sentinel /opt/redis/conf
 查看目标服务器 redis 进程信息，可以看到每个节点的redis和哨兵进程都已经启动
 
 ```shell
-bash-5.0# ansible all -m shell -a "ps -ef | grep redis"
+bash-5.0# ansible all -m shell -a 'ps -ef | grep redis'
 10.1.207.180 | CHANGED | rc=0 >>
-root     27426     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-root     27545     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-root     27784 27782  0 16:22 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-root     27786 27784  0 16:22 pts/1    00:00:00 grep redis
+redis     27426     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
+redis     27545     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
+redis     27784 27782  0 16:22 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
+redis     27786 27784  0 16:22 pts/1    00:00:00 grep redis
 
 10.1.207.182 | CHANGED | rc=0 >>
-root     10404     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-root     10485     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-root     10653 10651  0 16:17 pts/0    00:00:00 /bin/sh -c ps -ef | grep redis
-root     10655 10653  0 16:17 pts/0    00:00:00 grep redis
+redis     10404     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
+redis     10485     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
+redis     10653 10651  0 16:17 pts/0    00:00:00 /bin/sh -c ps -ef | grep redis
+redis     10655 10653  0 16:17 pts/0    00:00:00 grep redis
 
 10.1.207.181 | CHANGED | rc=0 >>
-root     22964     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-root     23045     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-root     23215 23214  0 16:18 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-root     23217 23215  0 16:18 pts/1    00:00:00 grep redis
+redis     22964     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
+redis     23045     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
+redis     23215 23214  0 16:18 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
+redis     23217 23215  0 16:18 pts/1    00:00:00 grep redis
 ```
 
 查看每个节点的状态，您可以看到主从节点信息
 
 ```shell
-bash-5.0# ansible all -m shell -a "/opt/redis/bin/redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication"
+bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
 
 10.1.207.182 | CHANGED | rc=0 >>
 # Replication

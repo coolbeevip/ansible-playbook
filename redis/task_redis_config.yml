@@ -13,7 +13,6 @@
     - "{{ redis_log_dir }}"
     - "{{ redis_data_dir }}"
     - "{{ redis_conf_dir }}"
-  become: yes
   check_mode: no
 
 # 上传配置文件
