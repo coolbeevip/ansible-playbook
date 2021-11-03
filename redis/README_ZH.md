@@ -1,6 +1,6 @@
 # Ansible Playbook 安装 Redis 主从哨兵集群 | [English](README.md)
 
-请现在目标服务器创建 `redis` 用户，此脚本在此用户下使用源代码编译的方式安装一主两从三哨兵的集群
+请先在目标服务器创建 `redis` 用户，此脚本在此用户下使用源代码编译的方式安装一主两从三哨兵的集群
 
 ## 下载安装包和 Playbook 脚本
 
@@ -25,7 +25,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## 配置安装脚本
 
-打开 `redis/main.yml 脚本`，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
+打开 `redis/main.yml` 脚本，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
 
 ```yaml
 - hosts: 10.1.207.180
