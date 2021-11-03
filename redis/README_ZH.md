@@ -1,16 +1,16 @@
 # Ansible Playbook 安装 Redis 主从哨兵集群 | [English](README.md)
 
-本脚本安装将装一主两从三哨兵的集群，会在目标服务器自动创建 `redis` 用户，上传安装包并在服务器上采用编译安装的方式
+此脚本将安装一主两从三哨兵的集群，会在目标服务器自动创建 `redis` 用户，使用源代码编译的方式安装
 
 ## 下载安装包和 Playbook 脚本
 
-创建 playbook 脚本存放目录
+在客户机上创建 playbook 脚本存放目录
 
 ```shell
 mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-下载 redis playbook 脚本
+下载 playbook 脚本
 
 ```shell
 cd ~/my-docker-volume/ansible-playbook
@@ -25,7 +25,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## 配置安装脚本
 
-打开 `redis/main.yml 脚本`，你可以在此处定义目标服务器，你可以看到这里定义了三个目标服务器，并将 `10.1.207.180` 服务器设置为 master 节点
+打开 `redis/main.yml 脚本`，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，并将 `10.1.207.180` 服务器设置为 master 节点
 
 ```yaml
 - hosts: 10.1.207.180
@@ -41,7 +41,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
   ...
 ```
 
-脚本会自动创建 `redis` 用户，默认密码是 `123456`。可以使用 `mkpasswd -m sha-512 <密码>` 生成新的默认密码，并更新配置 `redis/task_os.yml` 文件的 password 值
+脚本会自动创建操作系统 `redis` 用户，默认密码是 `123456`。可以使用 `mkpasswd -m sha-512 <密码>` 生成新的默认密码，并更新配置 `redis/task_os.yml` 文件的 password 值
 
 ```yaml
 - name: create user redis
@@ -53,7 +53,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
   check_mode: no
 ```
 
-在 `var_redis.yml` 文件中定义了安装目录，版本，端口，默认主节点地址等配置信息
+在 `var_redis.yml` 文件中定义了安装目录，版本，端口，默认主节点地址等配置信息。其中 **redis_port**、**redis_master_ip** 和您的真实规划有关
 
 ```environment
 ---
@@ -80,7 +80,7 @@ redis_sentinel_failover_timeout: 10000
 redis_sentinel_parallel_syncs: 2
 ```
 
-你可以在 `redis/config/redis.conf.j2` 和 `redis/config/sentinel.conf.j2` 文件中找到更多的默认配置
+您可以在 `redis/config/redis.conf.j2` 和 `redis/config/sentinel.conf.j2` 文件中找到更多的默认配置
 
 ## 开始安装
 
@@ -329,9 +329,9 @@ PLAY RECAP *********************************************************************
 10.1.207.182               : ok=23   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-至此，已经安装完毕，你可以在每个目标服务的安装目录下看到已经配置完毕的 redis 节点。
+至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 redis 节点。
 
-因为采用源代码编译安装，所以你可以使用以下脚本删除不在使用的安装包
+因为采用源代码编译安装，所以您可以使用以下脚本删除不在使用的安装包
 
 ```shell
 bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
@@ -378,7 +378,7 @@ root     23215 23214  0 16:18 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
 root     23217 23215  0 16:18 pts/1    00:00:00 grep redis
 ```
 
-查看每个节点的状态，你可以看到主从节点信息
+查看每个节点的状态，您可以看到主从节点信息
 
 ```shell
 bash-5.0# ansible all -m shell -a "/opt/redis/bin/redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication"
