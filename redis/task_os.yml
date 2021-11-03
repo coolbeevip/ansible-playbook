@@ -1,0 +1,25 @@
+# 安装常用工具
+- name: install packages
+  yum:
+    name:
+      - gcc
+      - automake
+      - autoconf
+      - libtool
+      - make
+    state: present
+  check_mode: no
+
+# 增加用户
+- name: create user redis
+  group:
+    name: redis
+    state: present
+  check_mode: no
+- name: create user redis
+  user:
+    name: redis
+    password: '$5$ifViA9H1qSuePNTJ$MnRkCiUR5rnnyPowU5xty9C9dOVirUvz6HotU/MTbXB' # 使用 mkpasswd -m sha-512 123456 生成
+    comment: redis by coolbeevip
+    group: redis
+  check_mode: no

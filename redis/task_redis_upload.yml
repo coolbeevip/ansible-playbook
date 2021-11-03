@@ -1,0 +1,38 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
+# 初始化目录
+- name: create redis home
+  file:
+    path: "{{ redis_home_dir }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+  become: yes
+  check_mode: no
+
+# 上传安装包
+- name: check upload redis
+  stat:
+    path: "{{ redis_home_dir }}/{{ redis_tar }}"
+  register: check_result
+  check_mode: no
+- name: upload redis
+  synchronize:
+    src: /ansible-playbook/packages/{{ redis_tar }}
+    dest: "{{ redis_home_dir }}/{{ redis_tar }}"
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 解压缩安装包
+- name: check unzip redis
+  stat:
+    path: "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}"
+  register: check_result
+  check_mode: no
+- name: unzip redis
+  shell: |
+    cd "{{ redis_home_dir }}"
+    tar zxf {{ redis_tar }}
+  check_mode: no
+  when: not check_result.stat.exists

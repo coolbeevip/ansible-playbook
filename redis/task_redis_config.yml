@@ -1,0 +1,31 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
+# 初始化目录
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ redis_log_dir }}"
+    - "{{ redis_data_dir }}"
+    - "{{ redis_conf_dir }}"
+  become: yes
+  check_mode: no
+
+# 上传配置文件
+- name: copy redis configuration file
+  template:
+    src: "/ansible-playbook/redis/config/redis.conf.j2"
+    dest: "{{ redis_home_dir }}/conf/redis.conf"
+  check_mode: no
+
+# 上传配置文件
+- name: copy sentinel configuration file
+  template:
+    src: "/ansible-playbook/redis/config/sentinel.conf.j2"
+    dest: "{{ redis_home_dir }}/conf/sentinel.conf"
+  check_mode: no

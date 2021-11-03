@@ -1,0 +1,30 @@
+# 哨兵绑定地址和端口
+bind {{ redis_network_host }}
+port {{ redis_sentinel_port }}
+
+protected-mode no
+
+# 后台进程模式运行
+daemonize yes
+
+# sentinel announce-ip {{ redis_network_host }}
+# sentinel announce-port {{ redis_sentinel_port }}
+
+# 主节点别名和初始化地址
+sentinel monitor {{ redis_sentinel_master }} {{ redis_master_ip }} {{ redis_port }} {{ redis_sentinel_master_quorum }}
+
+sentinel auth-pass {{ redis_sentinel_master }} {{ redis_password }}
+
+# 宕机检测超时时间
+sentinel down-after-milliseconds {{ redis_sentinel_master }} {{ redis_sentinel_down_after_milliseconds }}
+
+# 故障切换超时时间
+sentinel failover-timeout {{ redis_sentinel_master }} {{ redis_sentinel_failover_timeout }}
+
+# 故障期间，允许多少个slave同时指向新的主节点
+sentinel parallel-syncs {{ redis_sentinel_master }} {{ redis_sentinel_parallel_syncs }}
+
+# 日志文件
+logfile {{ redis_log_dir }}/sentinel.log
+
+pidfile {{ redis_log_dir }}/sentinel.pid

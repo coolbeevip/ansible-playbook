@@ -1,0 +1,34 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
+# 编译 redis
+- name: check make redis
+  stat:
+    path: "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-server"
+  register: check_result
+  check_mode: no
+- name: make redis
+  shell: |
+    cd "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}"
+    make clean
+    make MALLOC=libc
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 安装 redis
+- name: check install redis
+  stat:
+    path: "{{ redis_home_dir }}/bin"
+  register: check_result
+  check_mode: no
+- name: install redis
+  shell: |
+    mkdir -p "{{ redis_home_dir }}/bin"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-server" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-cli" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-sentinel" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-aof" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-rdb" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-benchmark" "{{ redis_home_dir }}/bin/"
+  check_mode: no
+  when: not check_result.stat.exists

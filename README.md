@@ -126,3 +126,49 @@ ansible all -m shell -a 'kill $(cat /tmp/elasticsearch-pid && echo)'
 ```
 
 [more](elasticsearch/README.md)
+
+### Install Redis Master Salve
+
+Download redis-6.2.6.tar.gz into /opt/myansible/ansible-playbook/packages directory
+
+Start an Ansible container with 'redis' user
+
+```shell
+docker run --name ansible --rm -it \
+  -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
+  -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
+  -e ANSIBLE_SSH_USERS=root,root,root \
+  -e ANSIBLE_SSH_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
+  coolbeevip/ansible:2.8.11-alpine \
+  /bin/bash
+```
+
+```shell
+ansible-playbook -C /ansible-playbook/redis/main.yml
+```
+
+Star Redis Master-Slave
+
+```shell
+ansible all -m shell -a '/opt/redis/bin/redis-server /opt/redis/conf/redis.conf'
+```
+
+Star Redis Sentinel
+
+```shell
+ansible all -m shell -a '/opt/redis/bin/redis-sentinel /opt/redis/conf/sentinel.conf'
+```
+
+Stop Redis Sentinel
+
+```shell
+ansible all -m shell -a 'kill $(cat /opt/redis/logs/sentinel.pid && echo)'
+```
+
+Stop Redis Master-Slave
+
+```shell
+ansible all -m shell -a 'kill $(cat /opt/redis/logs/redis.pid && echo)'
+```

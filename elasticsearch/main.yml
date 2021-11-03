@@ -8,6 +8,8 @@
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    # - include_tasks: task_elasticsearch_security.yml
+    # - include_tasks: task_elasticsearch_ssl.yml
 
 - hosts: 10.1.207.181
   user: elasticsearch
@@ -19,14 +21,18 @@
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    # - include_tasks: task_elasticsearch_security.yml
+    # - include_tasks: task_elasticsearch_ssl.yml
 
 - hosts: 10.1.207.182
   user: elasticsearch
   become: no
   become_user: root
   become_method: su
-  vars:    
+  vars:
     es_node_name: "node-182"
   tasks:
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    # - include_tasks: task_elasticsearch_security.yml
+    # - include_tasks: task_elasticsearch_ssl.yml

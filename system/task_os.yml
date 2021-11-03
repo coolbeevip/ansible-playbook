@@ -30,7 +30,7 @@
   register: check_result
   check_mode: no
 - name: configure vm
-  shell: echo {{ item }} >> /etc/sysctl.conf && sysctl -p
+  shell: echo {{ item }} >> /etc/sysctl.config && sysctl -p
   with_items:
     - vm.swappiness=1
     - vm.max_map_count=262144

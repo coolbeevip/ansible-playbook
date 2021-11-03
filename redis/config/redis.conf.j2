@@ -1,0 +1,31 @@
+protected-mode no
+bind {{ redis_network_host }}
+port {{ redis_port }}
+daemonize yes
+timeout 300
+databases 16
+
+requirepass {{ redis_password }}
+masterauth {{ redis_password }}
+
+save 900 1
+save 300 10
+save 60 10000
+
+rdbcompression yes
+dbfilename "dump.rdb"
+dir {{ redis_data_dir }}
+
+maxmemory {{ redis_maxmemory }}
+maxclients {{ redis_maxclients }}
+appendonly no
+appendfsync everysec
+
+{% if im_master is not defined %}
+slaveof {{ redis_master_ip }} {{ redis_port }}
+{% endif %}
+
+pidfile {{ redis_log_dir }}/redis.pid
+
+loglevel notice
+logfile {{ redis_log_dir }}/redis.log

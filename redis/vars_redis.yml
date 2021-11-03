@@ -1,0 +1,22 @@
+---
+redis_tar: "redis-6.2.6.tar.gz"
+redis_tar_unzip_dir: "redis-6.2.6"
+redis_home_dir: "/opt/redis"
+redis_log_dir: "/opt/redis/logs"
+redis_data_dir: "/opt/redis/data"
+redis_conf_dir: "/opt/redis/conf"
+redis_user: "redis"
+redis_group: "redis"
+redis_password: "redis"
+redis_network_host: "0.0.0.0"
+redis_port: 7000
+redis_maxmemory: 31457280
+redis_maxclients: 1000
+redis_master_ip: 10.1.207.180
+
+redis_sentinel_port: 27000
+redis_sentinel_master: "mymaster"
+redis_sentinel_master_quorum: 2
+redis_sentinel_down_after_milliseconds: 5000
+redis_sentinel_failover_timeout: 10000
+redis_sentinel_parallel_syncs: 2

@@ -10,8 +10,8 @@ sed -i "s/^.*swap/#&/g" /etc/fstab
 ## 设置 vm.swappiness 和虚拟内存
 
 ```shell
-echo "vm.swappiness=1" >> /etc/sysctl.conf
-echo "vvm.max_map_count=262144" >> /etc/sysctl.conf
+echo "vm.swappiness=1" >> /etc/sysctl.config
+echo "vvm.max_map_count=262144" >> /etc/sysctl.config
 sysctl -p
 ```
 
