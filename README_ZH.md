@@ -1,4 +1,4 @@
-# Install Middleware on Linux With Ansible | [中文](README_ZH.md)
+# Install Middleware on Linux With Ansible
 
 * Configuration Linux System
 * Install Elasticsearch Cluster
