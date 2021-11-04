@@ -10,7 +10,7 @@ Create a directory for Ansible Playbook scripts
 mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-Download Ansible playbook script
+Download Ansible playbook scripts
 
 ```shell
 cd ~/my-docker-volume/ansible-playbook
@@ -74,7 +74,7 @@ redis_sentinel_parallel_syncs: 2
 
 You can find more default configuration in `redis/config/redis.conf.j2` and `redis/config/sentinel.conf.j2` files
 
-## Install
+## Installation
 
 Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
@@ -325,7 +325,7 @@ PLAY RECAP *********************************************************************
 10.1.207.182               : ok=23   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-At this point, the installation is complete, and you can see the Redis node that has been configured in the installation directory of each target service.
+At this point, the installation is complete, and you can see the Redis node that has been configured in the installation directory of each target server.
 
 You can use the following script to delete the temporary files generated during the installation
 

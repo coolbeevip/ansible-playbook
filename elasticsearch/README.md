@@ -60,7 +60,7 @@ This file mainly defines the address of the target server, the login user name, 
     es_node_name: "node-182"
 ```
 
-## Install
+## Installation
 
 Start the Ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
@@ -86,7 +86,7 @@ Run Ansible playbook scripts to install
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
-At this point, the installation is complete, and you can see the Elasticsearch node that has been configured in the installation directory of each target service.
+At this point, the installation is complete, and you can see the Elasticsearch node that has been configured in each target server.
 
 You can use the following script to delete the temporary files generated during the installation
 
