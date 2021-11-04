@@ -122,6 +122,6 @@ bash-5.0#
 
 ## 使用 Ansible Playbook 脚本安装中间件
 
-* [常用 Linux 系统配置](./system/README_ZH.md)
+* [Linux 系统配置](./system/README_ZH.md)
 * [Elasticsearch 三节点集群](./elasticsearch/README_ZH.md)
 * [Redis 三节点主从哨兵模式集群](./redis/README_ZH.md)
