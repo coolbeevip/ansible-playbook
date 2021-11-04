@@ -1,0 +1,36 @@
+---
+# 安装包
+mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
+mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
+
+mysql_shell_tar: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit.tar.gz"
+mysql_shell_tar_unzip_dir: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit"
+
+mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
+mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
+
+
+# 安装目录
+mysql_home_dir: "/opt/mysql"
+mysql_run_dir: "/data01/mysql/run"
+mysql_log_dir: "/data01/mysql/logs"
+mysql_data_dir: "/data01/mysql/data"
+mysql_dump_dir: "/data01/mysql/dump"
+
+# 安装用户
+mysql_user: "mysql"
+mysql_group: "mysql"
+
+# my.conf
+
+mysqld_port: 3336
+mysqld_max_connections: 3000
+mysqld_max_connect_errors: 300
+mysqld_default_time_zone: "+08:00"
+
+mysqld_mysqlx_port: 33360
+
+mysqld_character_set_server: utf8mb4
+mysqld_collation_server: utf8mb4_general_ci
+
+client_default_character_set: utf8mb4

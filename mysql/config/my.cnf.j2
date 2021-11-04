@@ -1,0 +1,139 @@
+[client]
+port={{ mysqld_port }}
+socket=/home/mysqlg1/mysql-8.0.25-linux-glibc2.12-x86_64/mysqld.sock
+default-character-set={{ client_default_character_set }}
+
+[mysqld]
+
+## Charset and Collation
+character-set-server={{ mysqld_character_set_server }}
+collation-server={{ mysqld_collation_server }}
+default-time-zone='{{ mysqld_default_time_zone }}'
+
+## Files
+port={{ mysqld_port }}
+socket={{ mysql_run_dir }}/mysqld.sock
+pid-file={{ mysql_run_dir }}/mysqld.pid
+open_files_limit=150000
+skip-name-resolve = ON
+
+## Logging
+datadir={{ mysql_data_dir }}
+relay_log=/home/mysqlg1/mysqldata/relaylog/relay-log
+
+#log
+log-error={{ mysql_log_dir }}/mysqld.log
+log-bin={{ {{ mysql_log_dir }}/binlog
+
+#log_queries_not_using_indexes
+long_query_time=10
+max_binlog_size=2G
+
+## Per-Thread Buffers * (max_connections) = total per-thread mem usage
+sort_buffer_size=32M
+read_buffer_size=32M
+read_rnd_buffer_size=32M
+join_buffer_size=8M
+
+## Query Cache
+
+## Connections
+max_connections={{ mysqld_max_connections }}
+max_connect_errors={{ mysqld_max_connect_errors }}
+max_allowed_packet=1G
+
+## Table and TMP settings
+max_heap_table_size=1G
+bulk_insert_buffer_size=32M
+tmp_table_size=1G
+
+## Table cache settings
+table_open_cache=2000
+
+## InnoDB Plugin Independent Settings
+innodb_data_home_dir={{ mysql_data_dir }}
+innodb_data_file_path = ibdata1:512M;ibdata2:512M:autoextend
+innodb_log_file_size = 2G
+innodb_log_files_in_group = 3
+innodb_buffer_pool_size = 60G #根据机器进行调整,操作系统内存的70%-80%最佳
+innodb_file_per_table = 1
+innodb_flush_log_at_trx_commit = 2
+innodb_log_buffer_size = 1G
+innodb_lock_wait_timeout = 120
+innodb_thread_concurrency = 18
+innodb_flush_method = o_direct
+
+
+#------------------ 未分类 ------------------#
+basedir={{ mysql_dir }}
+lower_case_table_names = 1
+enforce_gtid_consistency = ON
+gtid_mode = ON
+binlog_checksum  = none
+default_authentication_plugin = mysql_native_password
+#For safe write dir
+local_infile = 0
+secure_file_priv = {{ mysql_dump_dir }}
+
+#------------------ INNODB ------------------#
+innodb_io_capacity = 2500
+innodb_max_dirty_pages_pct = 75
+innodb_read_io_threads = 6
+innodb_write_io_threads = 6
+innodb_rollback_on_timeout
+innodb_undo_directory = {{ mysql_data_dir }}
+innodb_log_group_home_dir = /home/mysqlg1/mysqldata/doublewrite
+innodb_doublewrite_dir = /home/mysqlg1/mysqldata/doublewrite
+open_files_limit=150000
+performance_schema_max_file_instances=200000
+
+#------------------ SESSION ------------------#
+key_buffer_size = 256M
+
+#------------------ LOG ------------------#
+server_id = {{ server_id }}
+log-error = mysqld.err
+log_bin_index = /home/mysqlg1/mysqldata/binlog/binlog.index
+slow_query_log_file = /home/mysqlg1/mysql-8.0.25-linux-glibc2.12-x86_64/slow.log
+slow_query_log = 1
+log_queries_not_using_indexes = ON
+log_throttle_queries_not_using_indexes = 10
+log_slow_admin_statements = ON
+log_output = FILE,TABLE
+#master_info_file = /home/mysqlg1/mysql-8.0.25-linux-glibc2.12-x86_64/master.info
+master_info_repository=TABLE
+log_slave_updates=ON
+binlog_format=ROW
+binlog_rows_query_log_events=ON
+wait_timeout=28800
+slave_parallel_workers=48
+slave_parallel_type=LOGICAL_CLOCK
+slave_pending_jobs_size_max=1G
+slave_preserve_commit_order=ON
+# add new 20210706
+slave_compressed_protocol=ON
+transaction_isolation='read-committed'
+innodb_buffer_pool_instances=64
+relay_log_info_repository=TABLE
+
+
+#------------------ MGR ------------------#
+mysqlx_port={{ mysqld_mysqlx_port }}
+mysqlx_socket={{ mysql_dir }}/mysqlx.sock
+
+loose-group_replication_group_name="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+loose-group_replication_start_on_boot=off
+#数据组复制端口，建议在port后面加1；此为IP为本机IP地址
+loose-group_replication_local_address= "10.12.2.144:33361"
+#复制组的集群信息
+#集群中所有数据库节点需要配置（此处无须配置本机的端口）
+loose-group_replication_group_seeds= "10.12.2.145:33361,10.12.2.146:33361"
+loose-group_replication_bootstrap_group= off
+#loose-group_replication_ip_whitelist="10.12.0.0/16" #访问数据库白名单
+loose-group_replication_single_primary_mode = on
+loose-group_replication_transaction_size_limit=1500000000
+
+# 组复制节点权重，权重越大，则主节点数据库异常就由集群中权重大接管主节点,建议是70-100
+loose-group_replication_member_weight=100
+transaction_write_set_extraction = XXHASH64
+binlog_transaction_dependency_tracking  = WRITESET

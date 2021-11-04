@@ -1,0 +1,34 @@
+- name: include vars
+  include_vars: "vars_mysql.yml"
+
+# 安装常用工具
+- name: install packages
+  yum:
+    name:
+      - xz
+    state: present
+  check_mode: no
+
+# hosts 中配置主机名
+- name: Add IP address of all hosts to all hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].ansible_host }} {{item}}"
+    state: present
+  when: hostvars[item].ansible_host is defined
+  with_items: "{{ groups.all }}"
+
+# 增加用户
+- name: create user mysql
+  group:
+    name: {{ mysql_user }}
+    state: present
+  check_mode: no
+- name: create user mysql
+  user:
+    name: {{ mysql_user }}
+    password: '$5$YHiEQaLUzPAugJ3q$GqymyJkWMw1nNu.C.hf6ZSwCecd8H8TzLdaRhqehBM/' # 使用 mkpasswd --method=sha-512 生成
+    comment: mysql by coolbeevip
+    group: {{ mysql_group }}
+  check_mode: no

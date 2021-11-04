@@ -1,0 +1,32 @@
+- hosts: 10.1.207.180
+  user: mysql
+  become: no
+  become_user: root
+  become_method: su
+  vars:
+    server_id: "node-180"
+  tasks:
+    - include_tasks: task_mysql_os.yml
+    - include_tasks: task_mysql_upload.yml
+
+- hosts: 10.1.207.181
+  user: mysql
+  become: no
+  become_user: root
+  become_method: su
+  vars:
+    server_id: "node-181"
+  tasks:
+    - include_tasks: task_mysql_os.yml
+    - include_tasks: task_mysql_upload.yml
+
+- hosts: 10.1.207.182
+  user: mysql
+  become: no
+  become_user: root
+  become_method: su
+  vars:
+    server_id: "node-182"
+  tasks:
+    - include_tasks: task_mysql_os.yml
+    - include_tasks: task_mysql_upload.yml
