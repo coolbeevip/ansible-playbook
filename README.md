@@ -122,6 +122,6 @@ By now, you have mastered how to start the Ansible tool to connect to multiple t
 
 ## Install Middleware use Ansible Playbook
 
-* [Common Linux system configuration](./system/README_ZH.md)
-* [Elasticsearch Cluster](./elasticsearch/README_ZH.md)
-* [Redis Master-Slave Sentinel](./redis/README_ZH.md)
+* [Common Linux system configuration](./system/README.md)
+* [Elasticsearch Cluster](./elasticsearch/README.md)
+* [Redis Master-Slave Sentinel](./redis/README.md)
