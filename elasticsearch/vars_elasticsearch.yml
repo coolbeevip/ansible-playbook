@@ -22,7 +22,7 @@ es_http_port: 39200
 es_transport_port: 39010
 
 # 集群名称
-es_cluster_name: "nc-elasticsearch"
+es_cluster_name: "my-elasticsearch"
 
 # 自动创建索引
 es_action_auto_create_index: "true"
