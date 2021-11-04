@@ -20,7 +20,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 Download Redis tar ball from the redis.io web site to `~/my-docker-volume/ansible-playbook/packages`
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/releases/redis-6.2.6.tar.gz
+wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/releases/redis-6.2.6.tar.gz --no-check-certificate
 ```
 
 ## Configuration

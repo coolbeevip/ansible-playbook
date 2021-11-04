@@ -20,7 +20,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 下载 redis 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/releases/redis-6.2.6.tar.gz
+wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/releases/redis-6.2.6.tar.gz --no-check-certificate
 ```
 
 ## 配置安装脚本

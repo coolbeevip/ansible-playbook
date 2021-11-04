@@ -36,3 +36,11 @@
     tar zxf {{ es_tar }}
   check_mode: no
   when: not check_result.stat.exists
+
+# 上传启动文件
+- name: copy shell file
+  template:
+    src: "/ansible-playbook/elasticsearch/bin/es.sh.j2"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/es.sh"
+    mode: 0755
+  check_mode: no

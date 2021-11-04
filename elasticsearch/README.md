@@ -1,4 +1,4 @@
-# Install Elasticsearch Cluster
+# Ansible Playbook Install Elasticsearch Cluster | [中文](README_ZH.md)
 
 ## Installation directory
 

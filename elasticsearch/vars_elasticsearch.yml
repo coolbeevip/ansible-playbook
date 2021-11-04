@@ -2,42 +2,45 @@
 es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
 es_tar_unzip_dir: "elasticsearch-7.13.3"
 es_home_dir: "/opt/elasticsearch"
-es_log_dir: "/data01/elasticsearch/logs"
 es_home: "/opt/elasticsearch/elasticsearch-7.13.3"
+
+# 数据目录
+es_log_dir: "/data01/elasticsearch/logs"
 es_data_dir: "/data01/elasticsearch/data"
 es_heap_dump_path: "/data01/elasticsearch/dump"
 es_temp_dir: "/data01/elasticsearch/temp"
+
 es_user: "elasticsearch"
 es_group: "elasticsearch"
 es_cluster_name: "nc-elasticsearch"
 es_action_auto_create: "true"
 es_network_host: "0.0.0.0"
-es_http_port: 9200
-es_transport_port: 9010
+es_http_port: 39200
+es_transport_port: 39010
 es_bootstrap_memory_lock: false
 es_heap_size: 8g
 
-# XPack Security
-es_xpack_security_enabled: false
-xpack_security_transport_ssl_enabled: true
-es_api_basic_auth_username: elastic
-es_api_basic_auth_password: 123456
-
-# SSL/TLS parameters
-es_enable_auto_ssl_configuration: true
-es_enable_http_ssl: false
-es_enable_transport_ssl: true
-es_ssl_upload: true
-es_ssl_keystore: ""
-es_ssl_keystore_password: ""
-es_ssl_truststore: ""
-es_ssl_truststore_password: ""
-es_ssl_key: ""
-es_ssl_key_password: ""
-es_ssl_certificate: ""
-es_ssl_certificate_authority: ""
-es_ssl_certificate_path: "{{ es_home }}/config/certs"
-es_ssl_verification_mode: "certificate"
-es_validate_certs: "yes"
-es_delete_unmanaged_file: true
-es_delete_unmanaged_native: true
+# # XPack Security
+# es_xpack_security_enabled: false
+# xpack_security_transport_ssl_enabled: true
+# es_api_basic_auth_username: elastic
+# es_api_basic_auth_password: 123456
+#
+# # SSL/TLS parameters
+# es_enable_auto_ssl_configuration: true
+# es_enable_http_ssl: false
+# es_enable_transport_ssl: true
+# es_ssl_upload: true
+# es_ssl_keystore: ""
+# es_ssl_keystore_password: ""
+# es_ssl_truststore: ""
+# es_ssl_truststore_password: ""
+# es_ssl_key: ""
+# es_ssl_key_password: ""
+# es_ssl_certificate: ""
+# es_ssl_certificate_authority: ""
+# es_ssl_certificate_path: "{{ es_home }}/config/certs"
+# es_ssl_verification_mode: "certificate"
+# es_validate_certs: "yes"
+# es_delete_unmanaged_file: true
+# es_delete_unmanaged_native: true
