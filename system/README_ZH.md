@@ -1,6 +1,6 @@
-# 使用 Ansible Playbook 配置 Linux 系统
+# 使用 Ansible Playbook 配置 Linux 系统 | [English](README.md)
 
-## 配置操作系统(main-os.yml)
+## 配置系统(main-os.yml)
 
 此脚本可批量完成以下配置
 
