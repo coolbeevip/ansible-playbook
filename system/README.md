@@ -1,4 +1,4 @@
-### Use ansible-playbook to configuring the Linux
+### Use Ansible Playbook to configuration the Linux System
 
 Download jdk-8u202-linux-x64.tar.gz into /opt/myansible/ansible-playbook/packages directory
 
