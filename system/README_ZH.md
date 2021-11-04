@@ -42,7 +42,7 @@ cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-下载 jdk 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
+下载 jdk 安装包 jdk-8u202-linux-x64.tar.gz 到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 执行安装命令
 

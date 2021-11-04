@@ -1,85 +1,86 @@
 # Use Ansible Playbook to Configuration the Linux System | [中文](README_ZH.md)
 
-Download jdk-8u202-linux-x64.tar.gz into /opt/myansible/ansible-playbook/packages directory
+## Configuration OS(main-os.yml)
 
-run this ansible command in ansible container
+This script can complete the following configurations in batches
 
-```shell
-ansible-playbook -C /ansible-playbook/system/main.yml
-```
-
-* Install wget curl yum-utils lvm2 rsync git device-mapper-persistent-data; etc.
-* Install Java
-* Install Docker
-* Disable swapping
-* Configure swappiness
-* Increase file descriptors
-* Ensure sufficient threads
-* Ensure sufficient virtual memory
-* TCP retransmission timeout
-* Add user elasticsearch
-
-# Installing and configuring Linux System
-
-Execute this command to complete the configuration
+* Install yum packages wget curl yum-utils lvm2 rsync git device-mapper-persistent-data; etc.
+* Disable Swap
+* Disable firewalld
+* Set vm.swappiness=1
+* Set vm.max_map_count=262144
+* ulimit -s 1048576
+* ulimit -n 65535
+* ulimit -u 65535
 
 ```shell
-ansible-playbook -C /ansible-playbook/system/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/system/main-os.yml
 ```
 
-## Check Result
-
-Check disable swapping
+Check the key parameters of each system
 
 ```shell
-ansible all -m shell -a 'cat /etc/fstab'
-ansible all -m shell -a 'cat /proc/swaps'
+bash-5.0# ansible all -m shell -a 'ulimit -a && /sbin/sysctl vm.swappiness && /sbin/sysctl vm.max_map_count && /sbin/swapon -s'
 ```
 
-Check vm.swappiness
+Check Firewall status of each system
 
 ```shell
-ansible all -m shell -a 'sysctl vm.swappiness'
+bash-5.0# ansible all -m shell -a 'systemctl status firewalld.service'
+bash-5.0# ansible all -m shell -a 'systemctl status iptables.service'
 ```
 
-Check file descriptors
+## Install Java(main-java.yml)
+
+Create a directory for Ansible Playbook scripts
 
 ```shell
-ansible all -m shell -a 'ulimit -a'
+mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-Check virtual memory
+Download Ansible Playbook scripts
 
 ```shell
-ansible all -m shell -a 'sysctl vm.max_map_count'
+cd ~/my-docker-volume/ansible-playbook
+git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-Check user elasticsearch，default password is `123456`
+Download JDK jdk-8u202-linux-x64.tar.gz to `~/my-docker-volume/ansible-playbook/packages` directory
+
+Run Ansible playbook scripts to install
 
 ```shell
-ansible all -m shell -a 'id elasticsearch'
+bash-5.0# ansible-playbook -C /ansible-playbook/system/main-java.yml
 ```
 
-**Tip:** You can modify the default password
-
-```shell
-ansible all -m shell -a 'echo 123456 | passwd elasticsearch --stdin'
-```
-
-Check firewalld & iptables
-
-```shell
-ansible all -m shell -a 'systemctl status firewalld.service'
-ansible all -m shell -a 'systemctl status iptables.service'
-```
-
-Check Java
+Check Java version
 
 ```shell
 ansible all -m shell -a 'source /etc/profile && java -version'
 ```
 
-Check Docker
+## Install Docker and Docker Compose(main-docker.yml)
+
+Create a directory for Ansible Playbook scripts
+
+```shell
+mkdir -p ~/my-docker-volume/ansible-playbook
+```
+
+Download Ansible Playbook scripts
+
+```shell
+cd ~/my-docker-volume/ansible-playbook
+git clone https://github.com/coolbeevip/ansible-playbook.git
+```
+
+Run Ansible playbook scripts to install
+
+```shell
+ansible-playbook -C /ansible-playbook/system/main-docker.yml
+```
+
+Check Docker version
 
 ```shell
 ansible all -m shell -a 'docker -v'
