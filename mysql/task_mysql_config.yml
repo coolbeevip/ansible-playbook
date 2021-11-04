@@ -25,6 +25,14 @@
     dest: "{{ mysql_home_dir }}/my.cnf"
   check_mode: no
 
+# 上传启动文件
+- name: copy my.sh file
+  template:
+    src: "/ansible-playbook/mysql/bin/my.sh.j2"
+    dest: "{{ mysql_home_dir }}/my.sh"
+    mode: 0755
+  check_mode: no
+  
 # 设置 MYSQL_HOME 环境变量
 
 # 设置 MYSQLSH_HOME 环境变量
