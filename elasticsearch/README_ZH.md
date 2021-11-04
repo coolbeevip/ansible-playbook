@@ -31,9 +31,9 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.c
 
 这个文件中定义了安装路径、数据路径、安装包文件名、端口、内存等变量信息，你可以根据实际情况修改这些变量，这些变量在并部署时会替换到以下文件中。
 
-* elasticsearch-7.13.3/config/elasticsearch.yml
-* elasticsearch-7.13.3/config/jvm.options
-* elasticsearch-7.13.3/config/jvm.options.d/gc.options
+* ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
+* ansible-playbook/elasticsearch/config/jvm.options.j2
+* ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
 
 #### main.yml
 

@@ -32,9 +32,9 @@ The following parameters need to be configured in the actual environment
 
 This file defines variable information such as installation path, data path, installation package file name, port, memory, etc. You can modify these variables according to the actual environment. These variables will be replaced in the following files when they are deployed.
 
-* elasticsearch-7.13.3/config/elasticsearch.yml
-* elasticsearch-7.13.3/config/jvm.options
-* elasticsearch-7.13.3/config/jvm.options.d/gc.options
+* ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
+* ansible-playbook/elasticsearch/config/jvm.options.j2
+* ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
 
 #### main.yml
 
