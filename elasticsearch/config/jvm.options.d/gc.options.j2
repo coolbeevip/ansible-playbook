@@ -5,4 +5,4 @@
 #-Xlog:all=warning:stderr:utctime,level,tags
 
 # Enable GC logging to a custom location with a variety of options
-#-Xlog:gc*,gc+age=trace,safepoint:file=/opt/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m
+-Xlog:gc*,gc+age=trace,safepoint:file={{ es_log_dir }}/gc.log:utctime,pid,tags:filecount=32,filesize=64m

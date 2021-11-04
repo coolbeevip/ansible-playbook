@@ -1,7 +1,13 @@
 ---
+# 用户
+es_user: "elasticsearch"
+es_group: "elasticsearch"
+
+# 安装文件
 es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
-es_tar_unzip_dir: "elasticsearch-7.13.3"
-es_home_dir: "/opt/elasticsearch"
+
+# 程序目录
+es_root: "/opt/elasticsearch"
 es_home: "/opt/elasticsearch/elasticsearch-7.13.3"
 
 # 数据目录
@@ -10,15 +16,21 @@ es_data_dir: "/data01/elasticsearch/data"
 es_heap_dump_path: "/data01/elasticsearch/dump"
 es_temp_dir: "/data01/elasticsearch/temp"
 
-es_user: "elasticsearch"
-es_group: "elasticsearch"
-es_cluster_name: "nc-elasticsearch"
-es_action_auto_create: "true"
+# 网路信息
 es_network_host: "0.0.0.0"
 es_http_port: 39200
 es_transport_port: 39010
-es_bootstrap_memory_lock: false
+
+# 集群名称
+es_cluster_name: "nc-elasticsearch"
+
+# 自动创建索引
+es_action_auto_create_index: "true"
+
+# 内存配置
 es_heap_size: 8g
+es_bootstrap_memory_lock: false
+
 
 # # XPack Security
 # es_xpack_security_enabled: false

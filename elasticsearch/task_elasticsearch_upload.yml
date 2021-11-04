@@ -4,7 +4,7 @@
 # 初始化目录
 - name: create elasticsearch home
   file:
-    path: "{{ es_home_dir }}"
+    path: "{{ es_root }}"
     state: directory
     owner: "{{ es_user }}"
     group: "{{ es_group }}"
@@ -14,25 +14,25 @@
 # 上传安装包
 - name: check upload elasticsearch
   stat:
-    path: "{{ es_home_dir }}/{{ es_tar }}"
+    path: "{{ es_root }}/{{ es_tar }}"
   register: check_result
   check_mode: no
 - name: upload elasticsearch
   synchronize:
     src: /ansible-playbook/packages/{{ es_tar }}
-    dest: "{{ es_home_dir }}/{{ es_tar }}"
+    dest: "{{ es_root }}/{{ es_tar }}"
   check_mode: no
   when: not check_result.stat.exists
 
 # 解压缩安装包
 - name: check unzip elasticsearch
   stat:
-    path: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}"
+    path: "{{ es_home }}"
   register: check_result
   check_mode: no
 - name: unzip elasticsearch
   shell: |
-    cd "{{ es_home_dir }}"
+    cd "{{ es_root }}"
     tar zxf {{ es_tar }}
   check_mode: no
   when: not check_result.stat.exists
@@ -41,6 +41,6 @@
 - name: copy shell file
   template:
     src: "/ansible-playbook/elasticsearch/bin/es.sh.j2"
-    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/es.sh"
+    dest: "{{ es_home }}/bin/es.sh"
     mode: 0755
   check_mode: no

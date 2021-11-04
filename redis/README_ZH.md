@@ -74,7 +74,11 @@ redis_sentinel_parallel_syncs: 2
 
 ## 开始安装
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中，**注意这里 ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置为 redis 用户名密码**
+启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
+
+**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `redis` 和密码 `123456`
+
+**提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
 
 ```shell
 docker run --name ansible --rm -it \

@@ -1,10 +1,10 @@
 # Ansible Playbook 安装 Elasticsearch 集群 | [English](README.md)
 
-请先在目标服务器创建 `elasticsearch` 用户，脚本会在此用户下安装三节点集群，因为 7.X 版本后会自带 use the bundled JDK JDK，所以我们不需要提前安装 Java 环境。
+请先在目标服务器创建 `elasticsearch` 用户，密码 `123456`，脚本会在此用户下安装三节点集群，因为 7.X 版本后会自带 JDK，所以我们不需要提前安装 Java 环境。
 
 ## 下载安装包和 Playbook 脚本
 
-在客户机上创建 playbook 脚本存放目录
+在你的笔记本上创建 playbook 脚本存放目录
 
 ```shell
 mkdir -p ~/my-docker-volume/ansible-playbook
@@ -23,12 +23,49 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz --no-check-certificate
 ```
 
-## 配置安装脚本
+## 配置脚本
 
+您需要根据实际情况修改如下配置文件，例如 IP 地址，端口号等
+
+#### vars_elasticsearch.yml
+
+这个文件中定义了安装路径、数据路径、安装包文件名、端口、内存等变量信息，你可以根据实际情况修改这些变量，这些变量在并部署时会替换到以下文件中。
+
+* elasticsearch-7.13.3/config/elasticsearch.yml
+* elasticsearch-7.13.3/config/jvm.options
+* elasticsearch-7.13.3/config/jvm.options.d/gc.options
+
+#### main.yml
+
+这个文件中主要定义了目标服务器的地址，登录用户名以及每个 elasticsearch 节点的名称
+
+```yaml
+- hosts: 10.1.207.180
+  user: elasticsearch
+  ...
+  vars:
+    es_node_name: "node-180"
+
+- hosts: 10.1.207.181
+  user: elasticsearch
+  ...
+  vars:
+    es_node_name: "node-181"
+
+- hosts: 10.1.207.182
+  user: elasticsearch
+  ...
+  vars:
+    es_node_name: "node-182"
+```
 
 ## 开始安装
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中，**注意这里 ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置为 elasticsearch 用户名密码**
+启动 Ansible 工具连接到目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
+
+**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `elasticsearch` 和密码 `123456`
+
+**提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
 
 ```shell
 docker run --name ansible --rm -it \

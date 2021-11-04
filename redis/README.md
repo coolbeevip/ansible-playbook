@@ -78,7 +78,9 @@ You can find more default configuration in `redis/config/redis.conf.j2` and `red
 
 Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
-**NOTICE:** ANSIBLE_SSH_USERS, ANSIBLE_SSH_PASSS is linux user redis username and password
+**NOTICE:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user redis and password
+
+**NOTICE:** ANSIBLE_SU_PASSS is user root password
 
 ```shell
 docker run --name ansible --rm -it \
