@@ -1,6 +1,6 @@
 # 使用 Ansible 在 Linux 系统安装中间件 | [English](README.md)
 
-本文提供了常用中间件的自动化安装脚本，使用基于 Docker 的 [ansible](https://hub.docker.com/repository/docker/coolbeevip/ansible) 工具，可自动化快速安装中间件
+使用 [Ansible Docker](https://hub.docker.com/repository/docker/coolbeevip/ansible) 工具自动化安装流行中间件
 
 ## 前提条件
 
@@ -120,17 +120,7 @@ bash-5.0#
 
 至此你已经掌握了如何启动 ansible 工具连接多台目标服务器，并执行了一些简单的命令，我们可以通过 playbook 脚本可以编排更复杂脚本。
 
-## 常用脚本
-
-### 批量创建用户
-
-```shell
-
-```
-
 ## 使用 Ansible Playbook 脚本安装中间件
-
-本仓库提供了常用系统设置和中间件的批量安装脚本
 
 * [常用 Linux 系统配置](./system/README_ZH.md)
 * [Elasticsearch 三节点集群](./elasticsearch/README_ZH.md)

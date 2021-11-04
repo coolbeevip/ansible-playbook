@@ -1,3 +1,24 @@
+### Use ansible-playbook to configuring the Linux
+
+Download jdk-8u202-linux-x64.tar.gz into /opt/myansible/ansible-playbook/packages directory
+
+run this ansible command in ansible container
+
+```shell
+ansible-playbook -C /ansible-playbook/system/main.yml
+```
+
+* Install wget curl yum-utils lvm2 rsync git device-mapper-persistent-data; etc.
+* Install Java
+* Install Docker
+* Disable swapping
+* Configure swappiness
+* Increase file descriptors
+* Ensure sufficient threads
+* Ensure sufficient virtual memory
+* TCP retransmission timeout
+* Add user elasticsearch
+
 # Installing and configuring Linux System
 
 Execute this command to complete the configuration
