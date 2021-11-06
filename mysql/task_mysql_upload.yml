@@ -1,23 +1,12 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 初始化目录
-- name: create mysql home
-  file:
-    path: "{{ mysql_home_dir }}"
-    state: directory
-    owner: "{{ mysql_user }}"
-    group: "{{ mysql_group }}"
-  become: yes
-  check_mode: no
-
 # 上传 mysql 安装包
 - name: check upload mysql
   stat:
     path: "{{ mysql_home_dir }}/{{ mysql_tar }}"
   register: check_result
   check_mode: no
-  become: no
 - name: upload mysql
   synchronize:
     src: /ansible-playbook/packages/{{ mysql_tar }}
@@ -33,9 +22,8 @@
   check_mode: no
 - name: unzip mysql
   shell: |
-    cd {{ redis_mysql_dir }}
-    xz -d {{ mysql_tar }}
-    tar -vxf {{ mysql_tar }}
+    cd "{{ mysql_home_dir }}"
+    tar -xvJf {{ mysql_tar }}
   check_mode: no
   when: not check_result.stat.exists
 
@@ -45,7 +33,6 @@
     path: "{{ mysql_home_dir }}/{{ mysql_shell_tar }}"
   register: check_result
   check_mode: no
-  become: no
 - name: upload mysql
   synchronize:
     src: /ansible-playbook/packages/{{ mysql_shell_tar }}
@@ -56,12 +43,12 @@
 # 解压缩 mysql shell 安装包
 - name: check unzip mysql shell
   stat:
-    path: "{{ redis_home_dir }}/{{ mysql_shell_tar_unzip_dir }}"
+    path: "{{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}"
   register: check_result
   check_mode: no
 - name: unzip redis
   shell: |
-    cd "{{ redis_home_dir }}"
+    cd "{{ mysql_home_dir }}"
     tar zxf {{ mysql_shell_tar }}
   check_mode: no
   when: not check_result.stat.exists
@@ -72,7 +59,6 @@
     path: "{{ mysql_home_dir }}/{{ mysql_router_tar }}"
   register: check_result
   check_mode: no
-  become: no
 - name: upload mysql
   synchronize:
     src: /ansible-playbook/packages/{{ mysql_router_tar }}
@@ -88,8 +74,7 @@
   check_mode: no
 - name: unzip mysql
   shell: |
-    cd {{ redis_mysql_dir }}
-    xz -d {{ mysql_router_tar }}
-    tar -vxf {{ mysql_router_tar }}
+    cd {{ mysql_home_dir }}
+    tar -xvJf {{ mysql_router_tar }}
   check_mode: no
   when: not check_result.stat.exists

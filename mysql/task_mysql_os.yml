@@ -10,25 +10,37 @@
   check_mode: no
 
 # hosts 中配置主机名
-- name: Add IP address of all hosts to all hosts
-  lineinfile:
-    dest: /etc/hosts
-    regexp: '.*{{ item }}$'
-    line: "{{ hostvars[item].ansible_host }} {{item}}"
-    state: present
-  when: hostvars[item].ansible_host is defined
-  with_items: "{{ groups.all }}"
+# - name: Add IP address of all hosts to all hosts
+#   lineinfile:
+#     dest: /etc/hosts
+#     regexp: '.*{{ item }}$'
+#     line: "{{ hostvars[item].ansible_host }} {{item}}"
+#     state: present
+#   when: hostvars[item].ansible_host is defined
+#   with_items: "{{ groups.all }}"
 
 # 增加用户
 - name: create user mysql
   group:
-    name: {{ mysql_user }}
+    name: mysql
     state: present
   check_mode: no
+  become: yes
 - name: create user mysql
   user:
-    name: {{ mysql_user }}
+    name: mysql
     password: '$5$YHiEQaLUzPAugJ3q$GqymyJkWMw1nNu.C.hf6ZSwCecd8H8TzLdaRhqehBM/' # 使用 mkpasswd --method=sha-512 生成
     comment: mysql by coolbeevip
-    group: {{ mysql_group }}
+    group: mysql
   check_mode: no
+  become: yes
+
+# 初始化目录
+- name: create mysql home
+  file:
+    path: "{{ mysql_home_dir }}"
+    state: directory
+    owner: "{{ mysql_user }}"
+    group: "{{ mysql_group }}"
+  become: yes
+  check_mode: no  
