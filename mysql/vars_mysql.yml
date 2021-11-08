@@ -32,8 +32,10 @@ mysqld_max_connect_errors: 300
 mysqld_default_time_zone: "+08:00"
 
 mysqld_mysqlx_port: 33360
+mysqld_group_replication_port: 33361
 
 mysqld_character_set_server: utf8mb4
 mysqld_collation_server: utf8mb4_general_ci
 
+mysqld_innodb_buffer_pool_size: 10G
 client_default_character_set: utf8mb4

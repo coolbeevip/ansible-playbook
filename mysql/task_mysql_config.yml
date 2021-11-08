@@ -18,6 +18,7 @@
     - "{{ mysql_fast_binlog_dir }}"
     - "{{ mysql_fast_relaylog_dir }}"
   check_mode: no
+  become: yes
 
 - name: copy my.cnf
   template:
@@ -32,7 +33,7 @@
     dest: "{{ mysql_home_dir }}/my.sh"
     mode: 0755
   check_mode: no
-  
+
 # 设置 MYSQL_HOME 环境变量
 
 # 设置 MYSQLSH_HOME 环境变量

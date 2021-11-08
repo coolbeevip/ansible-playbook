@@ -15,12 +15,12 @@ port                                            = {{ mysqld_port }}
 socket                                          = {{ mysql_run_dir }}/mysqld.sock
 datadir                                         = {{ mysql_data_dir }}
 pid-file                                        = {{ mysql_run_dir }}/mysqld.pid
-lower_case_table_names                          = 1 # 忽略大小写
-open_files_limit                                = 150000 # 可用的文件描述符数
-key_buffer_size                                 = 256M # MyISAM 索引块的缓冲区大小
+lower_case_table_names                          = 1                                     # 忽略大小写
+open_files_limit                                = 150000                                # 可用的文件描述符数
+key_buffer_size                                 = 256M                                  # MyISAM 索引块的缓冲区大小
 log-error                                       = {{ mysql_log_dir }}/mysqld.err
-wait_timeout                                    = 28800 # 服务器在关闭非交互式连接之前等待活动的秒数(默认8小时)
-transaction_isolation                           = 'read-committed' # 事务隔离级别
+wait_timeout                                    = 28800                                 # 服务器在关闭非交互式连接之前等待活动的秒数(默认8小时)
+transaction_isolation                           = 'read-committed'                      # 事务隔离级别
 skip-name-resolve                               = 1
 character-set-server                            = {{ mysqld_character_set_server }}
 collation-server                                = {{ mysqld_collation_server }}
@@ -48,74 +48,74 @@ table_open_cache                                = 2000
 ## InnoDB Options
 innodb_data_home_dir                            = {{ mysql_data_dir }}
 innodb_data_file_path                           = ibdata1:512M;ibdata2:512M:autoextend
-innodb_log_file_size                            = 2G # 日志组中每个日志文件的大小
-innodb_log_files_in_group                       = 3 # 日志组中的日志文件
-innodb_buffer_pool_size                         = {{ mysqld_innodb_buffer_pool_size }} # 缓冲池的大小，根据机器进行调整,操作系统内存的70%-80%最佳
-innodb_buffer_pool_instances                    = 64 # 缓冲池划分的区域数量
-innodb_file_per_table                           = 1 # 启用默认情况下在 file-per-table 表空间中创建表
-innodb_flush_log_at_trx_commit                  = 2 # ACID 合规性与性能平衡阀值，设置为 2 时，日志在每次事务提交后写入，并每秒刷新到磁盘一次。未刷新日志的事务可能会在崩溃中丢失
-innodb_log_buffer_size                          = 1G # 写入磁盘上日志文件的缓冲区的大小
-innodb_lock_wait_timeout                        = 120 # 事务在放弃之前等待行锁的时间长度(秒)
-innodb_thread_concurrency                       = 18 # 允许的最大线程数(为0时不限制)
-innodb_flush_method                             = o_direct # 数据刷新到数据文件和日志文件的方法
-innodb_io_capacity                              = 2500 # 后台任务可用的每秒 I/O 操作数
-innodb_max_dirty_pages_pct                      = 75 # 尝试从缓冲池中刷新数据，以便脏页的百分比不超过此值
-innodb_read_io_threads                          = 6 # 读取操作的 I/O 线程数
-innodb_write_io_threads                         = 6 # 写入操作的 I/O 线程数
-innodb_rollback_on_timeout                      = 1 # 事务超时回滚整个事务
-innodb_undo_directory                           = {{ mysql_data_dir }} # 创建撤销表空间的路径
-innodb_log_group_home_dir                       = {{ mysql_fast_data_dir }} # 重做日志文件的目录路径（最好是 SSD 盘）
-innodb_doublewrite_dir                          = {{ mysql_fast_data_dir }} # 定义双重写入文件的目录（最好是 SSD 盘）
+innodb_log_file_size                            = 2G                                    # 日志组中每个日志文件的大小
+innodb_log_files_in_group                       = 3                                     # 日志组中的日志文件
+innodb_buffer_pool_size                         = {{ mysqld_innodb_buffer_pool_size }}  # 缓冲池的大小，根据机器进行调整,操作系统内存的70%-80%最佳
+innodb_buffer_pool_instances                    = 64                                    # 缓冲池划分的区域数量
+innodb_file_per_table                           = 1                                     # 启用默认情况下在 file-per-table 表空间中创建表
+innodb_flush_log_at_trx_commit                  = 2                                     # ACID 合规性与性能平衡阀值，设置为 2 时，日志在每次事务提交后写入，并每秒刷新到磁盘一次。未刷新日志的事务可能会在崩溃中丢失
+innodb_log_buffer_size                          = 1G                                    # 写入磁盘上日志文件的缓冲区的大小
+innodb_lock_wait_timeout                        = 120                                   # 事务在放弃之前等待行锁的时间长度(秒)
+innodb_thread_concurrency                       = 18                                    # 允许的最大线程数(为0时不限制)
+innodb_flush_method                             = o_direct                              # 数据刷新到数据文件和日志文件的方法
+innodb_io_capacity                              = 2500                                  # 后台任务可用的每秒 I/O 操作数
+innodb_max_dirty_pages_pct                      = 75                                    # 尝试从缓冲池中刷新数据，以便脏页的百分比不超过此值
+innodb_read_io_threads                          = 6                                     # 读取操作的 I/O 线程数
+innodb_write_io_threads                         = 6                                     # 写入操作的 I/O 线程数
+innodb_rollback_on_timeout                      = 1                                     # 事务超时回滚整个事务
+innodb_undo_directory                           = {{ mysql_data_dir }}                  # 创建撤销表空间的路径
+innodb_log_group_home_dir                       = {{ mysql_fast_data_dir }}             # 重做日志文件的目录路径（最好是 SSD 盘）
+innodb_doublewrite_dir                          = {{ mysql_fast_data_dir }}             # 定义双重写入文件的目录（最好是 SSD 盘）
 
 # Slow Query Log
-slow_query_log                                  = 1 # 开启慢查询日志
-slow_query_log_file                             = {{ mysql_log_dir }}/slow.log # 慢查询日志文件的名称
-log_queries_not_using_indexes                   = 1 # 记录预期检索所有行
-log_throttle_queries_not_using_indexes          = 10 # 限制每分钟可以写入慢查询日志的数量
-log_slow_admin_statements                       = 1 # 慢查询日志的语句中包含慢管理命令
-log_output                                      = FILE,TABLE # 一般查询日志和慢查询日志输出位置
+slow_query_log                                  = 1                                     # 开启慢查询日志
+slow_query_log_file                             = {{ mysql_log_dir }}/slow.log          # 慢查询日志文件的名称
+log_queries_not_using_indexes                   = 1                                     # 记录预期检索所有行
+log_throttle_queries_not_using_indexes          = 10                                    # 限制每分钟可以写入慢查询日志的数量
+log_slow_admin_statements                       = 1                                     # 慢查询日志的语句中包含慢管理命令
+log_output                                      = FILE,TABLE                            # 一般查询日志和慢查询日志输出位置
 
 # Server System Security
-default_authentication_plugin                   = mysql_native_password # 使用 mysql 原生密码插件
-local_infile                                    = 0 # 禁用客户端的 load data local infile 命令
-secure_file_priv                                = {{ mysql_dump_dir }} # 导入和导出操作专用目录
+default_authentication_plugin                   = mysql_native_password                 # 使用 mysql 原生密码插件
+local_infile                                    = 0                                     # 禁用客户端的 load data local infile 命令
+secure_file_priv                                = {{ mysql_dump_dir }}                  # 导入和导出操作专用目录
 
 # Server Command Options
 basedir                                         = {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }} # MySQL 的安装目录
 
 ## Replication and Binary Logging
-server_id                                       = {{ server_id }} # 服务器 ID
-enforce_gtid_consistency                        = ON # 强制事务一致
-gtid_mode                                       = ON # 启用基于 GTID 的日志记录
+server_id                                       = {{ server_id }}                           # 服务器 ID
+enforce_gtid_consistency                        = ON                                        # 强制事务一致
+gtid_mode                                       = ON                                        # 启用基于 GTID 的日志记录
 max_binlog_size                                 = 2G
-binlog_checksum                                 = none # 禁用校验和
-log-bin                                         = {{ mysql_fast_binlog_dir }}/binlog # bin 日志文件的基本名
-log_bin_index                                   = {{ mysql_fast_binlog_dir }}/binlog.index # bin 日志索引文件的名
+binlog_checksum                                 = none                                      # 禁用校验和
+log-bin                                         = {{ mysql_fast_binlog_dir }}/binlog        # bin 日志文件的基本名
+log_bin_index                                   = {{ mysql_fast_binlog_dir }}/binlog.index  # bin 日志索引文件的名
 long_query_time                                 = 10
-relay_log                                       = {{ mysql_fast_relaylog_dir }}/relay-log # relay 日志文件的基本名称
-log_replica_updates                             = 1 # 副本服务器从源服务器接收的更新记录到副本自己的二进制日志中, 8.0.26 之前的版本使用 log_slave_updates
-binlog_format                                   = ROW # 二进制日志记录格式
-binlog_rows_query_log_events                    = 1 # 服务器将信息日志事件写入其二进制日志
+relay_log                                       = {{ mysql_fast_relaylog_dir }}/relay-log   # relay 日志文件的基本名称
+log_replica_updates                             = 1                                         # 副本服务器从源服务器接收的更新记录到副本自己的二进制日志中, 8.0.26 之前的版本使用 log_slave_updates
+binlog_format                                   = ROW                                       # 二进制日志记录格式
+binlog_rows_query_log_events                    = 1                                         # 服务器将信息日志事件写入其二进制日志
 binlog_transaction_dependency_tracking          = WRITESET
-replica_parallel_workers                        = 48 # 副本上启用并行执行复制事务线程数, 8.0.26 之前的版本使用 slave_parallel_workers
-replica_parallel_type                           = LOGICAL_CLOCK # 并行复制事务类型，8.0.26 之前的版本使用 slave_parallel_type
-replica_pending_jobs_size_max                   = 1G # 待执行复制任务队列最大内存数，8.0.26 之前的版本使用 slave_pending_jobs_size_max
-replica_preserve_commit_order                   = 1 # 确保事务在副本上的执行和提交顺序与它们出现在副本的 relay log 中的顺序相同，8.0.26 之前的版本使用 slave_preserve_commit_order
-replica_compressed_protocol                     = 1 # 启用复制压缩协议，8.0.26 之前的版本使用 slave_compressed_protocol
+replica_parallel_workers                        = 48                                        # 副本上启用并行执行复制事务线程数, 8.0.26 之前的版本使用 slave_parallel_workers
+replica_parallel_type                           = LOGICAL_CLOCK                             # 并行复制事务类型，8.0.26 之前的版本使用 slave_parallel_type
+replica_pending_jobs_size_max                   = 1G                                        # 待执行复制任务队列最大内存数，8.0.26 之前的版本使用 slave_pending_jobs_size_max
+replica_preserve_commit_order                   = 1                                         # 确保事务在副本上的执行和提交顺序与它们出现在副本的 relay log 中的顺序相同，8.0.26 之前的版本使用 slave_preserve_commit_order
+replica_compressed_protocol                     = 1                                         # 启用复制压缩协议，8.0.26 之前的版本使用 slave_compressed_protocol
 
 ## Performance Schema
-performance_schema_max_file_instances           = 200000 # 检测的文件对象的最大数量
+performance_schema_max_file_instances           = 200000                                    # 检测的文件对象的最大数量
 
 ## X-Plugin
 mysqlx_port                                     = {{ mysqld_mysqlx_port }}
 mysqlx_socket                                   = {{ mysql_run_dir }}/mysqlx.sock
 
 ## Group Replication
-loose-group_replication_group_name              = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" # MGR复制组的名字
-loose-group_replication_start_on_boot           = off # 组复制不随实例启动
+loose-group_replication_group_name              = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"    # MGR复制组的名字
+loose-group_replication_start_on_boot           = off                                       # 组复制不随实例启动
 loose-group_replication_local_address           = "{{ group_replication_local_address }}"
 loose-group_replication_group_seeds             = "{{ group_replication_seeds_address }}"
-loose-group_replication_bootstrap_group         = off # 关闭此服务器引导组
-loose-group_replication_single_primary_mode     = on # 组自动选择单个服务器作为处理读/写工作负载的服务器
-loose-group_replication_transaction_size_limit  = 1500000000 # 复制组接受的最大事务大小
-loose-group_replication_member_weight           = 100 # 组复制节点权重
+loose-group_replication_bootstrap_group         = off                                       # 关闭此服务器引导组
+loose-group_replication_single_primary_mode     = on                                        # 组自动选择单个服务器作为处理读/写工作负载的服务器
+loose-group_replication_transaction_size_limit  = 1500000000                                # 复制组接受的最大事务大小
+loose-group_replication_member_weight           = 100                                       # 组复制节点权重

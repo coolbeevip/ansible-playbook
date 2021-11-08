@@ -10,6 +10,7 @@
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
+    - include_tasks: task_mysql_config.yml
 
 - hosts: 10.1.207.181
   user: mysql
@@ -23,6 +24,7 @@
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
+    - include_tasks: task_mysql_config.yml
 
 - hosts: 10.1.207.182
   user: mysql
@@ -36,3 +38,4 @@
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
+    - include_tasks: task_mysql_config.yml
