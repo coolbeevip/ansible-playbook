@@ -10,14 +10,15 @@
   check_mode: no
 
 # hosts 中配置主机名
-# - name: Add IP address of all hosts to all hosts
-#   lineinfile:
-#     dest: /etc/hosts
-#     regexp: '.*{{ item }}$'
-#     line: "{{ hostvars[item].ansible_host }} {{item}}"
-#     state: present
-#   when: hostvars[item].ansible_host is defined
-#   with_items: "{{ groups.all }}"
+- name: Add IP address of all hosts to all hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^{{ item }}.*'
+    line: "{{item}} {{ hosts[item] }}"
+    state: present
+  with_items: "{{ groups.all }}"
+  become: yes
+  check_mode: no
 
 # 增加用户
 - name: create user mysql
@@ -43,4 +44,4 @@
     owner: "{{ mysql_user }}"
     group: "{{ mysql_group }}"
   become: yes
-  check_mode: no  
+  check_mode: no
