@@ -24,6 +24,13 @@ mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
 mysql_user: "mysql"
 mysql_group: "mysql"
 
+# root 密码
+mysql_user_root_password: "123!@#"
+
+# 集群
+
+cluster_name: mycluster
+
 # my.conf
 
 mysqld_port: 3336

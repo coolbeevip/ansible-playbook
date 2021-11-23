@@ -68,7 +68,58 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main.yml
 bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
 ```
 
+
+启动 mysql
+
+```shell
+bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server start'
+10.1.207.182 | CHANGED | rc=0 >>
+Starting MySQL........ SUCCESS!
+
+10.1.207.181 | CHANGED | rc=0 >>
+Starting MySQL........ SUCCESS!
+
+10.1.207.180 | CHANGED | rc=0 >>
+Starting MySQL........... SUCCESS!
+```
+
+停止 mysql
+
+```shell
+bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server stop'
+10.1.207.182 | CHANGED | rc=0 >>
+Shutting down MySQL... SUCCESS!
+
+10.1.207.181 | CHANGED | rc=0 >>
+Shutting down MySQL... SUCCESS!
+
+10.1.207.180 | CHANGED | rc=0 >>
+Shutting down MySQL...... SUCCESS!
+```
+
+检查 mysql 服务状态
+
+```shell
+bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server status'
+10.1.207.181 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (25729)
+
+10.1.207.180 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (9462)
+
+10.1.207.182 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (28934)
+```
+
 ## Q & A
 
 Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
 A: 请检查服务器内存是否够用
+
+Q: 如何彻底删除数据文件
+A:
+
+```shell
+bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server stop'
+bash-5.0# ansible all -m shell -a 'rm -rf /opt/mysql/init.sql /data01/mysql/data/* /data01/mysql/logs/* /data01/mysql/run/*'
+```

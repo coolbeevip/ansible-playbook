@@ -12,6 +12,7 @@
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
     - include_tasks: task_mysql_init.yml
+    - include_tasks: task_mysql_cluster_init.yml
 
 - hosts: 10.1.207.181
   user: mysql
@@ -27,6 +28,7 @@
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
     - include_tasks: task_mysql_init.yml
+    - include_tasks: task_mysql_cluster_init.yml
 
 - hosts: 10.1.207.182
   user: mysql
@@ -42,3 +44,4 @@
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
     - include_tasks: task_mysql_init.yml
+    - include_tasks: task_mysql_cluster_init.yml

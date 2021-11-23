@@ -1,0 +1,45 @@
+- name: include vars
+  include_vars: "vars_mysql.yml"
+
+# 校验 mysql 节点通信状态
+- name: validating mysql instances
+  stat:
+    path: "{{ mysql_run_dir }}/cluster_instances_validating.sql"
+  register: check_result
+  check_mode: no
+- name: create validating mysql instances file
+  lineinfile:
+    dest: "{{ mysql_run_dir }}/cluster_instances_validating.sql"
+    line: "dba.checkInstanceConfiguration('root@{{ hosts[item] }}:{{ mysqld_port }}',{'password': '{{ mysql_user_root_password }}', 'interactive': false})"
+    state: present
+    create: true
+  with_items: "{{ groups.all }}"
+  check_mode: no
+  when: not check_result.stat.exists
+- name: exec validating mysql instances
+  shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_run_dir }}/cluster_instances_validating.sql"
+  check_mode: no
+  register: check_result
+  when: not check_result.stat.exists
+
+# 创建 mysql 集群主节点
+- name: validating mysql cluster script
+  stat:
+    path: "{{ mysql_run_dir }}/cluster_create.sql"
+  register: check_result
+  check_mode: no
+- name: create validating mysql cluster script
+  lineinfile:
+    dest: "{{ mysql_run_dir }}/cluster_create.sql"
+    line: "{{item}}"
+    state: present
+    create: true
+  with_items: |
+    shell.connect('root@{{ hosts[item] }}:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
+    shell.options['dba.restartWaitTimeout']=7200
+    dba.createCluster('{{ cluster_name }}', {'localAddress': '{{ hosts[item] }}'})
+    var cluster=dba.getCluster('{{ cluster_name }}')
+    cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
+    cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
+  when: (not check_result.stat.exists && "{{item}}" == "10.1.207.180")
+  check_mode: no

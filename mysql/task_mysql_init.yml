@@ -8,7 +8,7 @@
   register: check_result
   check_mode: no
 - name: initialize mysql
-  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld --initialize --user=mysql && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysql_ssl_rsa_setup"
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld --initialize-insecure --user=mysql && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysql_ssl_rsa_setup"
   check_mode: no
   when: not check_result.stat.exists
 
@@ -24,12 +24,36 @@
   become: yes
   when: not check_result.stat.exists
 
-# # 启动 mysql
-# - name: check start mysql
-#   shell: ps -ef | {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld | wc -l
-#   register: check_result
-#   check_mode: no
-# - name: start mysql
-#   shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld_safe --user=mysql &"
-#   check_mode: no
-#   when: check_result.stdout|int > 0
+# 启动 mysql
+- name: check start mysql
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server status"
+  register: check_result
+  ignore_errors: true
+  check_mode: no
+- name: start mysql
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server start"
+  check_mode: no
+  when: check_result.rc == 3
+
+# 初始化 root 用户
+- name: check init sql
+  stat:
+    path: "{{ mysql_run_dir }}/init.sql"
+  register: check_result
+  check_mode: no
+- name: create init.sql file
+  lineinfile:
+    dest: "{{ mysql_run_dir }}/init.sql"
+    line: "{{item}}"
+    state: present
+    create: true
+  with_items: |
+    CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '{{ mysql_user_root_password }}';
+    GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+  check_mode: no
+  when: not check_result.stat.exists
+- name: init root user
+  shell: "source ~/.bash_profile && mysql -uroot -A < {{ mysql_run_dir }}/init.sql"
+  check_mode: no
+  when: not check_result.stat.exists
