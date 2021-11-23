@@ -46,19 +46,6 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
-  -e ANSIBLE_SSH_USERS=redis,redis,redis \
-  -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
-  -e ANSIBLE_SU_PASSS=root123,root123,root123 \
-  -v ~/my-docker-volume/ansible-playbook:/ansible-playbook \
-  coolbeevip/ansible:2.8.11-alpine \
-  /bin/bash
-bash-5.0#  
-```
-
-```
-docker run --name ansible --rm -it \
-  -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
-  -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=mysql,mysql,mysql \
   -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
   -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \

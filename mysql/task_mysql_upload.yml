@@ -46,7 +46,7 @@
     path: "{{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}"
   register: check_result
   check_mode: no
-- name: unzip redis
+- name: unzip mysql shell
   shell: |
     cd "{{ mysql_home_dir }}"
     tar zxf {{ mysql_shell_tar }}

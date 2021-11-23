@@ -23,8 +23,9 @@
 - name: copy my.cnf
   template:
     src: "/ansible-playbook/mysql/config/my.cnf.j2"
-    dest: "{{ mysql_home_dir }}/my.cnf"
+    dest: "/etc/my.cnf"
   check_mode: no
+  become: yes
 
 # 上传启动文件
 - name: copy my.sh file
@@ -35,7 +36,29 @@
   check_mode: no
 
 # 设置 MYSQL_HOME 环境变量
+- name: configuring MYSQL_HOME variables
+  lineinfile:
+    dest: ~/.bash_profile
+    regexp: '^export MYSQL_HOME.*'
+    line: "\n#ansible-playbook\nexport MYSQL_HOME={{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}"
+    state: present
+  check_mode: no
 
 # 设置 MYSQLSH_HOME 环境变量
+- name: configuring MYSQLSH_HOME variables
+  lineinfile:
+    dest: ~/.bash_profile
+    regexp: '^export MYSQLSH_HOME.*'
+    line: "export MYSQLSH_HOME={{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}"
+    state: present
+  check_mode: no
 
 # 设置 MYSQL_HOME 和 MYSQLSH_HOME 到 PATH
+- name: configuring PATH variables
+  lineinfile:
+    dest: ~/.bash_profile
+    regexp: '^PATH=.*MYSQL_HOME'
+    insertafter: 'EOF'
+    line: "PATH=$PATH:${MYSQL_HOME}/bin:${MYSQLSH_HOME}/bin\nexport PATH"
+    state: present
+  check_mode: no

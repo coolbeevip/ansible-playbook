@@ -17,8 +17,8 @@ mysql_log_dir: "/data01/mysql/logs"
 mysql_data_dir: "/data01/mysql/data"
 mysql_dump_dir: "/data01/mysql/dump"
 mysql_fast_data_dir: "/data01/mysql/data"
-mysql_fast_binlog_dir: "/data01/mysql/data/binlog"
-mysql_fast_relaylog_dir: "/data01/mysql/data/relaylog"
+mysql_fast_binlog_dir: "/data01/mysql/binlog"
+mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
 
 # 安装用户
 mysql_user: "mysql"

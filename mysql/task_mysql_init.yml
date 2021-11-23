@@ -1,0 +1,21 @@
+- name: include vars
+  include_vars: "vars_mysql.yml"
+
+- name: check initialize mysql
+  stat:
+    path: "{{ mysql_data_dir }}/mysql"
+  register: check_result
+  check_mode: no
+- name: initialize mysql
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld --initialize --user=mysql && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysql_ssl_rsa_setup"
+  check_mode: no
+  when: not check_result.stat.exists
+
+- name: check start mysql
+  shell: ps -ef | {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld | wc -l
+  register: check_result
+  check_mode: no
+- name: start mysql
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/bin/mysqld_safe --user=mysql &"
+  check_mode: no
+  when: check_result.stdout|int > 0
