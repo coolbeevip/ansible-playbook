@@ -52,21 +52,21 @@
     domain: '*'
     limit_type: soft
     limit_item: nofile
-    value: 65535
+    value: 150000
   check_mode: no
 - name: Add or modify hard nproc limits
   pam_limits:
     domain: '*'
     limit_type: hard
     limit_item: nproc
-    value: 65535
+    value: 150000
   check_mode: no
 - name: Add or modify soft nproc limits
   pam_limits:
     domain: '*'
     limit_type: soft
     limit_item: nproc
-    value: 65535
+    value: 150000
   check_mode: no
 - name: Add or modify hard stack limits
   pam_limits:
