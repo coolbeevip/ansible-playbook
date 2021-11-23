@@ -54,10 +54,32 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-执行安装脚本
+安装三节点 mysql 实例
+
+> 自动上传安装介质，初始化 root 用户，启动 mysql 实例
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
+```
+
+检查 mysql 节点状态
+
+```shell
+bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server status'
+10.1.207.181 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (25729)
+
+10.1.207.180 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (9462)
+
+10.1.207.182 | CHANGED | rc=0 >>
+ SUCCESS! MySQL running (28934)
+```
+
+创建三节点集群
+
+```shell
+bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
 
 至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 mysql 节点。

@@ -7,6 +7,7 @@
     path: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
   register: check_result
   check_mode: no
+  when: inventory_hostname == '10.1.207.180'
 - name: create validating mysql instances file
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
@@ -15,7 +16,7 @@
     create: true
   with_items: "{{ groups.all }}"
   check_mode: no
-  when: not check_result.stat.exists
+  when: when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
 - name: exec validating mysql instances
   shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_validating.sql"
   check_mode: no
@@ -28,6 +29,7 @@
     path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
   check_mode: no
   register: check_result
+  when: inventory_hostname == '10.1.207.180'
 - name: create validating mysql cluster script
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
@@ -42,5 +44,5 @@
     cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
     cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
   #when: (not check_result.stat.exists) and ({{ cluster_master }} = true)
-  when: not check_result.stat.exists
+  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
   check_mode: no
