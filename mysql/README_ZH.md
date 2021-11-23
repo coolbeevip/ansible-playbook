@@ -67,3 +67,8 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main.yml
 ```shell
 bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
 ```
+
+## Q & A
+
+Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
+A: 请检查服务器内存是否够用

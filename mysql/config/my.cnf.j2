@@ -76,7 +76,7 @@ log_slow_admin_statements                       = 1                             
 log_output                                      = FILE,TABLE                            # 一般查询日志和慢查询日志输出位置
 
 # Server System Security
-default_authentication_plugin                   = mysql_native_password                 # 使用 mysql 原生密码插件
+authentication_policy                           = mysql_native_password                 # 使用 mysql 原生密码插件
 local_infile                                    = 0                                     # 禁用客户端的 load data local infile 命令
 secure_file_priv                                = {{ mysql_dump_dir }}                  # 导入和导出操作专用目录
 
@@ -87,7 +87,7 @@ basedir                                         = {{ mysql_home_dir }}/{{ mysql_
 server_id                                       = {{ server_id }}                           # 服务器 ID
 enforce_gtid_consistency                        = ON                                        # 强制事务一致
 gtid_mode                                       = ON                                        # 启用基于 GTID 的日志记录
-max_binlog_size                                 = 2G
+max_binlog_size                                 = 1G                                        # 最大值 1G
 binlog_checksum                                 = none                                      # 禁用校验和
 log-bin                                         = {{ mysql_fast_binlog_dir }}/binlog        # bin 日志文件的基本名
 log_bin_index                                   = {{ mysql_fast_binlog_dir }}/binlog.index  # bin 日志索引文件的名

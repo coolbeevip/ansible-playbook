@@ -9,6 +9,40 @@
     state: present
   check_mode: no
 
+# 设置 Linux PAM limits
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '{{ mysql_user }}'
+    limit_type: hard
+    limit_item: nofile
+    value: 150000
+  check_mode: no
+  become: yes
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '{{ mysql_user }}'
+    limit_type: soft
+    limit_item: nofile
+    value: 150000
+  check_mode: no
+  become: yes
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '{{ mysql_user }}'
+    limit_type: hard
+    limit_item: nproc
+    value: 150000
+  check_mode: no
+  become: yes
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '{{ mysql_user }}'
+    limit_type: soft
+    limit_item: nproc
+    value: 150000
+  check_mode: no
+  become: yes
+
 # hosts 中配置主机名
 - name: Add IP address of all hosts to all hosts
   lineinfile:

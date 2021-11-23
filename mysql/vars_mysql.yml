@@ -27,7 +27,7 @@ mysql_group: "mysql"
 # my.conf
 
 mysqld_port: 3336
-mysqld_max_connections: 3000
+mysqld_max_connections: 1000
 mysqld_max_connect_errors: 300
 mysqld_default_time_zone: "+08:00"
 
