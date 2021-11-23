@@ -60,14 +60,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main.yml
 ```
 
-至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 redis 节点。
-
-因为采用源代码编译安装，所以您可以使用以下脚本删除不在使用的安装包
-
-```shell
-bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
-```
-
+至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 mysql 节点。
 
 启动 mysql
 
@@ -121,5 +114,5 @@ A:
 
 ```shell
 bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server stop'
-bash-5.0# ansible all -m shell -a 'rm -rf /opt/mysql/init.sql /data01/mysql/data/* /data01/mysql/logs/* /data01/mysql/run/*'
+bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/data/* /data01/mysql/logs/* /data01/mysql/run/* /data01/mysql/script/* /data01/mysql/dump/* /data01/mysql/binlog/* /data01/mysql/relaylog/*'
 ```

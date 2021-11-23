@@ -4,12 +4,12 @@
 # 校验 mysql 节点通信状态
 - name: validating mysql instances
   stat:
-    path: "{{ mysql_run_dir }}/cluster_instances_validating.sql"
+    path: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
   register: check_result
   check_mode: no
 - name: create validating mysql instances file
   lineinfile:
-    dest: "{{ mysql_run_dir }}/cluster_instances_validating.sql"
+    dest: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
     line: "dba.checkInstanceConfiguration('root@{{ hosts[item] }}:{{ mysqld_port }}',{'password': '{{ mysql_user_root_password }}', 'interactive': false})"
     state: present
     create: true
@@ -17,7 +17,7 @@
   check_mode: no
   when: not check_result.stat.exists
 - name: exec validating mysql instances
-  shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_run_dir }}/cluster_instances_validating.sql"
+  shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_validating.sql"
   check_mode: no
   register: check_result
   when: not check_result.stat.exists
@@ -25,21 +25,22 @@
 # 创建 mysql 集群主节点
 - name: validating mysql cluster script
   stat:
-    path: "{{ mysql_run_dir }}/cluster_create.sql"
-  register: check_result
+    path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
   check_mode: no
+  register: check_result
 - name: create validating mysql cluster script
   lineinfile:
-    dest: "{{ mysql_run_dir }}/cluster_create.sql"
-    line: "{{item}}"
+    dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
+    line: "{{ item }}"
     state: present
     create: true
   with_items: |
-    shell.connect('root@{{ hosts[item] }}:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
+    shell.connect('root@10.1.207.180:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
     shell.options['dba.restartWaitTimeout']=7200
-    dba.createCluster('{{ cluster_name }}', {'localAddress': '{{ hosts[item] }}'})
+    dba.createCluster('{{ cluster_name }}', {'localAddress': '10.1.207.180'})
     var cluster=dba.getCluster('{{ cluster_name }}')
     cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
     cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
-  when: (not check_result.stat.exists && "{{item}}" == "10.1.207.180")
+  #when: (not check_result.stat.exists) and ({{ cluster_master }} = true)
+  when: not check_result.stat.exists
   check_mode: no

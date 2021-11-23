@@ -38,12 +38,12 @@
 # 初始化 root 用户
 - name: check init sql
   stat:
-    path: "{{ mysql_run_dir }}/init.sql"
+    path: "{{ mysql_script_dir }}/mysql_root_init.sql"
   register: check_result
   check_mode: no
 - name: create init.sql file
   lineinfile:
-    dest: "{{ mysql_run_dir }}/init.sql"
+    dest: "{{ mysql_script_dir }}/mysql_root_init.sql"
     line: "{{item}}"
     state: present
     create: true
@@ -54,6 +54,6 @@
   check_mode: no
   when: not check_result.stat.exists
 - name: init root user
-  shell: "source ~/.bash_profile && mysql -uroot -A < {{ mysql_run_dir }}/init.sql"
+  shell: "source ~/.bash_profile && mysql -uroot -A < {{ mysql_script_dir }}/mysql_root_init.sql"
   check_mode: no
   when: not check_result.stat.exists
