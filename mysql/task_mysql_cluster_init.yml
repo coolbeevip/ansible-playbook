@@ -2,13 +2,12 @@
   include_vars: "vars_mysql.yml"
 
 # 校验 mysql 节点通信状态
-- name: validating mysql instances
+- name: check mysql_cluster_validating.sql file
   stat:
     path: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
   register: check_result
   check_mode: no
-  when: inventory_hostname == '10.1.207.180'
-- name: create validating mysql instances file
+- name: create mysql_cluster_validating.sql
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
     line: "dba.checkInstanceConfiguration('root@{{ hosts[item] }}:{{ mysqld_port }}',{'password': '{{ mysql_user_root_password }}', 'interactive': false})"
@@ -16,21 +15,20 @@
     create: true
   with_items: "{{ groups.all }}"
   check_mode: no
-  when: when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
-- name: exec validating mysql instances
+  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
+- name: exec mysql_cluster_validating.sql
   shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_validating.sql"
   check_mode: no
   register: check_result
-  when: not check_result.stat.exists
+  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
 
 # 创建 mysql 集群主节点
-- name: validating mysql cluster script
+- name: check mysql_cluster_init.sql file
   stat:
     path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
   check_mode: no
   register: check_result
-  when: inventory_hostname == '10.1.207.180'
-- name: create validating mysql cluster script
+- name: create mysql_cluster_init.sql file
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
     line: "{{ item }}"
@@ -43,6 +41,5 @@
     var cluster=dba.getCluster('{{ cluster_name }}')
     cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
     cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
-  #when: (not check_result.stat.exists) and ({{ cluster_master }} = true)
   when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
   check_mode: no
