@@ -15,7 +15,7 @@
     domain: '{{ mysql_user }}'
     limit_type: hard
     limit_item: nofile
-    value: 65535
+    value: '65535'
   check_mode: no
   become: yes
 - name: Add or modify soft nofile limits
@@ -23,7 +23,7 @@
     domain: '{{ mysql_user }}'
     limit_type: soft
     limit_item: nofile
-    value: 65535
+    value: '65535'
   check_mode: no
   become: yes
 - name: Add or modify hard nproc limits
@@ -31,7 +31,7 @@
     domain: '{{ mysql_user }}'
     limit_type: hard
     limit_item: nproc
-    value: 65535
+    value: '65535'
   check_mode: no
   become: yes
 - name: Add or modify soft nproc limits
@@ -39,7 +39,7 @@
     domain: '{{ mysql_user }}'
     limit_type: soft
     limit_item: nproc
-    value: 65535
+    value: '65535'
   check_mode: no
   become: yes
 
