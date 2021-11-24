@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source ~/.bash_profile
+
+# stop MySQL server
+/etc/init.d/mysql.server stop
+
+# stop MySQL router
+{{ mysql_home_dir }}/router/mycluster/stop.sh
+
+# delete my.cnf file
+rm -rf /etc/my.cnf
+
+# delete mysql files
+rm -rf {{ mysql_run_dir }}
+rm -rf {{ mysql_log_dir }}
+rm -rf {{ mysql_data_dir }}
+rm -rf {{ mysql_dump_dir }}
+rm -rf {{ mysql_script_dir }}
+rm -rf {{ mysql_fast_data_dir }}
+rm -rf {{ mysql_fast_binlog_dir }}
+rm -rf {{ mysql_fast_relaylog_dir }}
+rm -rf {{ mysql_router_dir }}
+
+# delete mysql package
+rm -rf {{ mysql_home_dir }}/*

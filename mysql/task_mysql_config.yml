@@ -22,10 +22,18 @@
   become: yes
 
 # 上传 my.cnf 到 etc 目录
-- name: copy my.cnf to etc
+- name: copy my.cnf
   template:
     src: "/ansible-playbook/mysql/config/my.cnf.j2"
     dest: "/etc/my.cnf"
+  check_mode: no
+  become: yes
+
+# 上传卸载脚本 uninstall.sh 到 etc 目录
+- name: copy uninstall.sh
+  template:
+    src: "/ansible-playbook/mysql/config/uninstall.sh.j2"
+    dest: "{{ mysql_home_dir }}/uninstall.sh"
   check_mode: no
   become: yes
 

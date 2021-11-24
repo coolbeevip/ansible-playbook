@@ -522,7 +522,7 @@ max_connections	1000
 mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-## Q&A
+## Q & A
 
 #### 执行 main-mysql.yml 时 TASK initialize mysql 失败
 
@@ -532,24 +532,8 @@ A: 请检查服务器内存是否够用
 
 #### 如何彻底删除 MySQL InnoDB 集群
 
-停止 MySQL 服务
-
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
-10.1.207.181 | CHANGED | rc=0 >>
-Shutting down MySQL.......... SUCCESS!
-
-10.1.207.182 | CHANGED | rc=0 >>
-Shutting down MySQL.......... SUCCESS!
-
-10.1.207.180 | CHANGED | rc=0 >>
-Shutting down MySQL............ SUCCESS!
-```
-
-删除数据目录
-
-```shell
-bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/*'
+bash-5.0# ansible all -m shell -a 'sh /opt/mysql/uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 

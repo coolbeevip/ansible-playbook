@@ -522,3 +522,18 @@ Variable_name	Value
 max_connections	1000
 mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
 ```
+
+## Q & A
+
+#### Uninstall MySQL InnoDB Cluster
+
+```shell
+bash-5.0# ansible all -m shell -a 'sh /opt/mysql/uninstall.sh'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>
+```
