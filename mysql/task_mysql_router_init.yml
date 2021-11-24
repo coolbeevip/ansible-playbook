@@ -10,16 +10,54 @@
     mode: "2750"
   with_items:
     - "{{ mysql_router_dir }}"
+    - "{{ mysql_router_dir }}/{{ cluster_name }}"
   check_mode: no
   become: yes
 
 # 初始化 myrouter.cnf 配置文件
-- name: check mysqlrouter.conf
-  stat:
-    path: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
-  register: check_result
-  check_mode: no
 - name: initialize mysqlrouter.conf
-  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}/bin/mysqlrouter --bootstrap root:{{ mysql_user_root_password }}@{{ inventory_hostname }}:{{ mysqld_port }} --directory={{ mysql_router_dir }}/{{ cluster_name }} --conf-use-sockets --force --user={{ mysql_user }}"
+  shell: >
+   source ~/.bash_profile &&
+   {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}/bin/mysqlrouter
+   --bootstrap root:{{ mysql_user_root_password }}@{{ inventory_hostname }}:{{ mysqld_port }}
+   --directory={{ mysql_router_dir }}/{{ cluster_name }}
+   --conf-base-port {{ mysql_router_base_port }}
+   --conf-use-sockets
+   --force
+   --user={{ mysql_user }}
   check_mode: no
-  when: not check_result.stat.exists
+
+# 配置 myrouter.cnf 参数
+- name: configuring routing rw mysqlrouter.conf
+  lineinfile:
+    dest: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
+    insertafter: 'mycluster_rw'
+    line: "max_connections={{ mysql_router_max_connections }}\nmax_connect_errors={{ mysql_router_max_connect_errors }}"
+    state: present
+  check_mode: no
+- name: configuring routing ro mysqlrouter.conf
+  lineinfile:
+    dest: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
+    insertafter: 'mycluster_ro'
+    line: "max_connections={{ mysql_router_max_connections }}\nmax_connect_errors={{ mysql_router_max_connect_errors }}"
+    state: present
+  check_mode: no
+- name: configuring routing x-rw mysqlrouter.conf
+  lineinfile:
+    dest: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
+    insertafter: 'mycluster_x_rw'
+    line: "max_connections={{ mysql_router_max_connections }}\nmax_connect_errors={{ mysql_router_max_connect_errors }}"
+    state: present
+  check_mode: no
+- name: configuring routing x-ro mysqlrouter.conf
+  lineinfile:
+    dest: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
+    insertafter: 'mycluster_x_ro'
+    line: "max_connections={{ mysql_router_max_connections }}\nmax_connect_errors={{ mysql_router_max_connect_errors }}"
+    state: present
+  check_mode: no
+
+# 启动 MySQL Router
+- name: start MySQL Router
+  shell: "{{ mysql_router_dir }}/{{ cluster_name }}/start.sh"
+  check_mode: no

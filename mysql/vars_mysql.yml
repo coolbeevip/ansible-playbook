@@ -30,7 +30,6 @@ mysql_group: "mysql"
 mysql_user_root_password: "CoolbeevipWowo"
 
 # my.conf
-
 mysqld_port: 3336
 mysqld_max_connections: 1000
 mysqld_max_connect_errors: 300
@@ -54,3 +53,8 @@ hosts:
 # 集群
 cluster_name: mycluster
 cluster_members_slaves: [10.1.207.181,10.1.207.182]
+
+# MySQL Router，ReadWrite Port 36446, Read Port 36447
+mysql_router_base_port: 36446
+mysql_router_max_connections: 3000
+mysql_router_max_connect_errors: 300

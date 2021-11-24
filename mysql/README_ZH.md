@@ -36,6 +36,7 @@
 | /data01/mysql/script | 安装过程中临时脚本存放路径 | 安装后可删除 |
 | /data01/mysql/binlog | MySQL BINLOG 文件存放路径 |  |
 | /data01/mysql/relaylog | MySQL RELAYLOG 文件存放路径 |  |
+| /data01/mysql/router/mycluster | MySQL ROUTER 配置和启停脚本目录 |  |
 | /etc/init.d/mysql.server | 服务脚本路径 |  |
 
 
@@ -91,6 +92,8 @@ docker run --name ansible --rm -it \
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
+
+**提示：** 此脚本首次执行时耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
 
 检查 mysql 节点状态
 
@@ -161,7 +164,9 @@ The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
 
-在命令执行结束后，你可以看到集群状态信息，你可以看到 `oss-irms-180` 作为 PRIMARY 节点，具有读写模式；`oss-irms-181` 和 `oss-irms-182` 作为 SECONDARY 节点，具有只读模式。并且三个节点都处于 ONLINE 状态
+**提示：** 此脚本执行过程中 MySQL 实例会自动重启、同步主节点和从节点数据，并等待集群创建完毕。在我的环境下执行耗时大约 4 分钟
+
+**提示：** 在命令执行结束后，你可以看到集群状态信息，你可以看到 `oss-irms-180` 作为 PRIMARY 节点，具有读写模式；`oss-irms-181` 和 `oss-irms-182` 作为 SECONDARY 节点，具有只读模式。并且三个节点都处于 ONLINE 状态
 
 ```shell
 TASK [check mysql_cluster_status output] *******************************************************************************************************************************************************************
@@ -265,11 +270,62 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 
 执行安装脚本
 
->
+> 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 mysql router 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
 ```
+
+查看 MySQL Router 进程
+
+```shell
+bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+10.1.207.180 | CHANGED | rc=0 >>
+mysql    30445     1  1 17:05 ?        00:00:02 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql    30993 30991  0 17:07 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql    31000 30993  0 17:07 pts/1    00:00:00 grep mysql-router
+
+10.1.207.182 | CHANGED | rc=0 >>
+mysql    26006     1  1 17:01 ?        00:00:02 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql    26376 26375  0 17:03 pts/2    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql    26378 26376  0 17:03 pts/2    00:00:00 grep mysql-router
+
+10.1.207.181 | CHANGED | rc=0 >>
+mysql    16000     1  1 17:01 ?        00:00:02 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql    16463 16462  0 17:03 pts/3    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql    16465 16463  0 17:03 pts/3    00:00:00 grep mysql-router
+```
+
+测试通过 MySQL Router RW 端口 **36446** 连接数据库主节点执行查看集群成员的 SQL
+
+```shell
+bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
+10.1.207.180 | CHANGED | rc=0 >>
+CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK
+group_replication_applier	5e11bf00-4cf5-11ec-8798-5254005e1dd1	oss-irms-181	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
+
+10.1.207.181 | CHANGED | rc=0 >>
+CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK
+group_replication_applier	5e11bf00-4cf5-11ec-8798-5254005e1dd1	oss-irms-181	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
+
+10.1.207.182 | CHANGED | rc=0 >>
+CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK
+group_replication_applier	5e11bf00-4cf5-11ec-8798-5254005e1dd1	oss-irms-181	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336	ONLINE	SECONDARY	8.0.27	XCom
+group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
+```
+
+测试通过 MySQL Router RO 端口 **36447** 连接数据库从节点执行查看集群成员的 SQL
+
+```
+bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36447 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
+```
+
+**至此，您已经完成 MySQL+MySQL Router 三节点集群的安装部署**
 
 #### 清理安装介质
 
@@ -382,15 +438,57 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --
 }
 ```
 
+通过 mysql router 连接到服务器，查看数据库最大连接数
+
+```shell
+bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "show variables like \"%max_connections%\";"'
+10.1.207.181 | CHANGED | rc=0 >>
+Variable_name	Value
+max_connections	1000
+mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
+
+10.1.207.180 | CHANGED | rc=0 >>
+Variable_name	Value
+max_connections	1000
+mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
+
+10.1.207.182 | CHANGED | rc=0 >>
+Variable_name	Value
+max_connections	1000
+mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
+```
+
 ## Q & A
 
-Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
-A: 请检查服务器内存是否够用
+#### Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
 
-Q: 如何彻底删除数据文件
-A: 先停止 mysql 然后删除所有数据文件
+请检查服务器内存是否够用
+
+#### Q: 如何彻底删除数据文件
+
+停止 MySQL 服务
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
-bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/data/* /data01/mysql/logs/* /data01/mysql/run/* /data01/mysql/script/* /data01/mysql/dump/* /data01/mysql/binlog/* /data01/mysql/relaylog/*'
+10.1.207.181 | CHANGED | rc=0 >>
+Shutting down MySQL.......... SUCCESS!
+
+10.1.207.182 | CHANGED | rc=0 >>
+Shutting down MySQL.......... SUCCESS!
+
+10.1.207.180 | CHANGED | rc=0 >>
+Shutting down MySQL............ SUCCESS!
+```
+
+删除数据目录
+
+```shell
+bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/*'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>
 ```
