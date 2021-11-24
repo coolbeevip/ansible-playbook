@@ -57,3 +57,19 @@
   shell: "source ~/.bash_profile && mysql -uroot -A < {{ mysql_script_dir }}/mysql_root_init.sql"
   check_mode: no
   when: not check_result.stat.exists
+
+# 生成节点成员间连接状态检查脚本
+- name: check mysql_members_validate.sql file
+  stat:
+    path: "{{ mysql_script_dir }}/mysql_members_validate.sql"
+  register: check_result
+  check_mode: no
+- name: create mysql_cluster_validating.sql
+  lineinfile:
+    dest: "{{ mysql_script_dir }}/mysql_members_validate.sql"
+    line: "dba.checkInstanceConfiguration('root@{{ hosts[item] }}:{{ mysqld_port }}',{'password': '{{ mysql_user_root_password }}', 'interactive': false})"
+    state: present
+    create: true
+  with_items: "{{ groups.all }}"
+  check_mode: no
+  when: not check_result.stat.exists

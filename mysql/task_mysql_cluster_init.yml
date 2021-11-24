@@ -1,30 +1,6 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 校验 mysql 节点通信状态
-- name: check mysql_cluster_validating.sql file
-  stat:
-    path: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
-  register: check_result
-  check_mode: no
-- name: create mysql_cluster_validating.sql
-  lineinfile:
-    dest: "{{ mysql_script_dir }}/mysql_cluster_validating.sql"
-    line: "dba.checkInstanceConfiguration('root@{{ hosts[item] }}:{{ mysqld_port }}',{'password': '{{ mysql_user_root_password }}', 'interactive': false})"
-    state: present
-    create: true
-  with_items: "{{ groups.all }}"
-  check_mode: no
-  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
-- name: exec mysql_cluster_validating.sql
-  shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_validating.sql"
-  check_mode: no
-  register: check_result
-  when: inventory_hostname == '10.1.207.180'
-- name: exec mysql_cluster_validating.sql output
-  debug:
-    var: check_result.stdout_lines
-
 # 创建 mysql 集群主节点
 - name: check mysql_cluster_init.sql file
   stat:
@@ -45,14 +21,13 @@
     cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
     cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
   check_mode: no
-  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
+  when: not check_result.stat.exists
 
 # 检查集群状态
 - name: check mysql_cluster_status
   shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
   register: check_result
   check_mode: no
-  when: inventory_hostname == '10.1.207.180'
 - name: check mysql_cluster_status output
   debug:
     var: check_result.stdout_lines

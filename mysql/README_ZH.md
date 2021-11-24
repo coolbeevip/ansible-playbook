@@ -76,6 +76,51 @@ bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_6
  SUCCESS! MySQL running (28934)
 ```
 
+校验三节点值间的连接是否正常
+
+> 我们任选一个节点执行校验状态，可以看到节点之间是可以相互连接的
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+Checking whether existing tables comply with Group Replication requirements...
+
+Checking instance configuration...
+
+
+
+
+Checking whether existing tables comply with Group Replication requirements...
+
+Checking instance configuration...
+
+
+
+
+Checking whether existing tables comply with Group Replication requirements...
+
+Checking instance configuration...Validating local MySQL instance listening at port 3336 for use in an InnoDB cluster...
+This instance reports its own address as oss-irms-180:3336
+Clients and other cluster members will communicate with it through this address by default. If this is not correct, the report_host MySQL system variable should be changed.
+No incompatible tables detected
+Instance configuration is compatible with InnoDB cluster
+The instance 'oss-irms-180:3336' is valid to be used in an InnoDB cluster.
+Validating MySQL instance at oss-irms-181:3336 for use in an InnoDB cluster...
+This instance reports its own address as oss-irms-181:3336
+Clients and other cluster members will communicate with it through this address by default. If this is not correct, the report_host MySQL system variable should be changed.
+No incompatible tables detected
+Instance configuration is compatible with InnoDB cluster
+The instance 'oss-irms-181:3336' is valid to be used in an InnoDB cluster.
+Validating MySQL instance at oss-irms-182:3336 for use in an InnoDB cluster...
+This instance reports its own address as oss-irms-182:3336
+Clients and other cluster members will communicate with it through this address by default. If this is not correct, the report_host MySQL system variable should be changed.
+No incompatible tables detected
+Instance configuration is compatible with InnoDB cluster
+The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
+```
+
 创建三节点集群
 
 > 检查 mysql 实例间连接是否正常，选择一个节点创建集群并设置为主节点，将另两个节点作为从节点加入到集群，执行完毕后会等待三个节点重启完毕
@@ -83,6 +128,8 @@ bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_6
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
+
+mysqlsh root@127.0.0.1:3336 -- cluster status
 
 至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 mysql 节点。
 
