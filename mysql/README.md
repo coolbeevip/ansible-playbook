@@ -12,7 +12,7 @@ MySQL InnoDB Cluster is the Combination of,
 * Group Replication ( GR )
 * MySQL Router
 
-## Planning Your installation
+## Planning Your Installation
 
 Planning for server
 
@@ -49,7 +49,7 @@ Planning for installation directory
 | /etc/init.d/mysql.server |  MySQL server Startup Script |
 
 
-## Download MySQL Tar & Ansible Playbook scripts
+## Download MySQL Tar & Ansible Playbook Scripts
 
 Create a directory for Ansible Playbook scripts
 
@@ -94,7 +94,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### Install MySQL server configuration with three nodes
+#### Install MySQL Server Configuration With Three Nodes
 
 Run Ansible playbook scripts `main-mysql.yml` for install MySQL server
 
@@ -222,7 +222,7 @@ ok: [10.1.207.180] => {
 
 **NOTICE:** See [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html) for a more complete description of MySQL cluster.
 
-#### Install MySQL router
+#### Install MySQL Router
 
 Pre-Installation
 
@@ -358,7 +358,7 @@ bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
-## Common operation and maintenance commands
+## Common Maintenance Commands
 
 Start MySQL
 
