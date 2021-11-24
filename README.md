@@ -123,6 +123,6 @@ By now, you have mastered how to start the Ansible tool to connect to multiple t
 ## Install Middleware use Ansible Playbook
 
 * [Linux System Configuration](./system/README.md)
-* [Elasticsearch Cluster](./elasticsearch/README.md)
-* [Redis Master-Slave Sentinel](./redis/README.md)
-* [MySQL Master-Slave Cluster + MySQL Router](./mysql/README.md)
+* [Elasticsearch Cluster with three nodes](./elasticsearch/README.md)
+* [Redis Master-Slave with Sentinel](./redis/README.md)
+* [MySQL InnoDB Cluster with three nodes](./mysql/README.md)
