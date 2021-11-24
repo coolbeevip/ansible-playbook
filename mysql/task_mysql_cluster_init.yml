@@ -20,7 +20,10 @@
   shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_validating.sql"
   check_mode: no
   register: check_result
-  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
+  when: inventory_hostname == '10.1.207.180'
+- name: exec mysql_cluster_validating.sql output
+  debug:
+    var: check_result.stdout_lines
 
 # 创建 mysql 集群主节点
 - name: check mysql_cluster_init.sql file
@@ -35,11 +38,21 @@
     state: present
     create: true
   with_items: |
-    shell.connect('root@10.1.207.180:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
+    shell.connect('root@{{ inventory_hostname }}:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
     shell.options['dba.restartWaitTimeout']=7200
     dba.createCluster('{{ cluster_name }}', {'localAddress': '10.1.207.180'})
     var cluster=dba.getCluster('{{ cluster_name }}')
     cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
     cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
-  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
   check_mode: no
+  when: inventory_hostname == '10.1.207.180' and not check_result.stat.exists
+
+# 检查集群状态
+- name: check mysql_cluster_status
+  shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
+  register: check_result
+  check_mode: no
+  when: inventory_hostname == '10.1.207.180'
+- name: check mysql_cluster_status output
+  debug:
+    var: check_result.stdout_lines

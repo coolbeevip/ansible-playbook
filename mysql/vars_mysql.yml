@@ -31,7 +31,6 @@ mysql_user_root_password: "123!@#"
 # 集群
 
 cluster_name: mycluster
-cluster_master: false
 
 # my.conf
 

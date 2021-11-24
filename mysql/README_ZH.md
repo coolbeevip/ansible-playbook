@@ -78,6 +78,8 @@ bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_6
 
 创建三节点集群
 
+> 检查 mysql 实例间连接是否正常，选择一个节点创建集群并设置为主节点，将另两个节点作为从节点加入到集群，执行完毕后会等待三个节点重启完毕
+
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
