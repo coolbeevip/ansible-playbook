@@ -28,10 +28,6 @@ mysql_group: "mysql"
 # root 密码
 mysql_user_root_password: "123!@#"
 
-# 集群
-
-cluster_name: mycluster
-
 # my.conf
 
 mysqld_port: 3336
@@ -48,7 +44,12 @@ mysqld_collation_server: utf8mb4_general_ci
 mysqld_innodb_buffer_pool_size: 10G
 client_default_character_set: utf8mb4
 
+# /etc/hosts
 hosts:
   10.1.207.180: oss-irms-180
   10.1.207.181: oss-irms-181
   10.1.207.182: oss-irms-182
+
+# 集群
+cluster_name: mycluster
+cluster_members_slaves: [10.1.207.181,10.1.207.182]

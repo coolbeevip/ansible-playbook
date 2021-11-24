@@ -1,12 +1,23 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 创建 mysql 集群主节点
-- name: check mysql_cluster_init.sql file
-  stat:
-    path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
-  check_mode: no
+# 检查集群状态
+- name: check mysql_cluster_status
+  shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
   register: check_result
+  check_mode: no
+  ignore_errors: true
+- name: check mysql_cluster_status output
+  debug:
+    var: check_result.stdout_lines
+
+# 如果不存在集群，则生成集群初始化脚本
+- name: delete mysql_cluster_init.sql file
+  file:
+    path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
+    state: absent
+  check_mode: no
+  when: check_result.rc == 1
 - name: create mysql_cluster_init.sql file
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
@@ -16,18 +27,37 @@
   with_items: |
     shell.connect('root@{{ inventory_hostname }}:{{ mysqld_port }}', '{{ mysql_user_root_password }}')
     shell.options['dba.restartWaitTimeout']=7200
-    dba.createCluster('{{ cluster_name }}', {'localAddress': '10.1.207.180'})
+    dba.createCluster('{{ cluster_name }}', {'localAddress': '{{ inventory_hostname }}'})
     var cluster=dba.getCluster('{{ cluster_name }}')
-    cluster.addInstance('root@10.1.207.181:{{ mysqld_port }}', {'localAddress': '10.1.207.181', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
-    cluster.addInstance('root@10.1.207.182:{{ mysqld_port }}', {'localAddress': '10.1.207.182', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})
   check_mode: no
-  when: not check_result.stat.exists
+  when: check_result.rc == 1
+- name: add slave script to mysql_cluster_init.sql
+  lineinfile:
+    dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
+    line: "cluster.addInstance('root@{{ item }}:{{ mysqld_port }}', {'localAddress': '{{ item }}', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})"
+    state: present
+    create: true
+  with_items: "{{ cluster_members_slaves }}"
+  check_mode: no
+  when: check_result.rc == 1
 
-# 检查集群状态
-- name: check mysql_cluster_status
-  shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
-  register: check_result
+# 初始化集群
+- name: init mysql cluster
+  shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_init.sql"
   check_mode: no
-- name: check mysql_cluster_status output
+  register: init_cluster_result
+  when: check_result.rc == 1
+- name: init mysql cluster result
   debug:
-    var: check_result.stdout_lines
+    var: init_cluster_result.stdout_lines
+  when: check_result.rc == 1
+
+#
+# # 检查集群状态
+# - name: check mysql_cluster_status
+#   shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
+#   register: check_result
+#   check_mode: no
+# - name: check mysql_cluster_status output
+#   debug:
+#     var: check_result.stdout_lines
