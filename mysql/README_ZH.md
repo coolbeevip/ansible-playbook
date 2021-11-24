@@ -64,9 +64,9 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 
 ## 开始安装
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
+启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂载到容器中。
 
-**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `redis` 和密码 `123456`
+**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `mysql` 和密码 `123456`
 
 **提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
 
@@ -84,7 +84,9 @@ docker run --name ansible --rm -it \
 
 #### 安装三节点 mysql 实例
 
-> 自动上传安装介质，设置 mysql root 用户密码，启动 mysql 服务
+执行安装脚本
+
+> 此命令会自动上传安装介质到三个目标服务器，初始化 mysql 数据库，设置 mysql root 密码，启动 mysql 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
@@ -106,7 +108,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-校验三节点值间的连接是否正常
+校验三节点之间是否可以正常连接
 
 > 我们选择在主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
 
@@ -153,7 +155,7 @@ The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 
 #### 初始化三节点集群
 
-> 在规划的主机点上执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
+> 执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
@@ -276,6 +278,57 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 
 10.1.207.182 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (28934)
+```
+
+检查 mysql 集群状态
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="123!@#" root@10.1.207.180:3336 -- cluster status'
+10.1.207.180 | CHANGED | rc=0 >>
+{
+    "clusterName": "mycluster",
+    "defaultReplicaSet": {
+        "name": "default",
+        "primary": "oss-irms-180:3336",
+        "ssl": "REQUIRED",
+        "status": "OK",
+        "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.",
+        "topology": {
+            "oss-irms-180:3336": {
+                "address": "oss-irms-180:3336",
+                "memberRole": "PRIMARY",
+                "mode": "R/W",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            },
+            "oss-irms-181:3336": {
+                "address": "oss-irms-181:3336",
+                "memberRole": "SECONDARY",
+                "mode": "R/O",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            },
+            "oss-irms-182:3336": {
+                "address": "oss-irms-182:3336",
+                "memberRole": "SECONDARY",
+                "mode": "R/O",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            }
+        },
+        "topologyMode": "Single-Primary"
+    },
+    "groupInformationSourceMember": "oss-irms-180:3336"
+}
 ```
 
 ## Q & A
