@@ -215,7 +215,7 @@ ok: [10.1.207.180] => {
 
 安装前检查
 
-> MySQL Router 要求主机间已经配置了相互的主机名 /etc/hosts，正常情况在之前的步骤安装 MySQL 时就已经自动设置过了，此处只是手动刚检查以下
+> MySQL Router 要求主机间已经配置了相互的主机名 /etc/hosts，正常情况在之前安装 MySQL 时就已经自动设置过了，此处只是建议手动查看确认一下。
 
 查看每个机器的主机名
 
@@ -444,7 +444,57 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --
 }
 ```
 
-通过 mysql router 连接到服务器，查看数据库最大连接数
+启动 MySQL Router
+
+```shell
+bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/start.sh'
+10.1.207.181 | CHANGED | rc=0 >>
+PID 26307 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
+logging facility initialized, switching logging to loggers specified in configuration
+
+10.1.207.180 | CHANGED | rc=0 >>
+PID 8813 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
+logging facility initialized, switching logging to loggers specified in configuration
+
+10.1.207.182 | CHANGED | rc=0 >>
+PID 1158 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
+logging facility initialized, switching logging to loggers specified in configuration
+```
+
+停止 MySQL Router
+
+```shell
+bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/stop.sh'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+```
+
+检查 MySQL Router 进程
+
+```shell
+bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+10.1.207.180 | CHANGED | rc=0 >>
+mysql     8813     1  1 18:00 ?        00:00:01 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql     9154  9153  9 18:02 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql     9158  9154  0 18:02 pts/1    00:00:00 grep mysql-router
+
+10.1.207.181 | CHANGED | rc=0 >>
+mysql    26307     1  1 17:57 ?        00:00:01 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql    26633 26632  0 17:58 pts/3    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql    26635 26633  0 17:58 pts/3    00:00:00 grep mysql-router
+
+10.1.207.182 | CHANGED | rc=0 >>
+mysql     1158     1  2 17:56 ?        00:00:01 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
+mysql     1420  1419  0 17:57 pts/2    00:00:00 /bin/sh -c ps -ef | grep mysql-router
+mysql     1423  1420  0 17:57 pts/2    00:00:00 grep mysql-router
+```
+
+检查 MySQL Router 连接，查看数据库最大连接数
 
 ```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "show variables like \"%max_connections%\";"'
