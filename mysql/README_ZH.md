@@ -516,11 +516,13 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 
 ## Q & A
 
-#### Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
+#### 执行 main-mysql.yml 时 TASK initialize mysql 失败
 
-请检查服务器内存是否够用
+Q: 查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
 
-#### Q: 如何彻底删除数据文件
+A: 请检查服务器内存是否够用
+
+#### 如何彻底删除服务器 MySQL
 
 停止 MySQL 服务
 
