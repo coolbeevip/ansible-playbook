@@ -55,7 +55,7 @@ cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-下载 mysql 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
+下载 MySQL 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
 wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL/Downloads/MySQL-8.0/mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz --no-check-certificate
@@ -97,7 +97,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 
 检查 MySQL 节点状态
 
-> 可以看到三台服务器上的 mysql 服务都已经启动
+> 可以看到三台服务器上的 MySQL 服务都已经启动
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
@@ -351,7 +351,7 @@ bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 
 ## 运维命令
 
-启动 mysql
+启动 MySQL
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server start'
@@ -365,7 +365,7 @@ Starting MySQL........ SUCCESS!
 Starting MySQL........... SUCCESS!
 ```
 
-停止 mysql
+停止 MySQL
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
@@ -379,7 +379,7 @@ Shutting down MySQL... SUCCESS!
 Shutting down MySQL...... SUCCESS!
 ```
 
-检查 mysql 服务状态
+检查 MySQL 服务状态
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
@@ -393,7 +393,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-检查 mysql 集群状态
+检查 MySQL 集群状态
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="123!@#" root@10.1.207.180:3336 -- cluster status'
