@@ -21,7 +21,7 @@
   check_mode: no
   become: yes
 
-# 上传 my.conf 到 etc 目录
+# 上传 my.cnf 到 etc 目录
 - name: copy my.cnf to etc
   template:
     src: "/ansible-playbook/mysql/config/my.cnf.j2"
