@@ -11,6 +11,15 @@
 | 10.1.207.181 | 22022 | mysql | 123456 | root123 |
 | 10.1.207.182 | 22022 | mysql | 123456 | root123 |
 
+集群安装规划如下
+
+| IP地址 | 模块 | 类型 |
+| ---- | ---- | ---- |
+| 10.1.207.180 | MySQL Node, MySQL Router | master |
+| 10.1.207.181 | MySQL Node, MySQL Router | slave |
+| 10.1.207.182 | MySQL Node, MySQL Router | slave |
+
+
 ## 下载安装包和 Playbook 脚本
 
 在客户机上创建 playbook 脚本存放目录
@@ -56,13 +65,15 @@ docker run --name ansible --rm -it \
 
 安装三节点 mysql 实例
 
-> 自动上传安装介质，初始化 root 用户，启动 mysql 实例
+> 自动上传安装介质，设置 mysql root 用户密码，启动 mysql 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
 检查 mysql 节点状态
+
+> 可以看到三台服务器上的 mysql 服务都已经启动
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
@@ -78,7 +89,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 
 校验三节点值间的连接是否正常
 
-> 我们任选一个节点执行校验状态，可以看到节点之间是可以相互连接的
+> 我们选择在主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
