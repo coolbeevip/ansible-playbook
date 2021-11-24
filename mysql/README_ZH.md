@@ -65,7 +65,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 检查 mysql 节点状态
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server status'
+bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 
@@ -136,7 +136,7 @@ mysqlsh root@127.0.0.1:3336 -- cluster status
 启动 mysql
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server start'
+bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server start'
 10.1.207.182 | CHANGED | rc=0 >>
 Starting MySQL........ SUCCESS!
 
@@ -150,7 +150,7 @@ Starting MySQL........... SUCCESS!
 停止 mysql
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server stop'
+bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
 10.1.207.182 | CHANGED | rc=0 >>
 Shutting down MySQL... SUCCESS!
 
@@ -164,7 +164,7 @@ Shutting down MySQL...... SUCCESS!
 检查 mysql 服务状态
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server status'
+bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 
@@ -195,9 +195,9 @@ Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中
 A: 请检查服务器内存是否够用
 
 Q: 如何彻底删除数据文件
-A:
+A: 先停止 mysql 然后删除所有数据文件
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_64/support-files/mysql.server stop'
+bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
 bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/data/* /data01/mysql/logs/* /data01/mysql/run/* /data01/mysql/script/* /data01/mysql/dump/* /data01/mysql/binlog/* /data01/mysql/relaylog/*'
 ```
