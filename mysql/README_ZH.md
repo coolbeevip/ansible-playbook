@@ -83,7 +83,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### 安装三节点 mysql 实例
+#### 安装三节点 MySQL 实例
 
 执行安装脚本
 
@@ -95,7 +95,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 
 **提示：** 此脚本首次执行耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
 
-检查 mysql 节点状态
+检查 MySQL 节点状态
 
 > 可以看到三台服务器上的 mysql 服务都已经启动
 
@@ -111,7 +111,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-校验三节点之间是否可以正常连接
+校验 MySQL 三节点之间是否可以正常连接
 
 > 此步为是为了在建立集群前检查服务节点可连接，我们选择在规划中的主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
 
@@ -145,7 +145,7 @@ Instance configuration is compatible with InnoDB cluster
 The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 ```
 
-#### 初始化三节点集群
+#### 初始化 MySQL 三节点集群
 
 > 执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
 
@@ -259,7 +259,7 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 
 执行安装脚本
 
-> 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 mysql router 服务
+> 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 MySQL Router 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
