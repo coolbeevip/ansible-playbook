@@ -1,9 +1,18 @@
-# Ansible Playbook 安装 MySQL 集群 | [English](README.md)
+# Ansible Playbook 安装 MySQL InnoDB 集群 | [English](README.md)
 
 ## 集群概述
 
+MySQL InnoDB Cluster 是 MySQL 团队为了高可用性 (HA) 目的而引入的。它为 MySQL 提供了完整的高可用解决方案。
 
-## 目标服务器
+我将Ansible 脚本中展示三个节点的 InnoDB 集群配置。
+
+MySQL InnoDB 集群有以下服务组成
+
+* MySQL shell
+* Group Replication ( GR )
+* MySQL Router
+
+## 安装计划
 
 服务器规划
 
@@ -25,19 +34,19 @@
 
 > 以下路径是默认路径，在安装前可以编辑 `var_mysql.yml` 中的变量改变成你想要的路径，其中路径变量中包含 **\_fast\_** 字样的路径建议你定义在 SSD 磁盘上
 
-| 路径 | 描述 | 备注 |
-| ---- | ---- | ---- |
-| /opt/mysql | 程序安装路径 |  |
-| /etc/my.cnf | MySQL 配置文件路径 |  |
-| /data01/mysql/run | MySQL PID 文件路径 |  |
-| /data01/mysql/logs | MySQL LOG 文件路径 |  |
-| /data01/mysql/data | MySQL DATA 文件路径 |  |
-| /data01/mysql/dump | MySQL DUMP 文件路径 |  |
-| /data01/mysql/script | 安装过程中临时脚本路径 | 此目录下保存安装过程的临时脚本，因为包含 root 密码，所以安装完成后建议删除 |
-| /data01/mysql/binlog | MySQL BINLOG 文件路径 |  |
-| /data01/mysql/relaylog | MySQL RELAYLOG 文件路径 |  |
-| /data01/mysql/router/mycluster | MySQL ROUTER 配置和启停脚本目录 |  |
-| /etc/init.d/mysql.server | 服务脚本路径 |  |
+| 路径 | 描述 |
+| ---- | ---- |
+| /opt/mysql | MySQL server、MySQL Shell、MySQL router 程序安装路径 |
+| /etc/my.cnf | MySQL 配置文件路径 |
+| /data01/mysql/run | MySQL server pid 文件路径 |
+| /data01/mysql/logs | MySQL server 日志文件路径 |
+| /data01/mysql/data | MySQL server 数据文件路径 |
+| /data01/mysql/dump | MySQL server 只允许在这个目录下进行导入导出操作 |
+| /data01/mysql/script | 安装过程中临时脚本存放的目录 |
+| /data01/mysql/binlog | MySQL server bin-log 文件存储路径 |
+| /data01/mysql/relaylog | MySQL server relay-log 文件存储路径 |
+| /data01/mysql/router/mycluster | MySQL router 的配置文件和启动脚本 |
+| /etc/init.d/mysql.server | MySQL server 的启停脚本 |
 
 
 ## 下载安装包和 Playbook 脚本
@@ -62,6 +71,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL/Downloads/MySQL-Shell/mysql-shell-8.0.27-linux-glibc2.12-x86-64bit.tar.gz --no-check-certificate
 wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL/Downloads/MySQL-Router/mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz --no-check-certificate
 ```
+## 配置安装脚本
 
 ## 开始安装
 
@@ -83,7 +93,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### 安装三节点 MySQL 实例
+#### 安装三节点 MySQL server
 
 执行安装脚本
 
@@ -93,7 +103,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
-**提示：** 此脚本首次执行耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
+**提示：** 此脚本首次执行耗时较长（因为需要上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
 
 检查 MySQL 节点状态
 
@@ -113,7 +123,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 
 校验 MySQL 三节点之间是否可以正常连接
 
-> 此步为是为了在建立集群前检查服务节点可连接，我们选择在规划中的主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
+> 在创建集群前，我们需要确认MySQL实例间可以彼此连接。当你看到 **The instance 'xxx' is valid to be used in an InnoDB cluster.** 提示时，说明连接正常
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
@@ -145,17 +155,17 @@ Instance configuration is compatible with InnoDB cluster
 The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 ```
 
-#### 初始化 MySQL 三节点集群
+#### 配置 MySQL 集群
 
-> 执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
+> 这个脚本将在主节点上创建集群并将两个从节点加入到集群
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
 
-**提示：** 此脚本执行过程中 MySQL 实例会自动重启、同步主节点和从节点数据，并等待集群创建完毕。在我的环境下执行耗时大约 4 分钟
+**提示：** 此脚本执行过程中 MySQL 实例会自动重启并等待同步主节点和从节点数据，在我的环境下执行耗时大约 4 分钟。
 
-**提示：** 在命令执行结束后，你可以看到集群状态信息，你可以看到 `oss-irms-180` 作为 PRIMARY 节点，具有读写模式；`oss-irms-181` 和 `oss-irms-182` 作为 SECONDARY 节点，具有只读模式。并且三个节点都处于 ONLINE 状态
+**提示：** 此脚本执行结束后你可以看到如下集群状态信息，一个读写模式的 PRIMARY 节点 `oss-irms-180`；两个具有只读模式的 SECONDARY 节点 `oss-irms-181` 和 `oss-irms-182`。并且三个节点都处于 ONLINE 状态
 
 ```shell
 TASK [check mysql_cluster_status output] *******************************************************************************************************************************************************************
@@ -211,11 +221,11 @@ ok: [10.1.207.180] => {
 
 **提示：** 更多集群说明请参见 [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html)
 
-#### 安装三节点 MySQL Router
+#### 安装 MySQL router
 
 安装前检查
 
-> MySQL Router 要求主机间已经配置了相互的主机名 /etc/hosts，正常情况在之前安装 MySQL 时就已经自动设置过了，此处只是建议手动查看确认一下。
+> 需要允许基于主机名和 IP 的集群节点之间的完整通信。通常在安装之前的脚本的时候已经自动修改了 /etc/hosts 文件。
 
 查看每个机器的主机名
 
@@ -257,7 +267,7 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 10.1.207.182 oss-irms-182
 ```
 
-执行安装脚本
+执行 MySQL router 安装脚本 `main-router.yml`
 
 > 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 MySQL Router 服务
 
@@ -331,25 +341,23 @@ group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336
 group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-**至此，您已经完成 MySQL+MySQL Router 三节点集群的安装部署**
+**至此，您已经完成 MySQLInnoDB 集群的安装**
 
-#### 清理安装介质
+#### 安装完成后删除安装文件
 
-清理安装时生成的脚本文件和安装介质
-
-> /data01/mysql/script 目录下是存储初始化的脚本，安装完毕后可以删除（**因为里面包含 root 密码等敏感信息**）
+删除过程中产生的临时脚本文件（**因为里面包含 root 密码等敏感信息**）
 
 ```shell
 bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
 ```
 
-> /opt/mysql 目录下的安装介质装完后可以删除（非必须）
+(**可选**)删除安装包文件（删除后可以释放出约1.3GB的磁盘空间）
 
 ```shell
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
-## 运维命令
+## 常用运维命令
 
 启动 MySQL
 
@@ -494,7 +502,7 @@ mysql     1420  1419  0 17:57 pts/2    00:00:00 /bin/sh -c ps -ef | grep mysql-r
 mysql     1423  1420  0 17:57 pts/2    00:00:00 grep mysql-router
 ```
 
-检查 MySQL Router 连接，查看数据库最大连接数
+使用 MySQL Router 连接到数据库并查看数据库变量
 
 ```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "show variables like \"%max_connections%\";"'
@@ -514,7 +522,7 @@ max_connections	1000
 mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-## Q & A
+## Q&A
 
 #### 执行 main-mysql.yml 时 TASK initialize mysql 失败
 
@@ -522,7 +530,7 @@ Q: 查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily 
 
 A: 请检查服务器内存是否够用
 
-#### 如何彻底删除服务器 MySQL
+#### 如何彻底删除 MySQL InnoDB 集群
 
 停止 MySQL 服务
 

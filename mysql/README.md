@@ -1,61 +1,70 @@
-# Ansible Playbook Install MySQL Cluster | [中文](README_ZH.md)
+# Ansible Playbook Install MySQL InnoDB Cluster | [中文](README_ZH.md)
 
-## 集群概述
+## Overview
 
+MySQL InnoDB Cluster has introduced by the MySQL team for the High Availability ( HA ) purpose . It provides a complete high availability solution for MySQL.
 
-## 目标服务器
+I going to show the three-node InnoDB cluster configuration in the Ansible script
 
-服务器规划
+MySQL InnoDB Cluster is the Combination of,
 
-| IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 |
+* MySQL shell
+* Group Replication ( GR )
+* MySQL Router
+
+## Planning Your installation
+
+Planning for server
+
+| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD |
 | ---- | ---- | ---- | ---- | ---- |
 | 10.1.207.180 | 22022 | mysql | 123456 | root123 |
 | 10.1.207.181 | 22022 | mysql | 123456 | root123 |
 | 10.1.207.182 | 22022 | mysql | 123456 | root123 |
 
-集群节点规划
+Planning for MySQL nodes
 
-| IP地址 | 模块 |
+| IP | Node |
 | ---- | ---- |
 | 10.1.207.180 | MySQL Master Node, MySQL Router |
 | 10.1.207.181 | MySQL Slave Node, MySQL Router |
 | 10.1.207.182 | MySQL Slave Node, MySQL Router |
 
-节点安装路径
+Planning for installation directory
 
-> 以下路径是默认路径，在安装前可以编辑 `var_mysql.yml` 中的变量改变成你想要的路径，其中路径变量中包含 **\_fast\_** 字样的路径建议你定义在 SSD 磁盘上
+> The following path is the default path. Before installation, you can edit the variables in `var_mysql.yml` to change to the path you want. The path that contains **\_fast\_** in the path variable is recommended to be defined on the SSD disk
 
-| 路径 | 描述 | 备注 |
-| ---- | ---- | ---- |
-| /opt/mysql | 程序安装路径 |  |
-| /etc/my.cnf | MySQL 配置文件路径 |  |
-| /data01/mysql/run | MySQL PID 文件路径 |  |
-| /data01/mysql/logs | MySQL LOG 文件路径 |  |
-| /data01/mysql/data | MySQL DATA 文件路径 |  |
-| /data01/mysql/dump | MySQL DUMP 文件路径 |  |
-| /data01/mysql/script | 安装过程中临时脚本路径 | 此目录下保存安装过程的临时脚本，因为包含 root 密码，所以安装完成后建议删除 |
-| /data01/mysql/binlog | MySQL BINLOG 文件路径 |  |
-| /data01/mysql/relaylog | MySQL RELAYLOG 文件路径 |  |
-| /data01/mysql/router/mycluster | MySQL ROUTER 配置和启停脚本目录 |  |
-| /etc/init.d/mysql.server | 服务脚本路径 |  |
+| PATH | DESCRIPTION |
+| ---- | ---- |
+| /opt/mysql | installation path of MySQL server、MySQL Shell、MySQL router |
+| /etc/my.cnf | MySQL database server configuration file |
+| /data01/mysql/run |  MySQL server PID file |
+| /data01/mysql/logs | MySQL server log file path |
+| /data01/mysql/data | MySQL server log file path  |
+| /data01/mysql/dump | MySQL server only allows import and export operations in this directory|
+| /data01/mysql/script | Temporary scripts file storage directory during installation |
+| /data01/mysql/binlog | MySQL server binary log file storage directory |
+| /data01/mysql/relaylog | MySQL server relay log files torage directory |
+| /data01/mysql/router/mycluster | Configuration file and startup script of MySQL router |
+| /etc/init.d/mysql.server |  MySQL server Startup Script |
 
 
-## 下载安装包和 Playbook 脚本
+## Download MySQL Tar & Ansible Playbook scripts
 
-在客户机上创建 playbook 脚本存放目录
+Create a directory for Ansible Playbook scripts
 
 ```shell
 mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-下载 playbook 脚本
+Download Ansible playbook scripts
 
 ```shell
 cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-下载 MySQL 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
+Download MySQL tar ball from the https://dev.mysql.com/downloads/ web site to `~/my-docker-volume/ansible-playbook/packages`
 
 ```shell
 wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL/Downloads/MySQL-8.0/mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz --no-check-certificate
@@ -63,13 +72,15 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL/Downloads/MySQL-Router/mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz --no-check-certificate
 ```
 
-## 开始安装
+## Configuration
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂载到容器中。
+## Installation
 
-**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `mysql` 和密码 `123456`
+Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
-**提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
+**NOTICE:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user redis and password
+
+**NOTICE:** ANSIBLE_SU_PASSS is user root password
 
 ```shell
 docker run --name ansible --rm -it \
@@ -83,21 +94,21 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### 安装三节点 MySQL 实例
+#### Install MySQL server configuration with three nodes
 
-执行安装脚本
+Run Ansible playbook scripts `main-mysql.yml` for install MySQL server
 
-> 此命令会配置操作系统内核参数、自动上传安装介质到三个目标服务器，设置 MySQL 环境变量，初始化 MySQL 数据库，设置 MySQL root 密码，启动 MySQL 服务
+> This script will automatically modify the operating system kernel parameters, upload the installation media to the three target servers, set the MySQL environment variables, initialize the MySQL database, set the MySQL root password, and start the MySQL service
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
-**提示：** 此脚本首次执行耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
+**NOTICE:** This script takes a long time to execute for the first time (because about 1.3GB of installation media needs to be uploaded to all target servers). It takes about 6 minutes to execute in my environment after ignoring the upload time
 
-检查 MySQL 节点状态
+Verify MySQL node status
 
-> 可以看到三台服务器上的 MySQL 服务都已经启动
+> You can see that the MySQL instances on the three servers have been started
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
@@ -111,9 +122,9 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-校验 MySQL 三节点之间是否可以正常连接
+Verify the connection between MySQL instances
 
-> 此步为是为了在建立集群前检查服务节点可连接，我们选择在规划中的主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
+> Before creating a cluster, we need to confirm that MySQL instances can connect to each other. When you see **The instance 'xxx' is valid to be used in an InnoDB cluster.**, the connection is normal.
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
@@ -145,17 +156,17 @@ Instance configuration is compatible with InnoDB cluster
 The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 ```
 
-#### 初始化 MySQL 三节点集群
+#### Configure MySQL cluster
 
-> 执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
+> This script will create a cluster on the master node and join two slave nodes to the cluster
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
 
-**提示：** 此脚本执行过程中 MySQL 实例会自动重启、同步主节点和从节点数据，并等待集群创建完毕。在我的环境下执行耗时大约 4 分钟
+**NOTICE:** During the execution of this script, the MySQL instance will automatically restart and wait to synchronize the data of the master node and the slave node. It takes about 4 minutes to execute in my environment.
 
-**提示：** 在命令执行结束后，你可以看到集群状态信息，你可以看到 `oss-irms-180` 作为 PRIMARY 节点，具有读写模式；`oss-irms-181` 和 `oss-irms-182` 作为 SECONDARY 节点，具有只读模式。并且三个节点都处于 ONLINE 状态
+**NOTICE** After the script is executed, you can see the following cluster status information, one PRIMARY node `oss-irms-180` in read-write mode; two SECONDARY nodes with read-only mode `oss-irms-181` and `oss-irms -182`. And all three nodes are in ONLINE state
 
 ```shell
 TASK [check mysql_cluster_status output] *******************************************************************************************************************************************************************
@@ -209,15 +220,15 @@ ok: [10.1.207.180] => {
 }
 ```
 
-**提示：** 更多集群说明请参见 [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html)
+**NOTICE:** See [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html) for a more complete description of MySQL cluster.
 
-#### 安装三节点 MySQL Router
+#### Install MySQL router
 
-安装前检查
+Pre-Installation
 
-> MySQL Router 要求主机间已经配置了相互的主机名 /etc/hosts，正常情况在之前安装 MySQL 时就已经自动设置过了，此处只是建议手动查看确认一下。
+> Need to allow the complete communication between the cluster nodes based on the hostname and IP. Usually, the /etc/hosts file is automatically modified when the previous script is installed.
 
-查看每个机器的主机名
+View the hostname of each server
 
 ```shell
 bash-5.0# ansible all -m shell -a 'hostname'
@@ -231,7 +242,7 @@ oss-irms-180
 oss-irms-182
 ```
 
-查看每个主机 /etc/hosts 文件中是否配置了每个服务器的主机名和IP地址
+Check /etc/hosts file.
 
 ```shell
 bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
@@ -257,15 +268,15 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 10.1.207.182 oss-irms-182
 ```
 
-执行安装脚本
+Run Ansible playbook scripts `main-router.yml` for install MySQL router
 
-> 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 MySQL Router 服务
+> This script will automatically generate the mysqlrouter.conf configuration file and start the MySQL Router service
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
 ```
 
-查看 MySQL Router 进程
+View MySQL Router process
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
@@ -285,7 +296,7 @@ mysql    16463 16462  0 17:03 pts/3    00:00:00 /bin/sh -c ps -ef | grep mysql-r
 mysql    16465 16463  0 17:03 pts/3    00:00:00 grep mysql-router
 ```
 
-测试通过 MySQL Router RW 端口 **36446** 连接数据库主节点执行查看 MGR 组信息
+Verify through MySQL Router RW port **36446** to connect to the master node of the database to view MGR group information
 
 ```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
@@ -308,7 +319,7 @@ group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336
 group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-测试通过 MySQL Router RO 端口 **36447** 连接数据库从节点执行查看 MGR 组信息
+Verify through MySQL Router RO port **36447** to connect to the master node of the database to view MGR group information
 
 ```
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36447 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
@@ -331,27 +342,25 @@ group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336
 group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-**至此，您已经完成 MySQL+MySQL Router 三节点集群的安装部署**
+**At this point, you have completed the installation of the MySQL InnoDB cluster**
 
-#### 清理安装介质
+#### Remove setup files after complete installation
 
-清理安装时生成的脚本文件和安装介质
-
-> /data01/mysql/script 目录下是存储初始化的脚本，安装完毕后可以删除（**因为里面包含 root 密码等敏感信息**）
+Delete the temporary script file generated during the installation process (**because it contains sensitive information such as the root password**)
 
 ```shell
 bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
 ```
 
-> /opt/mysql 目录下的安装介质装完后可以删除（非必须）
+(**Optional**)Delete the installation package file (about 1.3GB of disk space can be freed after deleting files)
 
 ```shell
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
-## 运维命令
+## Common operation and maintenance commands
 
-启动 MySQL
+Start MySQL
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server start'
@@ -365,7 +374,7 @@ Starting MySQL........ SUCCESS!
 Starting MySQL........... SUCCESS!
 ```
 
-停止 MySQL
+Stop MySQL
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
@@ -379,7 +388,7 @@ Shutting down MySQL... SUCCESS!
 Shutting down MySQL...... SUCCESS!
 ```
 
-检查 MySQL 服务状态
+Check MySQL server status
 
 ```shell
 bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
@@ -393,7 +402,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-检查 MySQL 集群状态
+Check MySQL cluster status
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="123!@#" root@10.1.207.180:3336 -- cluster status'
@@ -444,7 +453,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --
 }
 ```
 
-启动 MySQL Router
+Start MySQL Router
 
 ```shell
 bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/start.sh'
@@ -461,7 +470,7 @@ PID 1158 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
 logging facility initialized, switching logging to loggers specified in configuration
 ```
 
-停止 MySQL Router
+Stop MySQL Router
 
 ```shell
 bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/stop.sh'
@@ -474,7 +483,7 @@ bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/stop.sh'
 10.1.207.182 | CHANGED | rc=0 >>
 ```
 
-检查 MySQL Router 进程
+Check MySQL Router process
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
@@ -494,7 +503,7 @@ mysql     1420  1419  0 17:57 pts/2    00:00:00 /bin/sh -c ps -ef | grep mysql-r
 mysql     1423  1420  0 17:57 pts/2    00:00:00 grep mysql-router
 ```
 
-检查 MySQL Router 连接，查看数据库最大连接数
+Use MySQL Router to connect to the database and view database variables.
 
 ```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "show variables like \"%max_connections%\";"'
@@ -512,41 +521,4 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 Variable_name	Value
 max_connections	1000
 mysqlx_max_connections	100mysql: [Warning] Using a password on the command line interface can be insecure.
-```
-
-## Q & A
-
-#### 执行 main-mysql.yml 时 TASK initialize mysql 失败
-
-Q: 查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
-
-A: 请检查服务器内存是否够用
-
-#### 如何彻底删除服务器 MySQL
-
-停止 MySQL 服务
-
-```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
-10.1.207.181 | CHANGED | rc=0 >>
-Shutting down MySQL.......... SUCCESS!
-
-10.1.207.182 | CHANGED | rc=0 >>
-Shutting down MySQL.......... SUCCESS!
-
-10.1.207.180 | CHANGED | rc=0 >>
-Shutting down MySQL............ SUCCESS!
-```
-
-删除数据目录
-
-```shell
-bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/*'
-10.1.207.180 | CHANGED | rc=0 >>
-
-
-10.1.207.182 | CHANGED | rc=0 >>
-
-
-10.1.207.181 | CHANGED | rc=0 >>
 ```
