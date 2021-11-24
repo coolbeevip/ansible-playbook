@@ -29,13 +29,13 @@
 | ---- | ---- | ---- |
 | /opt/mysql | 程序安装路径 |  |
 | /etc/my.cnf | MySQL 配置文件路径 |  |
-| /data01/mysql/run | MySQL PID 文件存放路径 |  |
-| /data01/mysql/logs | MySQL LOG 文件存放路径 |  |
-| /data01/mysql/data | MySQL DATA 文件存放路径 |  |
-| /data01/mysql/dump | MySQL DUMP 文件存放路径 |  |
-| /data01/mysql/script | 安装过程中临时脚本存放路径 | 安装后可删除 |
-| /data01/mysql/binlog | MySQL BINLOG 文件存放路径 |  |
-| /data01/mysql/relaylog | MySQL RELAYLOG 文件存放路径 |  |
+| /data01/mysql/run | MySQL PID 文件路径 |  |
+| /data01/mysql/logs | MySQL LOG 文件路径 |  |
+| /data01/mysql/data | MySQL DATA 文件路径 |  |
+| /data01/mysql/dump | MySQL DUMP 文件路径 |  |
+| /data01/mysql/script | 安装过程中临时脚本路径 | 此目录下保存安装过程的临时脚本，因为包含 root 密码，所以安装完成后建议删除 |
+| /data01/mysql/binlog | MySQL BINLOG 文件路径 |  |
+| /data01/mysql/relaylog | MySQL RELAYLOG 文件路径 |  |
 | /data01/mysql/router/mycluster | MySQL ROUTER 配置和启停脚本目录 |  |
 | /etc/init.d/mysql.server | 服务脚本路径 |  |
 
