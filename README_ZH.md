@@ -125,3 +125,4 @@ bash-5.0#
 * [Linux 系统配置](./system/README_ZH.md)
 * [Elasticsearch 三节点集群](./elasticsearch/README_ZH.md)
 * [Redis 三节点主从哨兵模式集群](./redis/README_ZH.md)
+* [MySQL Cluster + MySQL Router 三节点一主两从集群](./mysql/README_ZH.md)

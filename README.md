@@ -125,3 +125,4 @@ By now, you have mastered how to start the Ansible tool to connect to multiple t
 * [Linux System Configuration](./system/README.md)
 * [Elasticsearch Cluster](./elasticsearch/README.md)
 * [Redis Master-Slave Sentinel](./redis/README.md)
+* [MySQL Master-Slave Cluster + MySQL Router](./mysql/README.md)
