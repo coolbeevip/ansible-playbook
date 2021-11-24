@@ -1,9 +1,11 @@
 # Ansible Playbook 安装 MySQL 集群 | [English](README.md)
 
+## 集群概述
+
 
 ## 目标服务器
 
-假设您有以下三台服务器
+服务器规划
 
 | IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 |
 | ---- | ---- | ---- | ---- | ---- |
@@ -11,13 +13,30 @@
 | 10.1.207.181 | 22022 | mysql | 123456 | root123 |
 | 10.1.207.182 | 22022 | mysql | 123456 | root123 |
 
-集群安装规划如下
+集群节点规划
 
 | IP地址 | 模块 | 类型 |
 | ---- | ---- | ---- |
 | 10.1.207.180 | MySQL Node, MySQL Router | master |
 | 10.1.207.181 | MySQL Node, MySQL Router | slave |
 | 10.1.207.182 | MySQL Node, MySQL Router | slave |
+
+节点安装路径
+
+> 以下路径是默认路径，在安装前可以编辑 `var_mysql.yml` 中的变量改变成你想要的路径，其中路径变量中包含 **\_fast\_** 字样的路径建议你定义在 SSD 磁盘上
+
+| 路径 | 描述 | 备注 |
+| ---- | ---- | ---- |
+| /opt/mysql | 程序安装路径 |  |
+| /etc/my.cnf | MySQL 配置文件路径 |  |
+| /data01/mysql/run | MySQL PID 文件存放路径 |  |
+| /data01/mysql/logs | MySQL LOG 文件存放路径 |  |
+| /data01/mysql/data | MySQL DATA 文件存放路径 |  |
+| /data01/mysql/dump | MySQL DUMP 文件存放路径 |  |
+| /data01/mysql/script | 安装过程中临时脚本存放路径 | 安装后可删除 |
+| /data01/mysql/binlog | MySQL BINLOG 文件存放路径 |  |
+| /data01/mysql/relaylog | MySQL RELAYLOG 文件存放路径 |  |
+| /etc/init.d/mysql.server | 服务脚本路径 |  |
 
 
 ## 下载安装包和 Playbook 脚本
@@ -63,7 +82,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-安装三节点 mysql 实例
+#### 安装三节点 mysql 实例
 
 > 自动上传安装介质，设置 mysql root 用户密码，启动 mysql 服务
 
@@ -132,17 +151,90 @@ Instance configuration is compatible with InnoDB cluster
 The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 ```
 
-创建三节点集群
+#### 初始化三节点集群
 
-> 检查 mysql 实例间连接是否正常，选择一个节点创建集群并设置为主节点，将另两个节点作为从节点加入到集群，执行完毕后会等待三个节点重启完毕
+> 在规划的主机点上执行集群初始化脚本，创建集群，设置主节点并增加两外两个从节点
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
 ```
 
-mysqlsh root@127.0.0.1:3336 -- cluster status
+在命令执行结束后，你可以看到集群状态信息，你可以看到 `oss-irms-180` 作为 PRIMARY 节点，具有读写模式；`oss-irms-181` 和 `oss-irms-182` 作为 SECONDARY 节点，具有只读模式。并且三个节点都处于 ONLINE 状态
 
-至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 mysql 节点。
+```shell
+TASK [check mysql_cluster_status output] *******************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "check_result.stdout_lines": [
+        "{",
+        "    \"clusterName\": \"mycluster\", ",
+        "    \"defaultReplicaSet\": {",
+        "        \"name\": \"default\", ",
+        "        \"primary\": \"oss-irms-180:3336\", ",
+        "        \"ssl\": \"REQUIRED\", ",
+        "        \"status\": \"OK\", ",
+        "        \"statusText\": \"Cluster is ONLINE and can tolerate up to ONE failure.\", ",
+        "        \"topology\": {",
+        "            \"oss-irms-180:3336\": {",
+        "                \"address\": \"oss-irms-180:3336\", ",
+        "                \"memberRole\": \"PRIMARY\", ",
+        "                \"mode\": \"R/W\", ",
+        "                \"readReplicas\": {}, ",
+        "                \"replicationLag\": null, ",
+        "                \"role\": \"HA\", ",
+        "                \"status\": \"ONLINE\", ",
+        "                \"version\": \"8.0.27\"",
+        "            }, ",
+        "            \"oss-irms-181:3336\": {",
+        "                \"address\": \"oss-irms-181:3336\", ",
+        "                \"memberRole\": \"SECONDARY\", ",
+        "                \"mode\": \"R/O\", ",
+        "                \"readReplicas\": {}, ",
+        "                \"replicationLag\": null, ",
+        "                \"role\": \"HA\", ",
+        "                \"status\": \"ONLINE\", ",
+        "                \"version\": \"8.0.27\"",
+        "            }, ",
+        "            \"oss-irms-182:3336\": {",
+        "                \"address\": \"oss-irms-182:3336\", ",
+        "                \"memberRole\": \"SECONDARY\", ",
+        "                \"mode\": \"R/O\", ",
+        "                \"readReplicas\": {}, ",
+        "                \"replicationLag\": null, ",
+        "                \"role\": \"HA\", ",
+        "                \"status\": \"ONLINE\", ",
+        "                \"version\": \"8.0.27\"",
+        "            }",
+        "        }, ",
+        "        \"topologyMode\": \"Single-Primary\"",
+        "    }, ",
+        "    \"groupInformationSourceMember\": \"oss-irms-180:3336\"",
+        "}"
+    ]
+}
+```
+
+**提示：** 更多集群说明请参见 [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html)
+
+#### 安装三节点 MySQL Router
+
+
+#### 清理安装介质
+
+清理安装时生成的脚本文件和安装介质
+
+> /data01/mysql/script 目录下是存储初始化的脚本，安装完毕后可以删除（**因为里面包含 root 密码等敏感信息**）
+
+```shell
+bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
+```
+
+> /opt/mysql 目录下的安装介质装完后可以删除（非必须）
+
+```shell
+bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
+```
+
+## 运维命令
 
 启动 mysql
 
@@ -184,20 +276,6 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 
 10.1.207.182 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (28934)
-```
-
-清理安装时生成的脚本文件和安装介质
-
-> /data01/mysql/script 目录下是存储初始化的脚本，安装完毕后可以删除（**因为里面包含 root 密码等敏感信息**）
-
-```shell
-bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
-```
-
-> /opt/mysql 目录下的安装介质装完后可以删除
-
-```shell
-bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
 ## Q & A
