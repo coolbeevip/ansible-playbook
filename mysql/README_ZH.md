@@ -86,7 +86,7 @@ docker run --name ansible --rm -it \
 
 执行安装脚本
 
-> 此命令会自动上传安装介质到三个目标服务器，初始化 mysql 数据库，设置 mysql root 密码，启动 mysql 服务
+> 此命令会配置操作系统内核参数、自动上传安装介质到三个目标服务器，设置 MySQL 环境变量，初始化 mysql 数据库，设置 mysql root 密码，启动 mysql 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
@@ -219,6 +219,57 @@ ok: [10.1.207.180] => {
 
 #### 安装三节点 MySQL Router
 
+安装前检查
+
+> MySQL Router 要求主机间已经配置了相互的主机名 /etc/hosts，正常情况在之前的步骤安装 MySQL 时就已经自动设置过了，此处只是手动刚检查以下
+
+查看每个机器的主机名
+
+```shell
+bash-5.0# ansible all -m shell -a 'hostname'
+10.1.207.181 | CHANGED | rc=0 >>
+oss-irms-181
+
+10.1.207.180 | CHANGED | rc=0 >>
+oss-irms-180
+
+10.1.207.182 | CHANGED | rc=0 >>
+oss-irms-182
+```
+
+查看每个主机 /etc/hosts 文件中是否配置了每个服务器的主机名和IP地址
+
+```shell
+bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
+10.1.207.181 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+
+10.1.207.182 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+
+10.1.207.180 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+```
+
+执行安装脚本
+
+>
+
+```shell
+bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
+```
 
 #### 清理安装介质
 

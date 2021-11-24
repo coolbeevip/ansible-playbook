@@ -10,7 +10,7 @@ mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
 
 
-# 安装目录
+# MySQL 安装目录
 mysql_home_dir: "/opt/mysql"
 mysql_run_dir: "/data01/mysql/run"
 mysql_log_dir: "/data01/mysql/logs"
@@ -20,13 +20,14 @@ mysql_script_dir: "/data01/mysql/script"
 mysql_fast_data_dir: "/data01/mysql/data"
 mysql_fast_binlog_dir: "/data01/mysql/binlog"
 mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
+mysql_router_dir: "/data01/mysql/router"
 
 # 安装用户
 mysql_user: "mysql"
 mysql_group: "mysql"
 
-# root 密码
-mysql_user_root_password: "123!@#"
+# root 密码，不建议使用特殊字符 !@#$% 等等
+mysql_user_root_password: "CoolbeevipWowo"
 
 # my.conf
 

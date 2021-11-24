@@ -1,2 +1,25 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
+
+- name: create mysql router directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ mysql_user }}"
+    group: "{{ mysql_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ mysql_router_dir }}"
+  check_mode: no
+  become: yes
+
+# 初始化 myrouter.cnf 配置文件
+- name: check mysqlrouter.conf
+  stat:
+    path: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
+  register: check_result
+  check_mode: no
+- name: initialize mysqlrouter.conf
+  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}/bin/mysqlrouter --bootstrap root:{{ mysql_user_root_password }}@{{ inventory_hostname }}:{{ mysqld_port }} --directory={{ mysql_router_dir }}/{{ cluster_name }} --conf-use-sockets --force --user={{ mysql_user }}"
+  check_mode: no
+  when: not check_result.stat.exists
