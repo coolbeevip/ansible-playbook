@@ -87,13 +87,13 @@ docker run --name ansible --rm -it \
 
 执行安装脚本
 
-> 此命令会配置操作系统内核参数、自动上传安装介质到三个目标服务器，设置 MySQL 环境变量，初始化 mysql 数据库，设置 mysql root 密码，启动 mysql 服务
+> 此命令会配置操作系统内核参数、自动上传安装介质到三个目标服务器，设置 MySQL 环境变量，初始化 MySQL 数据库，设置 MySQL root 密码，启动 MySQL 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
-**提示：** 此脚本首次执行时耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
+**提示：** 此脚本首次执行耗时较长（会上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
 
 检查 mysql 节点状态
 
@@ -113,29 +113,18 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 
 校验三节点之间是否可以正常连接
 
-> 我们选择在主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
+> 此步为是为了在建立集群前检查服务节点可连接，我们选择在规划中的主节点上执行实例间连接检查，可以看到节点之间是可以相互连接的。你可以看到每个节点都提示 The instance 'xxx' is valid to be used in an InnoDB cluster.
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
 10.1.207.180 | CHANGED | rc=0 >>
 
-
 Checking whether existing tables comply with Group Replication requirements...
-
+Checking instance configuration...
+Checking whether existing tables comply with Group Replication requirements...
 Checking instance configuration...
 
-
-
-
 Checking whether existing tables comply with Group Replication requirements...
-
-Checking instance configuration...
-
-
-
-
-Checking whether existing tables comply with Group Replication requirements...
-
 Checking instance configuration...Validating local MySQL instance listening at port 3336 for use in an InnoDB cluster...
 This instance reports its own address as oss-irms-180:3336
 Clients and other cluster members will communicate with it through this address by default. If this is not correct, the report_host MySQL system variable should be changed.
