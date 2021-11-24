@@ -1,3 +1,5 @@
+## 初始化 MySQL 集群
+
 - hosts: 10.1.207.180
   user: mysql
   become: no

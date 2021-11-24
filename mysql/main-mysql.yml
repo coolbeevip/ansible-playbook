@@ -1,3 +1,5 @@
+## 安装三节点MySQL
+
 - hosts: 10.1.207.180
   user: mysql
   become: no
