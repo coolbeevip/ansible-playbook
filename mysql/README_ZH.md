@@ -175,6 +175,20 @@ bash-5.0# ansible all -m shell -a '/opt/mysql/mysql-8.0.27-linux-glibc2.12-x86_6
  SUCCESS! MySQL running (28934)
 ```
 
+清理安装时生成的脚本文件和安装介质
+
+> /data01/mysql/script 目录下是存储初始化的脚本，安装完毕后可以删除（**因为里面包含 root 密码等敏感信息**）
+
+```shell
+bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
+```
+
+> /opt/mysql 目录下的安装介质装完后可以删除
+
+```shell
+bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
+```
+
 ## Q & A
 
 Q: initialize mysql 时失败，查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
