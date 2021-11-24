@@ -27,7 +27,7 @@
    --user={{ mysql_user }}
   check_mode: no
 
-# 配置 myrouter.cnf 参数
+# 配置 myrouter.cnf 参数，mysql router 8.0.28 版本支持通过 mysqlrouter 命令参数修改 mysqlrouter.conf
 - name: configuring routing rw mysqlrouter.conf
   lineinfile:
     dest: "{{ mysql_router_dir }}/{{ cluster_name }}/mysqlrouter.conf"
