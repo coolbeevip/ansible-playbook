@@ -34,12 +34,14 @@ mysql_log_dir: "/data01/mysql/logs"
 mysql_data_dir: "/data01/mysql/data"
 mysql_dump_dir: "/data01/mysql/dump"
 mysql_script_dir: "/data01/mysql/script"
+## SSD disk is recommended for fast directory
 mysql_fast_data_dir: "/data01/mysql/data"
 mysql_fast_binlog_dir: "/data01/mysql/binlog"
 mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
+## MySQL router work directory
 mysql_router_dir: "/data01/mysql/router"
 
-# Root initialization password, special characters are not recommended !@#$% etc.
+# Root initialization password, special characters are not recommended, for examples !@#$% etc.
 mysql_user_root_password: "CoolbeevipWowo"
 
 # MySQL server configuration my.conf
