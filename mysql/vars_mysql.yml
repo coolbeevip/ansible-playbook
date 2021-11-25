@@ -1,16 +1,23 @@
 ---
-# 安装包
+# Mapping of IP addresses to hostname /etc/hosts
+hosts:
+  10.1.207.180: oss-irms-180
+  10.1.207.181: oss-irms-181
+  10.1.207.182: oss-irms-182
+    
+# MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
 
+# MySQL shell package
 mysql_shell_tar: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit.tar.gz"
 mysql_shell_tar_unzip_dir: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit"
 
+# MySQL router package
 mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
 
-
-# MySQL 安装目录
+# MySQL InnoDB Cluster install directory
 mysql_home_dir: "/opt/mysql"
 mysql_run_dir: "/data01/mysql/run"
 mysql_log_dir: "/data01/mysql/logs"
@@ -22,35 +29,26 @@ mysql_fast_binlog_dir: "/data01/mysql/binlog"
 mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
 mysql_router_dir: "/data01/mysql/router"
 
-# 安装用户
+# System user & group
 mysql_user: "mysql"
 mysql_group: "mysql"
 
-# root 密码，不建议使用特殊字符 !@#$% 等等
+# Root initialization password, special characters are not recommended !@#$% etc.
 mysql_user_root_password: "CoolbeevipWowo"
 
-# my.conf
+# MySQL server configuration my.conf
 mysqld_port: 3336
 mysqld_max_connections: 1000
 mysqld_max_connect_errors: 300
 mysqld_default_time_zone: "+08:00"
-
 mysqld_mysqlx_port: 33360
 mysqld_group_replication_port: 33361
-
 mysqld_character_set_server: utf8mb4
 mysqld_collation_server: utf8mb4_general_ci
-
 mysqld_innodb_buffer_pool_size: 10G
 client_default_character_set: utf8mb4
 
-# /etc/hosts
-hosts:
-  10.1.207.180: oss-irms-180
-  10.1.207.181: oss-irms-181
-  10.1.207.182: oss-irms-182
-
-# 集群
+# MySQL Cluster
 cluster_name: mycluster
 cluster_members_slaves: [10.1.207.181,10.1.207.182]
 
