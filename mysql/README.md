@@ -679,6 +679,8 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 
 #### Uninstall MySQL InnoDB Cluster
 
+This script will stop MySQL server and MySQL router, delete program files and data files
+
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
