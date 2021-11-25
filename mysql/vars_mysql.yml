@@ -53,7 +53,7 @@ mysqld_mysqlx_port: 33360
 mysqld_group_replication_port: 33361
 mysqld_character_set_server: utf8mb4
 mysqld_collation_server: utf8mb4_general_ci
-mysqld_innodb_buffer_pool_size: 10G
+mysqld_innodb_buffer_pool_size: 2G
 client_default_character_set: utf8mb4
 
 # MySQL Cluster
