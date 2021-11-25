@@ -57,6 +57,20 @@
     state: present
   check_mode: no
 
+# 在 HOME 目录下创建启动脚本连接
+- name: Create MySQL route stop.sh symbolic link
+  file:
+    src: "{{ mysql_router_dir }}/{{ cluster_name }}/stop.sh"
+    dest: "$HOME/stop.sh"
+    state: link
+  check_mode: no
+- name: Create MySQL route start.sh symbolic link
+  file:
+    src: "{{ mysql_router_dir }}/{{ cluster_name }}/start.sh"
+    dest: "$HOME/start.sh"
+    state: link
+  check_mode: no
+
 # 启动 MySQL Router
 - name: start MySQL Router
   shell: "{{ mysql_router_dir }}/{{ cluster_name }}/start.sh"

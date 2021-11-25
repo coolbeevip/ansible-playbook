@@ -54,22 +54,22 @@
   check_mode: no
 
 # 移除 /etc/my.cnf
-- name: check /etc/my.cnf
+- name: check /etc/my.cnf exists
   stat: path=/etc/my.cnf
   register: check_etc_my_cnf
   check_mode: no
-- name: remove /etc/my.cnf
+- name: rename /etc/my.cnf
   command: mv /etc/my.cnf /etc/my.cnf.deleted
   check_mode: no
   become: yes
   when: check_etc_my_cnf.stat.exists
 
 # 移除 /etc/mysql/my.cnf
-- name: check /etc/mysql/my.cnf
+- name: check /etc/mysql/my.cnf exists
   stat: path=/etc/mysql/my.cnf
   register: check_etc_mysql_my_cnf
   check_mode: no
-- name: remove /etc/mysql/my.cnf
+- name: rename /etc/mysql/my.cnf
   command: mv /etc/mysql/my.cnf /etc/mysql/my.cnf.deleted
   check_mode: no
   become: yes
@@ -85,7 +85,7 @@
   become: yes
 
 # 设置 MYSQL_HOME 环境变量
-- name: configuring MYSQL_HOME variables
+- name: configuring environment MYSQL_HOME
   lineinfile:
     dest: ~/.bash_profile
     regexp: '^export MYSQL_HOME.*'
@@ -94,7 +94,7 @@
   check_mode: no
 
 # 设置 MYSQLSH_HOME 环境变量
-- name: configuring MYSQLSH_HOME variables
+- name: configuring environment MYSQLSH_HOME
   lineinfile:
     dest: ~/.bash_profile
     regexp: '^export MYSQLSH_HOME.*'
@@ -103,7 +103,7 @@
   check_mode: no
 
 # 设置 MYSQL_HOME 和 MYSQLSH_HOME 到 PATH
-- name: configuring PATH variables
+- name: configuring environment PATH
   lineinfile:
     dest: ~/.bash_profile
     regexp: '^PATH=.*MYSQL_HOME'
