@@ -84,7 +84,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 
 Linux Mapping of IP addresses to hostname /etc/hosts
 
-```
+```shell
 - hosts: 10.1.207.180
   user: mysql
 
@@ -108,7 +108,7 @@ Configure IP address of MySQL Cluster Master node, and the system user name
 
 Install MySQL Router Master nodes, and the system user name
 
-```
+```shell
 - hosts: 10.1.207.180
   user: mysql
 
@@ -151,7 +151,7 @@ mysql_group: "mysql"
 
 MySQL Install binary package and unzip directory
 
-```
+```shell
 # MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
@@ -208,7 +208,7 @@ client_default_character_set: utf8mb4
 
 MySQL cluster name
 
-```
+```shell
 # MySQL Cluster
 cluster_name: mycluster
 ```
@@ -473,7 +473,7 @@ group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336
 
 Verify through MySQL Router RO port **36447** to connect to the master node of the database to view MGR group information
 
-```
+```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36447 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
 10.1.207.181 | CHANGED | rc=0 >>
 CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK

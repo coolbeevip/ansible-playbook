@@ -83,7 +83,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 
 安装 MySQL Server 的服务器 IP 地址，以及系统用户名
 
-```
+```shell
 - hosts: 10.1.207.180
   user: mysql
 
@@ -107,7 +107,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 
 安装 MySQL Router 的服务器 IP 地址，以及系统用户名
 
-```
+```shell
 - hosts: 10.1.207.180
   user: mysql
 
@@ -150,7 +150,7 @@ mysql_group: "mysql"
 
 安装介质名称以及解压后的目录名
 
-```
+```shell
 # MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
@@ -207,7 +207,7 @@ client_default_character_set: utf8mb4
 
 MySQL cluster 配置
 
-```
+```shell
 # MySQL Cluster
 cluster_name: mycluster
 ```
@@ -472,7 +472,7 @@ group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336
 
 测试通过 MySQL Router RO 端口 **36447** 连接数据库从节点执行查看 MGR 组信息
 
-```
+```shell
 bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36447 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
 10.1.207.181 | CHANGED | rc=0 >>
 CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK
