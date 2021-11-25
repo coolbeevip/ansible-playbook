@@ -680,7 +680,7 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 #### Uninstall MySQL InnoDB Cluster
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh ~/mysql_uninstall.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 

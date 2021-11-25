@@ -685,7 +685,7 @@ A: 请检查服务器内存是否够用
 #### 如何彻底删除 MySQL InnoDB 集群
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh ~/mysql_uninstall.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 
