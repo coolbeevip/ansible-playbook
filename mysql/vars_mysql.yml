@@ -4,7 +4,7 @@ hosts:
   10.1.207.180: oss-irms-180
   10.1.207.181: oss-irms-181
   10.1.207.182: oss-irms-182
-    
+
 # MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
@@ -52,7 +52,7 @@ client_default_character_set: utf8mb4
 cluster_name: mycluster
 cluster_members_slaves: [10.1.207.181,10.1.207.182]
 
-# MySQL Router，ReadWrite Port 36446, Read Port 36447
+# MySQL Router configuration
 mysql_router_base_port: 36446
 mysql_router_max_connections: 3000
 mysql_router_max_connect_errors: 300
