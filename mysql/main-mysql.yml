@@ -1,4 +1,4 @@
-## 安装三节点MySQL
+## Install MySQL server
 
 - hosts: 10.1.207.180
   user: mysql
