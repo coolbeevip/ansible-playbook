@@ -25,7 +25,7 @@
 - name: copy my.cnf to ~/.my.cnf
   template:
     src: "/ansible-playbook/mysql/config/my.cnf.j2"
-    dest: "/home/mysql/.my.cnf"
+    dest: "$HOME/.my.cnf"
   check_mode: no
 
 # 设置 mysql.server 脚本中的 basedir
@@ -75,11 +75,11 @@
   become: yes
   when: check_etc_mysql_my_cnf.stat.exists
 
-# 上传卸载脚本 uninstall.sh 到 etc 目录
+# 上传卸载脚本 mysql_uninstall.sh 到 etc 目录
 - name: copy mysql_uninstall.sh
   template:
     src: "/ansible-playbook/mysql/config/mysql_uninstall.sh.j2"
-    dest: "/home/mysql/mysql_uninstall.sh"
+    dest: "$HOME/mysql_uninstall.sh"
     mode: u=rwx,g=rx,o=rx
   check_mode: no
   become: yes
