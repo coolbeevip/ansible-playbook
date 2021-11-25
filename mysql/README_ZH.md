@@ -41,6 +41,7 @@ MySQL InnoDB 集群有以下服务组成
 | ~/.my.cnf | MySQL 配置文件路径 |
 | ~/mysql_uninstall.sh | MySQL 卸载脚本 |
 | ~/.bash_profile | 设置 MySQL 环境变量 |
+| ~/mysql.server | MySQL server 的启停脚本 |
 | /data01/mysql/run | MySQL server pid 文件路径 |
 | /data01/mysql/logs | MySQL server 日志文件路径 |
 | /data01/mysql/data | MySQL server 数据文件路径 |
@@ -49,7 +50,6 @@ MySQL InnoDB 集群有以下服务组成
 | /data01/mysql/binlog | MySQL server bin-log 文件存储路径 |
 | /data01/mysql/relaylog | MySQL server relay-log 文件存储路径 |
 | /data01/mysql/router/mycluster | MySQL router 的配置文件和启动脚本 |
-| ~/mysql.server | MySQL server 的启停脚本 |
 
 **提示:** 系统自带 /etc/my.cnf /etc/mysql/my.cnf 文件将被重命名为 /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 

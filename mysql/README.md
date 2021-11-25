@@ -40,6 +40,7 @@ Planning for installation directory
 | /opt/mysql | Installation path of MySQL server、MySQL Shell、MySQL router |
 | ~/.my.cnf | MySQL database server configuration file |
 | ~/mysql_uninstall.sh | MySQL 卸载脚本 |
+| ~/mysql.server |  MySQL server Startup Script |
 | ~/.bash_profile | Configure MySQL environment and PATH |
 | /data01/mysql/run |  MySQL server PID file |
 | /data01/mysql/logs | MySQL server log file path |
@@ -49,7 +50,6 @@ Planning for installation directory
 | /data01/mysql/binlog | MySQL server binary log file storage directory |
 | /data01/mysql/relaylog | MySQL server relay log files torage directory |
 | /data01/mysql/router/mycluster | Configuration file and startup script of MySQL router |
-| ~/mysql.server |  MySQL server Startup Script |
 
 **NOTICE:** The existing /etc/my.cnf /etc/mysql/my.cnf file will be renamed to /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
