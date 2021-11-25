@@ -149,7 +149,7 @@ mysql_user: "mysql"
 mysql_group: "mysql"
 ```
 
-MySQL Install package and unzip directory
+MySQL Install binary package and unzip directory
 
 ```
 # MySQL server package
@@ -504,7 +504,7 @@ Delete the temporary script file generated during the installation process (**be
 bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/script/*'
 ```
 
-(**Optional**)Delete the installation package file (about 1.3GB of disk space can be freed after deleting files)
+(**Optional**)Delete the installation binary package file (about 1.3GB of disk space can be freed after deleting files)
 
 ```shell
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'

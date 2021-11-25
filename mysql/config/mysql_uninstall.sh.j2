@@ -10,15 +10,15 @@ if [ -f "{{ mysql_home_dir }}/router/mycluster/stop.sh" ]; then
 fi
 
 # stop MySQL server
-if [ -f "~/mysql.server" ]; then
+if [ -f "$HOME/mysql.server" ]; then
   ~/mysql.server stop
 fi
 
 # delete ~/.my.cnf file
-rm -rf ~/.my.cnf
+rm -rf $HOME/.my.cnf
 
 # delete MySQL startup script
-rm -rf ~/mysql.server
+rm -rf $HOME/mysql.server
 
 # delete mysql files
 rm -rf {{ mysql_run_dir }}
