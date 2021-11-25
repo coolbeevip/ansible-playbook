@@ -5,6 +5,12 @@ hosts:
   10.1.207.181: oss-irms-181
   10.1.207.182: oss-irms-182
 
+# Linux limits
+limits_hard_nproc: 65535
+limits_soft_nproc: 65535
+limits_hard_nofile: 65535
+limits_soft_nofile: 65535
+
 # MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"

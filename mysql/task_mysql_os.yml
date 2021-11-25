@@ -1,7 +1,7 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 安装常用工具
+# install linux package
 - name: install packages
   yum:
     name:
@@ -9,13 +9,13 @@
     state: present
   check_mode: no
 
-# 设置 Linux PAM limits
+# configuring Linux limits
 - name: Add or modify hard nofile limits
   pam_limits:
     domain: '{{ mysql_user }}'
     limit_type: hard
     limit_item: nofile
-    value: '65535'
+    value: '{{ limits_hard_nofile }}'
   check_mode: no
   become: yes
 - name: Add or modify soft nofile limits
@@ -23,7 +23,7 @@
     domain: '{{ mysql_user }}'
     limit_type: soft
     limit_item: nofile
-    value: '65535'
+    value: '{{ limits_soft_nofile }}'
   check_mode: no
   become: yes
 - name: Add or modify hard nproc limits
@@ -31,7 +31,7 @@
     domain: '{{ mysql_user }}'
     limit_type: hard
     limit_item: nproc
-    value: '65535'
+    value: '{{ limits_hard_nproc }}'
   check_mode: no
   become: yes
 - name: Add or modify soft nproc limits
@@ -39,11 +39,11 @@
     domain: '{{ mysql_user }}'
     limit_type: soft
     limit_item: nproc
-    value: '65535'
+    value: '{{ limits_soft_nproc }}'
   check_mode: no
   become: yes
 
-# hosts 中配置主机名
+# configuring /etc/hosts
 - name: Add IP address of all hosts to all hosts
   lineinfile:
     dest: /etc/hosts
@@ -54,28 +54,13 @@
   become: yes
   check_mode: no
 
-# 增加用户
-- name: create user mysql
-  group:
-    name: mysql
-    state: present
-  check_mode: no
-  become: yes
-- name: create user mysql
-  user:
-    name: mysql
-    password: '$5$YHiEQaLUzPAugJ3q$GqymyJkWMw1nNu.C.hf6ZSwCecd8H8TzLdaRhqehBM/' # 使用 mkpasswd --method=sha-512 生成
-    comment: mysql by coolbeevip
-    group: mysql
-  check_mode: no
-  become: yes
-
-# 初始化目录
+# initialize MySQL InnoDB Cluster root directory
 - name: create mysql home
   file:
     path: "{{ mysql_home_dir }}"
     state: directory
     owner: "{{ mysql_user }}"
     group: "{{ mysql_group }}"
+    mode: "2750"
   become: yes
   check_mode: no
