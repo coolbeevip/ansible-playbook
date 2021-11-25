@@ -1,4 +1,4 @@
-## Install MySQL Server Nodes
+# Install MySQL Server Nodes
 
 - hosts: 10.1.207.180
   user: mysql

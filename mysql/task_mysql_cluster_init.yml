@@ -37,7 +37,7 @@
     line: "cluster.addInstance('root@{{ item }}:{{ mysqld_port }}', {'localAddress': '{{ item }}', 'password': '{{ mysql_user_root_password }}','recoveryMethod':'clone','waitRecovery':'1'})"
     state: present
     create: true
-  with_items: "{{ cluster_members_slaves }}"
+  with_items: "{{ groups.all | difference(inventory_hostname) }}"
   check_mode: no
   when: check_result.rc == 1
 

@@ -1,4 +1,4 @@
-## Install MySQL Router Nodes
+# Install MySQL Router Nodes
 
 - hosts: 10.1.207.180
   user: mysql
