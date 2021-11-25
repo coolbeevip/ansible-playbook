@@ -74,6 +74,7 @@ log_queries_not_using_indexes                   = 1                             
 log_throttle_queries_not_using_indexes          = 10                                    # 限制每分钟可以写入慢查询日志的数量
 log_slow_admin_statements                       = 1                                     # 慢查询日志的语句中包含慢管理命令
 log_output                                      = FILE,TABLE                            # 一般查询日志和慢查询日志输出位置
+log_timestamps                                  = SYSTEM                                # 日志时间戳跟随系统
 
 # Server System Security
 authentication_policy                           = mysql_native_password                 # 使用 mysql 原生密码插件

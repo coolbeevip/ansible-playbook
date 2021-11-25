@@ -76,10 +76,11 @@
   when: check_etc_mysql_my_cnf.stat.exists
 
 # 上传卸载脚本 uninstall.sh 到 etc 目录
-- name: copy uninstall.sh
+- name: copy mysql_uninstall.sh
   template:
     src: "/ansible-playbook/mysql/config/mysql_uninstall.sh.j2"
-    dest: "~/mysql_uninstall.sh"
+    dest: "/home/mysql/mysql_uninstall.sh"
+    mode: u=rwx,g=r,o=r
   check_mode: no
   become: yes
 

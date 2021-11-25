@@ -49,7 +49,7 @@ Planning for installation directory
 | /data01/mysql/binlog | MySQL server binary log file storage directory |
 | /data01/mysql/relaylog | MySQL server relay log files torage directory |
 | /data01/mysql/router/mycluster | Configuration file and startup script of MySQL router |
-| /etc/init.d/mysql.server |  MySQL server Startup Script |
+| ~/mysql.server |  MySQL server Startup Script |
 
 **NOTICE:** The existing /etc/my.cnf /etc/mysql/my.cnf file will be renamed to /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
@@ -263,7 +263,7 @@ Verify MySQL node status
 > You can see that the MySQL instances on the three servers have been started
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
+bash-5.0# ansible all -m shell -a '~/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 
@@ -515,7 +515,7 @@ bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 Start MySQL
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server start'
+bash-5.0# ansible all -m shell -a '~/mysql.server start'
 10.1.207.182 | CHANGED | rc=0 >>
 Starting MySQL........ SUCCESS!
 
@@ -529,7 +529,7 @@ Starting MySQL........... SUCCESS!
 Stop MySQL
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
+bash-5.0# ansible all -m shell -a '~/mysql.server stop'
 10.1.207.182 | CHANGED | rc=0 >>
 Shutting down MySQL... SUCCESS!
 
@@ -543,7 +543,7 @@ Shutting down MySQL...... SUCCESS!
 Check MySQL server status
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
+bash-5.0# ansible all -m shell -a '~/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 

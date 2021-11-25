@@ -49,7 +49,7 @@ MySQL InnoDB 集群有以下服务组成
 | /data01/mysql/binlog | MySQL server bin-log 文件存储路径 |
 | /data01/mysql/relaylog | MySQL server relay-log 文件存储路径 |
 | /data01/mysql/router/mycluster | MySQL router 的配置文件和启动脚本 |
-| /etc/init.d/mysql.server | MySQL server 的启停脚本 |
+| ~/mysql.server | MySQL server 的启停脚本 |
 
 **提示:** 系统自带 /etc/my.cnf /etc/mysql/my.cnf 文件将被重命名为 /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
@@ -223,7 +223,7 @@ mysql_router_max_connect_errors: 300
 
 #### my.cnf.j2
 
-更多的 my.cnf 配置你可以直接修改 mysql/conf/my.cnf.j2 文件
+更多的 my.cnf 配置你可以直接修改 mysql/conf/my.cnf.j2 模版文件
 
 ## 开始安装
 
@@ -262,7 +262,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 > 可以看到三台服务器上的 MySQL 服务都已经启动
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
+bash-5.0# ansible all -m shell -a '~/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 
@@ -514,7 +514,7 @@ bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 启动 MySQL
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server start'
+bash-5.0# ansible all -m shell -a '~/mysql.server start'
 10.1.207.182 | CHANGED | rc=0 >>
 Starting MySQL........ SUCCESS!
 
@@ -528,7 +528,7 @@ Starting MySQL........... SUCCESS!
 停止 MySQL
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server stop'
+bash-5.0# ansible all -m shell -a '~/mysql.server stop'
 10.1.207.182 | CHANGED | rc=0 >>
 Shutting down MySQL... SUCCESS!
 
@@ -542,7 +542,7 @@ Shutting down MySQL...... SUCCESS!
 检查 MySQL 服务状态
 
 ```shell
-bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
+bash-5.0# ansible all -m shell -a '~/mysql.server status'
 10.1.207.181 | CHANGED | rc=0 >>
  SUCCESS! MySQL running (25729)
 

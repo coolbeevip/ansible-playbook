@@ -3,10 +3,14 @@
 source ~/.bash_profile
 
 # stop MySQL router
-{{ mysql_home_dir }}/router/mycluster/stop.sh
+if [ ! -d "{{ mysql_home_dir }}/router/mycluster/stop.sh"]; then
+  {{ mysql_home_dir }}/router/mycluster/stop.sh
+fi
 
 # stop MySQL server
-/etc/init.d/mysql.server stop
+if [ ! -d "~/mysql.server stop"]; then
+  ~/mysql.server stop
+fi
 
 # delete ~/.my.cnf file
 rm -rf ~/.my.cnf
