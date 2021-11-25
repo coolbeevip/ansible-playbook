@@ -38,7 +38,7 @@ MySQL InnoDB 集群有以下服务组成
 | ---- | ---- |
 | /etc/hosts | 所有节点 IP 地址和主机名映射 |
 | /opt/mysql | MySQL server、MySQL Shell、MySQL router 程序安装路径 |
-| ~/.my.cnf | MySQL 配置文件路径 |
+| ~/.my.cnf | MySQL 配置文件 |
 | ~/mysql_uninstall.sh | MySQL 卸载脚本 |
 | ~/.bash_profile | 设置 MySQL 环境变量 |
 | ~/mysql.server | MySQL server 的启停脚本 |
