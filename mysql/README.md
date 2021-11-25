@@ -74,6 +74,150 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
 
 ## Configuration
 
+> You can edit the following configuration files to modify the default parameters
+
+#### main-mysql.yml
+
+Linux Mapping of IP addresses to hostname /etc/hosts
+
+```
+- hosts: 10.1.207.180
+  user: mysql
+
+- hosts: 10.1.207.181
+  user: mysql
+
+- hosts: 10.1.207.182
+  user: mysql
+```
+
+#### main-cluster.yml
+
+Configure IP address of MySQL Cluster Master node, and the system user name
+
+```shell
+- hosts: 10.1.207.180
+  user: mysql
+```
+
+#### main-router.yml
+
+Install MySQL Router Master nodes, and the system user name
+
+```
+- hosts: 10.1.207.180
+  user: mysql
+
+- hosts: 10.1.207.181
+  user: mysql
+
+- hosts: 10.1.207.182
+  user: mysql
+```
+
+### vars_mysql.yml
+
+Linux Mapping of IP addresses to hostname /etc/hosts
+
+```shell
+# Linux Mapping of IP addresses to hostname /etc/hosts
+hosts:
+  10.1.207.180: oss-irms-180
+  10.1.207.181: oss-irms-181
+  10.1.207.182: oss-irms-182
+```
+
+Linux Limits
+
+```shell
+# Linux limits
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '65535'
+limits_soft_nofile: '65535'
+```
+
+Linux user and group
+
+```shell
+# Linux user & group
+mysql_user: "mysql"
+mysql_group: "mysql"
+```
+
+MySQL Install package and unzip directory
+
+```
+# MySQL server package
+mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
+mysql_tar_unzip_dir: "mysql-8.0.27-linux-glibc2.12-x86_64"
+
+# MySQL shell package
+mysql_shell_tar: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit.tar.gz"
+mysql_shell_tar_unzip_dir: "mysql-shell-8.0.27-linux-glibc2.12-x86-64bit"
+
+# MySQL router package
+mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
+mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
+```
+
+Install directory
+
+```shell
+# MySQL InnoDB Cluster install directory
+mysql_home_dir: "/opt/mysql"
+mysql_run_dir: "/data01/mysql/run"
+mysql_log_dir: "/data01/mysql/logs"
+mysql_data_dir: "/data01/mysql/data"
+mysql_dump_dir: "/data01/mysql/dump"
+mysql_script_dir: "/data01/mysql/script"
+## SSD disk is recommended for fast directory
+mysql_fast_data_dir: "/data01/mysql/data"
+mysql_fast_binlog_dir: "/data01/mysql/binlog"
+mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
+## MySQL router work directory
+mysql_router_dir: "/data01/mysql/router"
+```
+
+MySQL root initialization password
+
+```shell
+# Root initialization password, special characters are not recommended, for examples !@#$% etc.
+mysql_user_root_password: "CoolbeevipWowo"
+```
+
+MySQL server configuration my.cnf
+
+```shell
+# MySQL server configuration
+mysqld_port: 3336
+mysqld_max_connections: 1000
+mysqld_max_connect_errors: 300
+mysqld_default_time_zone: "+08:00"
+mysqld_mysqlx_port: 33360
+mysqld_group_replication_port: 33361
+mysqld_character_set_server: utf8mb4
+mysqld_collation_server: utf8mb4_general_ci
+mysqld_innodb_buffer_pool_size: 10G
+client_default_character_set: utf8mb4
+```
+
+MySQL cluster name
+
+```
+# MySQL Cluster
+cluster_name: mycluster
+```
+
+MySQL router configuration
+
+```shell
+# MySQL Router configuration
+mysql_router_base_port: 36446
+mysql_router_max_connections: 3000
+mysql_router_max_connect_errors: 300
+```
+
 ## Installation
 
 Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
