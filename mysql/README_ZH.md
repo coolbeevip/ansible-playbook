@@ -348,7 +348,7 @@ group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336
 删除过程中产生的临时脚本文件（**因为里面包含 root 密码等敏感信息**）
 
 ```shell
-bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
+bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/script/*'
 ```
 
 (**可选**)删除安装包文件（删除后可以释放出约1.3GB的磁盘空间）

@@ -349,7 +349,7 @@ group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336
 Delete the temporary script file generated during the installation process (**because it contains sensitive information such as the root password**)
 
 ```shell
-bash-5.0# ansible all -m shell -a 'rm /data01/mysql/script/*'
+bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/script/*'
 ```
 
 (**Optional**)Delete the installation package file (about 1.3GB of disk space can be freed after deleting files)
