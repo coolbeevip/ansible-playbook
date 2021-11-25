@@ -111,10 +111,18 @@ mysqlx_port                                     = {{ mysqld_mysqlx_port }}
 mysqlx_socket                                   = {{ mysql_run_dir }}/mysqlx.sock
 
 ## Group Replication
+{% set group_replication_seeds_address %}
+{% for item in groups.all %}
+{% if item != inventory_hostname %}
+{% if not loop.last %}{{ item }}:{{ mysqld_group_replication_port }},{% else %}{{ item }}:{{ mysqld_group_replication_port }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endset %}
 loose-group_replication_group_name              = "f898fdc7-4b7e-11ec-8e9b-525400506ca8"    # MGR复制组的名字
 loose-group_replication_start_on_boot           = off                                       # 组复制不随实例启动
 loose-group_replication_local_address           = "{{ inventory_hostname }}:{{ mysqld_group_replication_port }}"
-loose-group_replication_group_seeds             = "{{ group_replication_seeds_address }}"
+loose-group_replication_group_seeds             = "{{ group_replication_seeds_address | replace('\n', '') }}"
 loose-group_replication_bootstrap_group         = off                                       # 关闭此服务器引导组
 loose-group_replication_single_primary_mode     = on                                        # 组自动选择单个服务器作为处理读/写工作负载的服务器
 loose-group_replication_transaction_size_limit  = 1500000000                                # 复制组接受的最大事务大小

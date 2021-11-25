@@ -5,8 +5,6 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    group_replication_seeds_address: 10.1.207.181:33361,10.1.207.182:33361
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
@@ -18,8 +16,6 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    group_replication_seeds_address: 10.1.207.180:33361,10.1.207.182:33361
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
@@ -31,8 +27,6 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    group_replication_seeds_address: 10.1.207.180:33361,10.1.207.181:33361
   tasks:
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml

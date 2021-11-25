@@ -6,10 +6,10 @@ hosts:
   10.1.207.182: oss-irms-182
 
 # Linux limits
-limits_hard_nproc: 65535
-limits_soft_nproc: 65535
-limits_hard_nofile: 65535
-limits_soft_nofile: 65535
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '65535'
+limits_soft_nofile: '65535'
 
 # Linux user & group
 mysql_user: "mysql"
