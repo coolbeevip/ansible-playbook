@@ -5,12 +5,12 @@ set -e
 source ~/.bash_profile
 
 # stop MySQL router
-if [ -d "{{ mysql_home_dir }}/router/mycluster/stop.sh" ]; then
+if [ -f "{{ mysql_home_dir }}/router/mycluster/stop.sh" ]; then
   {{ mysql_home_dir }}/router/mycluster/stop.sh
 fi
 
 # stop MySQL server
-if [ -d "~/mysql.server" ]; then
+if [ -f "~/mysql.server" ]; then
   ~/mysql.server stop
 fi
 
@@ -32,9 +32,9 @@ rm -rf {{ mysql_fast_relaylog_dir }}
 rm -rf {{ mysql_router_dir }}
 
 # delete mysql program
-rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
-rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
-rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
+# rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
+# rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
+# rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
 
 # delete mysql package
 # rm -rf {{ mysql_home_dir }}/*
