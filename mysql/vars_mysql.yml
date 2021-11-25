@@ -1,5 +1,5 @@
 ---
-# Mapping of IP addresses to hostname /etc/hosts
+# Linux Mapping of IP addresses to hostname /etc/hosts
 hosts:
   10.1.207.180: oss-irms-180
   10.1.207.181: oss-irms-181
@@ -10,6 +10,10 @@ limits_hard_nproc: 65535
 limits_soft_nproc: 65535
 limits_hard_nofile: 65535
 limits_soft_nofile: 65535
+
+# Linux user & group
+mysql_user: "mysql"
+mysql_group: "mysql"
 
 # MySQL server package
 mysql_tar: "mysql-8.0.27-linux-glibc2.12-x86_64.tar.xz"
@@ -34,10 +38,6 @@ mysql_fast_data_dir: "/data01/mysql/data"
 mysql_fast_binlog_dir: "/data01/mysql/binlog"
 mysql_fast_relaylog_dir: "/data01/mysql/relaylog"
 mysql_router_dir: "/data01/mysql/router"
-
-# System user & group
-mysql_user: "mysql"
-mysql_group: "mysql"
 
 # Root initialization password, special characters are not recommended !@#$% etc.
 mysql_user_root_password: "CoolbeevipWowo"
