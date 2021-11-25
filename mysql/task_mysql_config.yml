@@ -80,7 +80,7 @@
   template:
     src: "/ansible-playbook/mysql/config/mysql_uninstall.sh.j2"
     dest: "/home/mysql/mysql_uninstall.sh"
-    mode: u=rwx,g=r,o=r
+    mode: u=rwx,g=rx,o=rx
   check_mode: no
   become: yes
 
