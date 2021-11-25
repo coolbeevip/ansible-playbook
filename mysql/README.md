@@ -26,9 +26,9 @@ Planning for MySQL nodes
 
 | IP | Node |
 | ---- | ---- |
-| 10.1.207.180 | MySQL Master Node, MySQL Router |
-| 10.1.207.181 | MySQL Slave Node, MySQL Router |
-| 10.1.207.182 | MySQL Slave Node, MySQL Router |
+| 10.1.207.180 | MySQL Primary Node, MySQL Router |
+| 10.1.207.181 | MySQL Secondary Node, MySQL Router |
+| 10.1.207.182 | MySQL Secondary Node, MySQL Router |
 
 Planning for installation directory
 

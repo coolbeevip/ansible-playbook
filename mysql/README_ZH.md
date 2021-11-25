@@ -26,9 +26,9 @@ MySQL InnoDB 集群有以下服务组成
 
 | IP地址 | 模块 |
 | ---- | ---- |
-| 10.1.207.180 | MySQL Master Node, MySQL Router |
-| 10.1.207.181 | MySQL Slave Node, MySQL Router |
-| 10.1.207.182 | MySQL Slave Node, MySQL Router |
+| 10.1.207.180 | MySQL Primary Node, MySQL Router |
+| 10.1.207.181 | MySQL Secondary Node, MySQL Router |
+| 10.1.207.182 | MySQL Secondary Node, MySQL Router |
 
 节点安装路径
 
