@@ -6,8 +6,6 @@
   become_user: root
   become_method: su
   vars:
-    server_id: "180"
-    group_replication_local_address: 10.1.207.180:33361
     group_replication_seeds_address: 10.1.207.181:33361,10.1.207.182:33361
   tasks:
     - include_tasks: task_mysql_os.yml
@@ -21,8 +19,6 @@
   become_user: root
   become_method: su
   vars:
-    server_id: "181"
-    group_replication_local_address: 10.1.207.181:33361
     group_replication_seeds_address: 10.1.207.180:33361,10.1.207.182:33361
   tasks:
     - include_tasks: task_mysql_os.yml
@@ -36,8 +32,6 @@
   become_user: root
   become_method: su
   vars:
-    server_id: "182"
-    group_replication_local_address: 10.1.207.182:33361
     group_replication_seeds_address: 10.1.207.180:33361,10.1.207.181:33361
   tasks:
     - include_tasks: task_mysql_os.yml
