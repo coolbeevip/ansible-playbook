@@ -549,7 +549,7 @@ bash-5.0# ansible all -m shell -a '/etc/init.d/mysql.server status'
 Check MySQL cluster status
 
 ```shell
-bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="123!@#" root@10.1.207.180:3336 -- cluster status'
+bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="CoolbeevipWowo" root@10.1.207.180:3336 -- cluster status'
 10.1.207.180 | CHANGED | rc=0 >>
 {
     "clusterName": "mycluster",
