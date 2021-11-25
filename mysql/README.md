@@ -186,7 +186,7 @@ mysql_router_dir: "/data01/mysql/router"
 MySQL root initialization password
 
 ```shell
-# Root initialization password, special characters are not recommended, for examples !@#$% etc.
+# MySQL administrator user initialization password, special characters are not recommended, for examples !@#$% etc.
 mysql_user_root_password: "CoolbeevipWowo"
 ```
 
