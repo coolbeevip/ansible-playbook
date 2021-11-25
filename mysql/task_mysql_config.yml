@@ -21,19 +21,65 @@
   check_mode: no
   become: yes
 
-# 上传 my.cnf 到 etc 目录
-- name: copy my.cnf
+# 上传 my.cnf 到 ~/.my.cnf
+- name: copy my.cnf to ~/.my.cnf
   template:
     src: "/ansible-playbook/mysql/config/my.cnf.j2"
-    dest: "/etc/my.cnf"
+    dest: "/home/mysql/.my.cnf"
+  check_mode: no
+
+# 设置 mysql.server 脚本中的 basedir
+- name: configuring mysql.server basedir variables
+  lineinfile:
+    dest: "{{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server"
+    regexp: '^basedir=.*$'
+    line: 'basedir={{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}'
+    backrefs: yes
+    state: present
+  check_mode: no
+
+# 设置 mysql.server 脚本中的 datadir
+- name: configuring mysql.server datadir variables
+  lineinfile:
+    dest: "{{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server"
+    regexp: '^datadir=.*$'
+    line: 'datadir={{ mysql_data_dir }}'
+    backrefs: yes
+    state: present
+  check_mode: no
+
+# copy mysql.server to ~/mysql.server
+- name: copy mysql.server to ~/mysql.server
+  shell: "cp {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server ~/mysql.server"
+  check_mode: no
+
+# 移除 /etc/my.cnf
+- name: check /etc/my.cnf
+  stat: path=/etc/my.cnf
+  register: check_etc_my_cnf
+  check_mode: no
+- name: remove /etc/my.cnf
+  command: mv /etc/my.cnf /etc/my.cnf.deleted
   check_mode: no
   become: yes
+  when: check_etc_my_cnf.stat.exists
+
+# 移除 /etc/mysql/my.cnf
+- name: check /etc/mysql/my.cnf
+  stat: path=/etc/mysql/my.cnf
+  register: check_etc_mysql_my_cnf
+  check_mode: no
+- name: remove /etc/mysql/my.cnf
+  command: mv /etc/mysql/my.cnf /etc/mysql/my.cnf.deleted
+  check_mode: no
+  become: yes
+  when: check_etc_mysql_my_cnf.stat.exists
 
 # 上传卸载脚本 uninstall.sh 到 etc 目录
 - name: copy uninstall.sh
   template:
-    src: "/ansible-playbook/mysql/config/uninstall.sh.j2"
-    dest: "{{ mysql_home_dir }}/uninstall.sh"
+    src: "/ansible-playbook/mysql/config/mysql_uninstall.sh.j2"
+    dest: "~/mysql_uninstall.sh"
   check_mode: no
   become: yes
 

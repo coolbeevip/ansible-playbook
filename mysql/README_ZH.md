@@ -36,8 +36,11 @@ MySQL InnoDB 集群有以下服务组成
 
 | 路径 | 描述 |
 | ---- | ---- |
+| /etc/hosts | 所有节点 IP 地址和主机名映射 |
 | /opt/mysql | MySQL server、MySQL Shell、MySQL router 程序安装路径 |
-| /etc/my.cnf | MySQL 配置文件路径 |
+| ~/.my.cnf | MySQL 配置文件路径 |
+| ~/mysql_uninstall.sh | MySQL 卸载脚本 |
+| ~/.bash_profile | 设置 MySQL 环境变量 |
 | /data01/mysql/run | MySQL server pid 文件路径 |
 | /data01/mysql/logs | MySQL server 日志文件路径 |
 | /data01/mysql/data | MySQL server 数据文件路径 |
@@ -48,6 +51,7 @@ MySQL InnoDB 集群有以下服务组成
 | /data01/mysql/router/mycluster | MySQL router 的配置文件和启动脚本 |
 | /etc/init.d/mysql.server | MySQL server 的启停脚本 |
 
+**提示:** 系统自带 /etc/my.cnf /etc/mysql/my.cnf 文件将被重命名为 /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
 ## 下载安装包和 Playbook 脚本
 
@@ -114,7 +118,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages http://ftp.ntu.edu.tw/MySQL
   user: mysql
 ```
 
-### vars_mysql.yml
+#### vars_mysql.yml
 
 主机 IP 地址以及主机名映射关系
 
@@ -216,6 +220,10 @@ mysql_router_base_port: 36446
 mysql_router_max_connections: 3000
 mysql_router_max_connect_errors: 300
 ```
+
+#### my.cnf.j2
+
+更多的 my.cnf 配置你可以直接修改 mysql/conf/my.cnf.j2 文件
 
 ## 开始安装
 
@@ -668,7 +676,7 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 
 ## Q & A
 
-#### 执行 main-mysql.yml 时 TASK initialize mysql 失败
+#### 执行 main-mysql.yml 时 TASK[initialize mysql] 失败
 
 Q: 查看 `/data01/mysql/logs/mysqld.err` 文件中提示 `Resource temporarily unavailable`
 
@@ -677,7 +685,7 @@ A: 请检查服务器内存是否够用
 #### 如何彻底删除 MySQL InnoDB 集群
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/mysql/uninstall.sh'
+bash-5.0# ansible all -m shell -a 'sh ~/mysql_uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 

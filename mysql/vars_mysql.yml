@@ -1,5 +1,5 @@
 ---
-# Linux Mapping of IP addresses to hostname /etc/hosts
+# Map Domain Address with IP Address /etc/hosts
 hosts:
   10.1.207.180: oss-irms-180
   10.1.207.181: oss-irms-181

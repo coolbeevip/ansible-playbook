@@ -36,8 +36,11 @@ Planning for installation directory
 
 | PATH | DESCRIPTION |
 | ---- | ---- |
-| /opt/mysql | installation path of MySQL server、MySQL Shell、MySQL router |
-| /etc/my.cnf | MySQL database server configuration file |
+| /etc/hosts | Map Domain Address with IP Address |
+| /opt/mysql | Installation path of MySQL server、MySQL Shell、MySQL router |
+| ~/.my.cnf | MySQL database server configuration file |
+| ~/mysql_uninstall.sh | MySQL 卸载脚本 |
+| ~/.bash_profile | Configure MySQL environment and PATH |
 | /data01/mysql/run |  MySQL server PID file |
 | /data01/mysql/logs | MySQL server log file path |
 | /data01/mysql/data | MySQL server log file path  |
@@ -48,6 +51,7 @@ Planning for installation directory
 | /data01/mysql/router/mycluster | Configuration file and startup script of MySQL router |
 | /etc/init.d/mysql.server |  MySQL server Startup Script |
 
+**NOTICE:** The existing /etc/my.cnf /etc/mysql/my.cnf file will be renamed to /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
 ## Download MySQL Tar & Ansible Playbook Scripts
 
@@ -217,6 +221,10 @@ mysql_router_base_port: 36446
 mysql_router_max_connections: 3000
 mysql_router_max_connect_errors: 300
 ```
+
+#### my.cnf.j2
+
+For more `my.cnf` configuration, you can modify the `mysql/conf/my.cnf.j2` template file
 
 ## Installation
 
@@ -672,7 +680,7 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 #### Uninstall MySQL InnoDB Cluster
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/mysql/uninstall.sh'
+bash-5.0# ansible all -m shell -a 'sh ~/mysql_uninstall.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 
