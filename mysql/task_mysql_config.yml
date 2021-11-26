@@ -82,7 +82,6 @@
     dest: "$HOME/mysql_uninstall.sh"
     mode: u=rwx,g=rx,o=rx
   check_mode: no
-  become: yes
 
 # 设置 MYSQL_HOME 环境变量
 - name: configuring environment MYSQL_HOME
