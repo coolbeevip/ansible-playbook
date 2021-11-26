@@ -9,7 +9,7 @@
   check_mode: no
 - name: upload antdb
   synchronize:
-    src: /ansible-playbook/packages/{{ antdb_tar }}
+    src: "/ansible-playbook/packages/{{ antdb_tar }}"
     dest: "{{ antdb_soft_src_dir }}/{{ antdb_tar }}"
   check_mode: no
   when: not check_result.stat.exists
