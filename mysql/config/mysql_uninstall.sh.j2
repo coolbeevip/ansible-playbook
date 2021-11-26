@@ -4,23 +4,29 @@ set -e
 
 source ~/.bash_profile
 
-# stop MySQL router
+echo 'Stop MySQL router'
 if [ -f "{{ mysql_home_dir }}/router/mycluster/stop.sh" ]; then
   {{ mysql_home_dir }}/router/mycluster/stop.sh
 fi
 
-# stop MySQL server
+echo 'Stop MySQL server'
 if [ -f "$HOME/mysql.server" ]; then
   ~/mysql.server stop
 fi
 
-# delete ~/.my.cnf file
+echo 'Delete ~/.my.cnf file'
 rm -rf $HOME/.my.cnf
 
-# delete MySQL startup script
+echo 'Delete MySQL startup script'
 rm -rf $HOME/mysql.server
 
-# delete mysql files
+echo 'Delete MySQL router startup script'
+rm -rf $HOME/mysql_router_start.sh
+
+echo 'Delete MySQL router stop script'
+rm -rf $HOME/mysql_router_stop.sh
+
+echo 'Delete MySQL data files'
 rm -rf {{ mysql_run_dir }}
 rm -rf {{ mysql_log_dir }}
 rm -rf {{ mysql_data_dir }}
@@ -31,10 +37,10 @@ rm -rf {{ mysql_fast_binlog_dir }}
 rm -rf {{ mysql_fast_relaylog_dir }}
 rm -rf {{ mysql_router_dir }}
 
-# delete mysql program
-# rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
-# rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
-# rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
+echo 'Delete MySQL unzip directory'
+rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
+rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
+rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
 
-# delete mysql package
-# rm -rf {{ mysql_home_dir }}/*
+echo 'Delete MySQL binary package'
+rm -rf {{ mysql_home_dir }}/*
