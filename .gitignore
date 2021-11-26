@@ -1,3 +1,4 @@
 *.gz
 *.xz
+*.rpm
 .DS_Store
