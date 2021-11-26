@@ -13,11 +13,11 @@
 
 分布式集群模块规划如下
 
-| IP | MGR | GTM | DataNode | Coordinator | Agent |
-| ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | | Primary | | Install |
-| 10.1.207.181 | Secondary | Primary | Secondary | Primary | Install |
-| 10.1.207.182 | | Secondary | | Secondary | Install |
+| IP | MGR | GTM | DataNode | Coordinator |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Primary | | Primary | |
+| 10.1.207.181 | Secondary | Primary | Secondary | Primary |
+| 10.1.207.182 | | Secondary | | Secondary |
 
 节点安装路径
 
