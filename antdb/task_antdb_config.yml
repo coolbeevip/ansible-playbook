@@ -11,21 +11,10 @@
   check_mode: no
 
 # 设置 ADB_HOME 到 PATH
-- name: configuring environment PATH
-  lineinfile:
-    dest: ~/.bashrc
-    regexp: '.*PATH=.*ADB_HOME'
-    insertafter: 'EOF'
-    line: "export PATH=${ADB_HOME}/bin:$PATH"
-    state: present
-  check_mode: no
-
-# 设置 ADB_HOME 到 PATH
 - name: configuring environment LD_LIBRARY_PATH
   lineinfile:
     dest: ~/.bashrc
-    regexp: '^export LD_LIBRARY_PATH=.*ADB_HOME'
-    insertafter: 'EOF'
+    regexp: '^export LD_LIBRARY_PATH=.*$'
     line: "export LD_LIBRARY_PATH=${ADB_HOME}/lib:$LD_LIBRARY_PATH"
     state: present
   check_mode: no
@@ -45,7 +34,6 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^alias adbmgr=.*'
-    insertafter: 'EOF'
     line: "alias adbmgr='psql -p 16432 -d postgres'"
     state: present
   check_mode: no
@@ -55,7 +43,6 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^alias mgr_stop=.*'
-    insertafter: 'EOF'
     line: "alias mgr_stop='mgr_ctl stop -D $mgrdata -m fast'"
     state: present
   check_mode: no
@@ -65,7 +52,15 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^alias mgr_start=.*'
-    insertafter: 'EOF'
     line: "alias mgr_stop='mgr_ctl mgr_start -D $mgrdata'"
+    state: present
+  check_mode: no
+
+# 设置 ADB_HOME 到 PATH
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH=${ADB_HOME}/bin:$PATH"
     state: present
   check_mode: no
