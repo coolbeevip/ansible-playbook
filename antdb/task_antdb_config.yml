@@ -5,8 +5,8 @@
 - name: configuring environment ADB_HOME
   lineinfile:
     dest: ~/.bashrc
-    regexp: '^ADB_HOME.*'
-    line: "\n#ansible-playbook\n\nADB_HOME={{ antdb_app_dir }}\nexport ADB_HOME"
+    regexp: '^export ADB_HOME=.*$'
+    line: "export ADB_HOME={{ antdb_app_dir }}"
     state: present
   check_mode: no
 
@@ -14,9 +14,9 @@
 - name: configuring environment PATH
   lineinfile:
     dest: ~/.bashrc
-    regexp: '^PATH=.*ADB_HOME'
+    regexp: '.*PATH=.*ADB_HOME'
     insertafter: 'EOF'
-    line: "PATH=${ADB_HOME}/bin:$PATH\nexport PATH"
+    line: "export PATH=${ADB_HOME}/bin:$PATH"
     state: present
   check_mode: no
 
@@ -24,9 +24,9 @@
 - name: configuring environment LD_LIBRARY_PATH
   lineinfile:
     dest: ~/.bashrc
-    regexp: '^LD_LIBRARY_PATH=.*ADB_HOME'
+    regexp: '^export LD_LIBRARY_PATH=.*ADB_HOME'
     insertafter: 'EOF'
-    line: "LD_LIBRARY_PATH=${ADB_HOME}/lib:$LD_LIBRARY_PATH\nexport LD_LIBRARY_PATH"
+    line: "export LD_LIBRARY_PATH=${ADB_HOME}/lib:$LD_LIBRARY_PATH"
     state: present
   check_mode: no
 
@@ -34,9 +34,9 @@
 - name: configuring environment mgrdata
   lineinfile:
     dest: ~/.bashrc
-    regexp: '^mgrdata=.*'
+    regexp: '^export mgrdata=.*'
     insertafter: 'EOF'
-    line: "mgrdata={{ antdb_mgr_dir }}\nexport mgrdata"
+    line: "export mgrdata={{ antdb_mgr_dir }}"
     state: present
   check_mode: no
 
