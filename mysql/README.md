@@ -40,10 +40,10 @@ Planning for installation directory
 | /opt/mysql | Installation path of MySQL server、MySQL Shell、MySQL router |
 | ~/.bash_profile | Configure MySQL environment and PATH |
 | ~/.my.cnf | MySQL database server configuration file |
-| ~/mysql_uninstall.sh | MySQL InnoDB Uninstall Script|
-| ~/mysql.server |  MySQL server Startup Script |
-| ~/mysql_router_start.sh | MySQL router Startup Script |
-| ~/mysql_router_stop.sh |  MySQL router Stop Script |
+| ~/mysql_uninstall.sh | MySQL InnoDB Uninstall script|
+| ~/mysql.server |  MySQL server Startup script |
+| ~/mysql_router_start.sh | MySQL router startup script symbolic link|
+| ~/mysql_router_stop.sh |  MySQL router stop script symbolic link |
 | /data01/mysql/run |  MySQL server PID file |
 | /data01/mysql/logs | MySQL server log file path |
 | /data01/mysql/data | MySQL server data file path  |

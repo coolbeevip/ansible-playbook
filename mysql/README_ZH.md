@@ -42,8 +42,8 @@ MySQL InnoDB 集群有以下服务组成
 | ~/.my.cnf | MySQL 配置文件 |
 | ~/mysql_uninstall.sh | MySQL InnoDB 集群卸载脚本 |
 | ~/mysql.server | MySQL server 的启停脚本 |
-| ~/mysql_router_start.sh | MySQL router 启动脚本 |
-| ~/mysql_router_stop.sh |  MySQL router 停止脚本 |
+| ~/mysql_router_start.sh | MySQL router 启动脚本软连接 |
+| ~/mysql_router_stop.sh |  MySQL router 停止脚本软连接 |
 | /data01/mysql/run | MySQL server pid 文件路径 |
 | /data01/mysql/logs | MySQL server 日志文件路径 |
 | /data01/mysql/data | MySQL server 数据文件路径 |
