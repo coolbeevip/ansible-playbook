@@ -5,8 +5,8 @@ set -e
 source ~/.bash_profile
 
 echo 'Stop MySQL router'
-if [ -f "{{ mysql_home_dir }}/router/mycluster/stop.sh" ]; then
-  {{ mysql_home_dir }}/router/mycluster/stop.sh
+if [ -f "$HOME/mysql_router_stop.sh" ]; then
+  $HOME/mysql_router_stop.sh
 fi
 
 echo 'Stop MySQL server'
