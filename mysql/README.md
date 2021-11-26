@@ -681,7 +681,7 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 
 #### TASK[initialize mysql] failure when execute main-mysql.yml
 
-Q: Error log `/data01/mysql/logs/mysqld.err` shows `Resource temporarily unavailable`
+Q: Error log `/data01/mysql/logs/mysqld.err` output `Resource temporarily unavailable`
 
 A: Please check free memory
 
