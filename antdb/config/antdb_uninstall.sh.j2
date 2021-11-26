@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+echo 'Delete AntDB data files'
+rm -rf {{ antdb_mgr_dir }}
+rm -rf {{ antdb_data_dir }}
+rm -rf {{ antdb_tools_dir }}
+rm -rf {{ antdb_app_dir }}
+rm -rf {{ antdb_core_dir }}
+
+rm -rf $HOME/antdb_uninstall.sh

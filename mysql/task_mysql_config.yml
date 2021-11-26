@@ -75,7 +75,7 @@
   become: yes
   when: check_etc_mysql_my_cnf.stat.exists
 
-# 上传卸载脚本 mysql_uninstall.sh 到 etc 目录
+# 上传卸载脚本 mysql_uninstall.sh
 - name: copy mysql_uninstall.sh
   template:
     src: "/ansible-playbook/mysql/config/mysql_uninstall.sh.j2"

@@ -91,32 +91,3 @@
     systemctl disable firewalld.service
     systemctl stop iptables.service
     systemctl disable iptables.service
-
-# Initialize AntDB root directory
-- name: create antdb home
-  file:
-    path: "{{ antdb_home_dir }}"
-    state: directory
-    owner: "{{ antdb_user }}"
-    group: "{{ antdb_group }}"
-    mode: "2750"
-  become: yes
-  check_mode: no
-
-# 初始化目录
-- name: create others directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ antdb_user }}"
-    group: "{{ antdb_group }}"
-    mode: "2750"
-  with_items:
-    - "{{ antdb_mgr_dir }}"
-    - "{{ antdb_data_dir }}"
-    - "{{ antdb_tools_dir }}"
-    - "{{ antdb_app_dir }}"
-    - "{{ antdb_soft_src_dir }}"
-    - "{{ antdb_core_dir }}"
-  check_mode: no
-  become: yes
