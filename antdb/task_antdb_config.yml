@@ -52,7 +52,7 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^alias mgr_start=.*'
-    line: "alias mgr_start='mgr_ctl mgr_start -D $mgrdata'"
+    line: "alias mgr_start='mgr_ctl start -D $mgrdata'"
     state: present
   check_mode: no
 

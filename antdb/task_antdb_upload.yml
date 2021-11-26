@@ -35,3 +35,72 @@
     mode: "2755"
   check_mode: no
   become: yes
+
+# Initialize MGR
+- name: Check initialize MGR
+  stat:
+    path: "{{ antdb_mgr_dir }}/postgresql.conf"
+  register: check_result
+  check_mode: no
+- name: Initialize MGR
+  shell: initmgr -D $mgrdata
+  check_mode: no
+  when: not check_result.stat.exists
+
+# Configuring postgresql.conf
+- name: Configuring postgresql.conf listen_addresses
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^listen_addresses.*'
+    line: "listen_addresses = '{{ antdb_conf_listen_addresses }}'"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf port
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^port.*'
+    line: "port = {{ antdb_conf_port }}"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf log_destination
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^log_destination.*'
+    line: "log_destination = '{{ antdb_conf_log_destination }}'"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf logging_collector
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^logging_collector.*'
+    line: "logging_collector = {{ antdb_conf_logging_collector }}"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf log_directory
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^log_directory.*'
+    line: "log_directory = '{{ antdb_conf_log_directory }}'"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf log_rotation_size
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^log_rotation_size.*'
+    line: "log_rotation_size = {{ antdb_conf_log_rotation_size }}"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf log_min_messages
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^log_min_messages.*'
+    line: "log_min_messages = {{ antdb_conf_log_min_messages }}"
+    state: present
+  check_mode: no
+- name: Configuring postgresql.conf log_statement
+  lineinfile:
+    dest: "{{ antdb_mgr_dir }}/postgresql.conf"
+    regexp: '^log_statement.*'
+    line: "log_statement = {{ antdb_conf_log_statement }}"
+    state: present
+  check_mode: no

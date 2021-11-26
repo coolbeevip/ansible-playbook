@@ -11,17 +11,27 @@ limits_soft_memlock: '250000000'
 limits_hard_memlock: '250000000'
 
 # Linux user & group
-antdb_user: "antdb"
-antdb_group: "antdb"
+antdb_user: 'antdb'
+antdb_group: 'antdb'
 
 # AntDB binary package
-antdb_tar: "antdb.cluster-5.0.009be78c-centos7.9.rpm"
+antdb_tar: 'antdb.cluster-5.0.009be78c-centos7.9.rpm'
 
 # AntDB install directory
-antdb_home_dir: "/opt/antdb"
-antdb_mgr_dir: "/data01/antdb/mgr"
-antdb_data_dir: "/data01/antdb/data"
-antdb_tools_dir: "/data01/antdb/tools"
-antdb_app_dir: "/data01/antdb/app"
-antdb_soft_src_dir: "/data01/antdb/soft_src"
-antdb_core_dir: "/data01/antdb/core"
+antdb_home_dir: '/opt/antdb'
+antdb_mgr_dir: '/data01/antdb/mgr'
+antdb_data_dir: '/data01/antdb/data'
+antdb_tools_dir: '/data01/antdb/tools'
+antdb_app_dir: '/data01/antdb/app'
+antdb_soft_src_dir: '/data01/antdb/soft_src'
+antdb_core_dir: '/data01/antdb/core'
+
+# postgresql.conf
+antdb_conf_listen_addresses: '*'
+antdb_conf_port: 16432
+antdb_conf_log_destination: 'csvlog'
+antdb_conf_logging_collector: on
+antdb_conf_log_directory: 'pg_log'
+antdb_conf_log_rotation_size: 100MB
+antdb_conf_log_min_messages: error
+antdb_conf_log_statement: ddl

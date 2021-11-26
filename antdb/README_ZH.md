@@ -5,7 +5,7 @@
 
 假设您有以下三台服务器
 
-| IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 |
+| IP | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 |
 | ---- | ---- | ---- | ---- | ---- |
 | 10.1.207.180 | 22022 | antdb | 123456 | root123 |
 | 10.1.207.181 | 22022 | antdb | 123456 | root123 |
@@ -13,11 +13,11 @@
 
 分布式集群模块规划如下
 
-| IP地址 | 模块 |
-| ---- | ---- |
-| 10.1.207.180 | MGR, GTM |
-| 10.1.207.181 | DN-Master, CN-1 |
-| 10.1.207.182 | DN-Slave, CN-2 |
+| IP | MGR | GTM | DN | CN |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Primary | Secondary | Primary | |
+| 10.1.207.181 | Secondary | Primary | Secondary | Primary |
+| 10.1.207.182 | | | | Secondary |
 
 ## 下载安装包和 Playbook 脚本
 
