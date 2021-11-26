@@ -24,11 +24,11 @@
 | 路径 | 描述 |
 | ---- | ---- |
 | /opt/antdb | |
-| /data01/antdb/soft_src | |
-| /data01/antdb/mgr | |
+| ~/antdbb_uninstall.sh | AntDB 集群卸载脚本 |
+| /data01/antdb/mgr | AntDB MGR 程序文件 |
 | /data01/antdb/data | |
 | /data01/antdb/tools | |
-| /data01/antdb/app | |
+| /data01/antdb/app | AntDB 集群程序文件 |
 | /data01/antdb/core | |
 
 ## 下载安装包和 Playbook 脚本
