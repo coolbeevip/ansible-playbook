@@ -32,8 +32,6 @@ MySQL InnoDB 集群有以下服务组成
 
 节点安装路径
 
-> 以下路径是默认路径，在安装前可以编辑 `var_mysql.yml` 中的变量改变成你想要的路径，其中路径变量中包含 **\_fast\_** 字样的路径建议你定义在 SSD 磁盘上
-
 | 路径 | 描述 |
 | ---- | ---- |
 | /etc/hosts | 所有节点 IP 地址和主机名映射 |
@@ -166,7 +164,7 @@ mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
 ```
 
-安装路径
+安装路径，其中路径变量中包含 **\_fast\_** 字样的路径建议你定义在 SSD 磁盘上
 
 ```shell
 # MySQL InnoDB Cluster install directory

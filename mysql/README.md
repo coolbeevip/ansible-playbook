@@ -32,8 +32,6 @@ Planning for MySQL nodes
 
 Planning for installation directory
 
-> The following path is the default path. Before installation, you can edit the variables in `var_mysql.yml` to change to the path you want. The path that contains **\_fast\_** in the path variable is recommended to be defined on the SSD disk
-
 | PATH | DESCRIPTION |
 | ---- | ---- |
 | /etc/hosts | Map Domain Address with IP Address |
@@ -167,7 +165,7 @@ mysql_router_tar: "mysql-router-8.0.27-linux-glibc2.12-x86_64.tar.xz"
 mysql_router_tar_unzip_dir: "mysql-router-8.0.27-linux-glibc2.12-x86_64"
 ```
 
-Install directory
+Install directory. The path that contains **\_fast\_** in the path variable is recommended to be defined on the SSD disk
 
 ```shell
 # MySQL InnoDB Cluster install directory
