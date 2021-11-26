@@ -118,6 +118,35 @@ Swap:            0B          0B          0B
 bash-5.0#
 ```
 
+## 创建用户和组
+
+生成加密后的密码，以下例子生成密码为 `123456`, 盐值为 `mysql` 的加密后的密码（建议使用用户名作为盐值）
+
+```shell
+bash-5.0# ansible all -m debug -a "msg={{ '123456' | password_hash('sha512', 'mysql') }}"
+10.1.207.180 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+10.1.207.181 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+10.1.207.182 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+```
+
+创建用户组
+
+```shell
+bash-5.0# ansible all -m group -a 'name=mysql state=present'
+```
+
+创建用户，密码为第一步生成的加密字符串
+
+```shell
+bash-5.0# ansible all -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
+```
+
 至此你已经掌握了如何启动 ansible 工具连接多台目标服务器，并执行了一些简单的命令，我们可以通过 playbook 脚本可以编排更复杂脚本。
 
 ## 使用 Ansible Playbook 脚本安装中间件

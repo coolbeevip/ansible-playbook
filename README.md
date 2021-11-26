@@ -118,6 +118,35 @@ Swap:            0B          0B          0B
 bash-5.0#
 ```
 
+## Create User & Group
+
+Generate encrypted passwords for the create user password. The following example generates an encrypted password with a password of `123456` and a salt value of `mysql` (it is recommended to use the user name as the salt value)
+
+```shell
+bash-5.0# ansible all -m debug -a "msg={{ '123456' | password_hash('sha512', 'mysql') }}"
+10.1.207.180 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+10.1.207.181 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+10.1.207.182 | SUCCESS => {
+    "msg": "$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw."
+}
+```
+
+Create Group
+
+```shell
+bash-5.0# ansible all -m group -a 'name=mysql state=present'
+```
+
+Greate User
+
+```shell
+bash-5.0# ansible all -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
+```
+
 By now, you have mastered how to start the Ansible tool to connect to multiple target servers and execute some simple commands, Later, you can see the middleware deployment script written using Ansible playbook script, and you can experience it directly.
 
 ## Install Middleware use Ansible Playbook
