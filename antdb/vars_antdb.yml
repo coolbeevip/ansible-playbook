@@ -27,7 +27,7 @@ antdb_soft_src_dir: '/data01/antdb/soft_src'
 antdb_core_dir: '/data01/antdb/core'
 
 # postgresql.conf
-antdb_conf_listen_addresses: '*'
+antdb_conf_listen_addresses: *
 antdb_conf_port: 16432
 antdb_conf_log_destination: 'csvlog'
 antdb_conf_logging_collector: on
@@ -35,3 +35,7 @@ antdb_conf_log_directory: 'pg_log'
 antdb_conf_log_rotation_size: 100MB
 antdb_conf_log_min_messages: error
 antdb_conf_log_statement: ddl
+
+# MGR
+antdb_mgr_primary: 10.1.207.180
+antdb_mgr_secondarys: [10.1.207.180]
