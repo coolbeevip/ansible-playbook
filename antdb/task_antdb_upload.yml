@@ -4,12 +4,12 @@
 # 上传 mysql 安装包
 - name: check upload antdb
   stat:
-    path: "{{ antdb_home_dir }}/{{ antdb_tar }}"
+    path: "{{ antdb_mgr_dir }}/{{ antdb_tar }}"
   register: check_result
   check_mode: no
 - name: upload antdb
   synchronize:
     src: /ansible-playbook/packages/{{ antdb_tar }}
-    dest: "{{ antdb_home_dir }}/{{ antdb_tar }}"
+    dest: "{{ antdb_mgr_dir }}/{{ antdb_tar }}"
   check_mode: no
   when: not check_result.stat.exists

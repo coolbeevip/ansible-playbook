@@ -116,6 +116,7 @@
     group: "{{ antdb_group }}"
     mode: "2750"
   with_items:
+    - "{{ antdb_mgr_dir }}"
     - "{{ antdb_data_dir }}"
     - "{{ antdb_tools_dir }}"
     - "{{ antdb_app_dir }}"
