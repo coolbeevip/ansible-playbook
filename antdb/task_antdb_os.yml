@@ -2,17 +2,13 @@
   include_vars: "vars_antdb.yml"
 
 # Install linux package
-- name: Check glibc version
-  shell: rpm -qa glibc
-  register: version_rpm
-  check_mode: no
 - name: install packages
   yum:
     name:
       - glibc
+      - libxslt
     state: present
   check_mode: no
-  when: version_rpm.stderr != ""
 
 # Configuring Linux limits
 - name: Add or modify hard nofile limits

@@ -13,3 +13,18 @@
     dest: "{{ antdb_soft_src_dir }}/{{ antdb_tar }}"
   check_mode: no
   when: not check_result.stat.exists
+
+# Install rpm package
+- name: Install rpm package
+  shell: |
+    "rpm -ivh {{ antdb_soft_src_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb=$ADB_HOME"
+  check_mode: no
+  become: yes
+- name: Change rpm file permission
+  file:
+    path: $ADB_HOME
+    owner: "{{ antdb_user }}"
+    group: "{{ antdb_group }}"
+    mode: "2755"
+  check_mode: no
+  become: yes  
