@@ -679,9 +679,17 @@ mysqlx_max_connections	100mysql: [Warning] Using a password on the command line 
 
 ## Q & A
 
+#### TASK[initialize mysql] failure when execute main-mysql.yml
+
+Q: Error log `/data01/mysql/logs/mysqld.err` shows `Resource temporarily unavailable`
+
+A: Please check free memory
+
 #### Uninstall MySQL InnoDB Cluster
 
-**NOTICE: This script will stop MySQL server and MySQL router, delete program files and data files**
+Q: How to Uninstall MySQL InnoDB Cluster
+
+A: `~/mysql_uninstall.sh` script will stop MySQL server and MySQL router, delete program files and data files**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'
