@@ -122,7 +122,7 @@ bash-5.0#
 
 ## 使用 Ansible Playbook 脚本安装中间件
 
-* [Linux 系统配置](./system/README_ZH.md)
-* [Elasticsearch 三节点集群](./elasticsearch/README_ZH.md)
-* [Redis 三节点主从哨兵模式集群](./redis/README_ZH.md)
-* [MySQL 三节点 InnoDB 集群](./mysql/README_ZH.md)
+* [Ansible Playbook 设置 Linux 系统配置](./system/README_ZH.md)
+* [Ansible Playbook 安装 Elasticsearch 集群](./elasticsearch/README_ZH.md)
+* [Ansible Playbook 安装 Redis 主从哨兵](./redis/README_ZH.md)
+* [Ansible Playbook 安装 MySQL InnoDB 集群](./mysql/README_ZH.md)

@@ -1,4 +1,4 @@
-# Use Ansible Playbook to Configuration the Linux System | [中文](README_ZH.md)
+# Configure Linux System with Ansible Playbook | [中文](README_ZH.md)
 
 ## Configuration OS(main-os.yml)
 

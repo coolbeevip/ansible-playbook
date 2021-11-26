@@ -1,4 +1,4 @@
-# Install Redis Master-Slave Sentinel With Ansible Playbook | [中文](README_ZH.md)
+# Install Redis Master-Slave Sentinel with Ansible Playbook | [中文](README_ZH.md)
 
 Please create a `redis` user on the linux server before starting. This playbook script uses Redis source code compilation to install one master, two slaves, and three sentinels
 

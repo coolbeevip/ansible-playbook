@@ -1,4 +1,4 @@
-# Ansible Playbook Install Elasticsearch Cluster | [中文](README_ZH.md)
+# Install Elasticsearch Cluster with Ansible Playbook | [中文](README_ZH.md)
 
 Please create a `elasticsearch` user and defautl password is `123456` on the linux server before starting. This playbook script install three node clusters.
 Since the 7.x version will use the bundled JDK, there is no need to install the Java in advance.
