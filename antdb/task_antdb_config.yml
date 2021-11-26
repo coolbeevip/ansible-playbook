@@ -6,7 +6,7 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^ADB_HOME.*'
-    line: "\n#ansible-playbook\nADB_HOME={{ antdb_app_dir }}\nexport ADB_HOME"
+    line: "\n#ansible-playbook\n\nADB_HOME={{ antdb_app_dir }}\nexport ADB_HOME"
     state: present
   check_mode: no
 
