@@ -4,8 +4,8 @@ set -e
 
 source ~/.bash_profile
 
-echo 'Stop MySQL router'
 if [ -f "$HOME/mysql_router_stop.sh" ]; then
+  echo 'Stop MySQL router...'
   $HOME/mysql_router_stop.sh
 fi
 
@@ -37,11 +37,11 @@ rm -rf {{ mysql_fast_binlog_dir }}
 rm -rf {{ mysql_fast_relaylog_dir }}
 rm -rf {{ mysql_router_dir }}
 
-# echo 'Delete MySQL unzip directory'
-# rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
-# rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
-# rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
-#
+echo 'Delete MySQL unzip directory'
+rm -rf {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}
+rm -rf {{ mysql_home_dir }}/{{ mysql_shell_tar_unzip_dir }}
+rm -rf {{ mysql_home_dir }}/{{ mysql_router_tar_unzip_dir }}
+
 # echo 'Delete MySQL binary package'
 # rm -rf {{ mysql_home_dir }}/*
 
