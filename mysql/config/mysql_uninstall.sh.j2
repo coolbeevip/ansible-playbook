@@ -11,7 +11,7 @@ fi
 
 echo 'Stop MySQL server'
 if [ -f "$HOME/mysql.server" ]; then
-  ~/mysql.server stop
+  $HOME/mysql.server stop
 fi
 
 echo 'Delete ~/.my.cnf file'
