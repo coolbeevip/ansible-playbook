@@ -4,9 +4,9 @@
 - name: Start Mgr Primary Node
   shell: "hostname"
   check_mode: no
-  when: {{ inventory_hostname == antdb_mgr_primary }}
+  when: inventory_hostname == antdb_mgr_primary
 
 - name: Start Mgr Secondary Node
   shell: "hostname"
   check_mode: no
-  when: {{ inventory_hostname in antdb_mgr_secondarys }}  
+  when: inventory_hostname in antdb_mgr_secondarys
