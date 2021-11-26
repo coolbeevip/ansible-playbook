@@ -15,16 +15,23 @@
   when: not check_result.stat.exists
 
 # Install rpm package
+- name: Check install rpm package
+  stat:
+    path: "$ADB_HOME/bin"
+  register: check_result
+  check_mode: no
 - name: Install rpm package
-  shell: |
-    "rpm -ivh {{ antdb_soft_src_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb=$ADB_HOME"
+  shell: rpm -ivh {{ antdb_soft_src_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb=$ADB_HOME
   check_mode: no
   become: yes
+  when: not check_result.stat.exists
 - name: Change rpm file permission
   file:
     path: $ADB_HOME
     owner: "{{ antdb_user }}"
     group: "{{ antdb_group }}"
+    recurse: true
+    state: directory
     mode: "2755"
   check_mode: no
-  become: yes  
+  become: yes
