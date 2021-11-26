@@ -1,0 +1,125 @@
+- name: include vars
+  include_vars: "vars_antdb.yml"
+
+# Install linux package
+- name: Check glibc version
+  shell: rpm -qa glibc
+  register: version_rpm
+  check_mode: no
+- name: install packages
+  yum:
+    name:
+      - glibc
+    state: present
+  check_mode: no
+  when: version_rpm.stderr != ""
+
+# Configuring Linux limits
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: hard
+    limit_item: nofile
+    value: '{{ limits_hard_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: soft
+    limit_item: nofile
+    value: '{{ limits_soft_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: hard
+    limit_item: nproc
+    value: '{{ limits_hard_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: soft
+    limit_item: nproc
+    value: '{{ limits_soft_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft stack
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: soft
+    limit_item: stack
+    value: '{{ limits_soft_stack }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft core
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: soft
+    limit_item: core
+    value: '{{ limits_soft_core }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard core
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: hard
+    limit_item: core
+    value: '{{ limits_hard_core }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft memlock
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: soft
+    limit_item: memlock
+    value: '{{ limits_soft_memlock }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard memlock
+  pam_limits:
+    domain: '{{ antdb_user }}'
+    limit_type: hard
+    limit_item: memlock
+    value: '{{ limits_hard_memlock }}'
+  check_mode: no
+  become: yes
+
+# 禁用防火墙
+- name: disable firewalld
+  shell: |
+    systemctl stop firewalld.service
+    systemctl disable firewalld.service
+    systemctl stop iptables.service
+    systemctl disable iptables.service
+
+# Initialize AntDB root directory
+- name: create antdb home
+  file:
+    path: "{{ antdb_home_dir }}"
+    state: directory
+    owner: "{{ antdb_user }}"
+    group: "{{ antdb_group }}"
+    mode: "2750"
+  become: yes
+  check_mode: no
+
+# 初始化目录
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ antdb_user }}"
+    group: "{{ antdb_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ antdb_data_dir }}"
+    - "{{ antdb_tools_dir }}"
+    - "{{ antdb_app_dir }}"
+    - "{{ antdb_soft_src_dir }}"
+    - "{{ antdb_core_dir }}"
+  check_mode: no
+  become: yes

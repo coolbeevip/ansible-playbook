@@ -1,0 +1,71 @@
+- name: include vars
+  include_vars: "vars_antdb.yml"
+
+# 设置 ADB_HOME 环境变量
+- name: configuring environment ADB_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^ADB_HOME.*'
+    line: "\n#ansible-playbook\nADB_HOME={{ antdb_app_dir }}\nexport ADB_HOME"
+    state: present
+  check_mode: no
+
+# 设置 ADB_HOME 到 PATH
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^PATH=.*ADB_HOME'
+    insertafter: 'EOF'
+    line: "PATH=${ADB_HOME}/bin:$PATH\nexport PATH"
+    state: present
+  check_mode: no
+
+# 设置 ADB_HOME 到 PATH
+- name: configuring environment LD_LIBRARY_PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^LD_LIBRARY_PATH=.*ADB_HOME'
+    insertafter: 'EOF'
+    line: "LD_LIBRARY_PATH=${ADB_HOME}/lib:$LD_LIBRARY_PATH\nexport LD_LIBRARY_PATH"
+    state: present
+  check_mode: no
+
+# Configuring environment mgrdata
+- name: configuring environment mgrdata
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^mgrdata=.*'
+    insertafter: 'EOF'
+    line: "mgrdata={{ antdb_mgr_dir }}\nexport mgrdata"
+    state: present
+  check_mode: no
+
+# Configuring alias adbmgr
+- name: configuring alias adbmgr
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^alias adbmgr=.*'
+    insertafter: 'EOF'
+    line: "alias adbmgr='psql -p 16432 -d postgres'"
+    state: present
+  check_mode: no
+
+# Configuring alias mgr_stop
+- name: configuring alias mgr_stop
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^alias mgr_stop=.*'
+    insertafter: 'EOF'
+    line: "alias mgr_stop='mgr_ctl stop -D $mgrdata -m fast'"
+    state: present
+  check_mode: no
+
+# Configuring alias mgr_start
+- name: configuring alias mgr_start
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^alias mgr_start=.*'
+    insertafter: 'EOF'
+    line: "alias mgr_stop='mgr_ctl mgr_start -D $mgrdata'"
+    state: present
+  check_mode: no

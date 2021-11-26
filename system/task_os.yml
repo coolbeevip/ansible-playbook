@@ -83,20 +83,6 @@
     value: '1048576'
   check_mode: no
 
-# # 增加用户
-# - name: create user elasticsearch
-#   group:
-#     name: elasticsearch
-#     state: present
-#   check_mode: no
-# - name: create user elasticsearch
-#   user:
-#     name: elasticsearch
-#     password: '$5$YHiEQaLUzPAugJ3q$GqymyJkWMw1nNu.C.hf6ZSwCecd8H8TzLdaRhqehBM/' # 使用 mkpasswd --method=sha-512 生成
-#     comment: elasticsearch by nc
-#     group: elasticsearch
-#   check_mode: no
-
 # 禁用防火墙
 - name: disable firewalld
   shell: |

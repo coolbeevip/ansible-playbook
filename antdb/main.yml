@@ -1,0 +1,31 @@
+# Install MySQL Server Nodes
+
+- hosts: 10.1.207.180
+  user: antdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_antdb_os.yml
+    - include_tasks: task_antdb_upload.yml
+    - include_tasks: task_antdb_config.yml
+
+- hosts: 10.1.207.181
+  user: antdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_antdb_os.yml
+    - include_tasks: task_antdb_upload.yml
+    - include_tasks: task_antdb_config.yml
+
+- hosts: 10.1.207.182
+  user: antdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_antdb_os.yml
+    - include_tasks: task_antdb_upload.yml
+    - include_tasks: task_antdb_config.yml
