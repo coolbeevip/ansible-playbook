@@ -72,8 +72,6 @@ docker run --name ansible --rm -it \
 
 执行安装脚本
 
-> 此命令会配置操作系统内核参数、自动上传安装介质到三个目标服务器，设置 MySQL 环境变量，初始化 MySQL 数据库，设置 MySQL root 密码，启动 MySQL 服务
-
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main.yml
 ```
