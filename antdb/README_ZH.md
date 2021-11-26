@@ -19,6 +19,18 @@
 | 10.1.207.181 | Secondary | Primary | Secondary | Primary | Install |
 | 10.1.207.182 | | | | Secondary | Install |
 
+节点安装路径
+
+| 路径 | 描述 |
+| ---- | ---- |
+| /opt/antdb | |
+| /data01/antdb/mgr | |
+| /data01/antdb/data | |
+| /data01/antdb/tools | |
+| /data01/antdb/app | |
+| /data01/antdb/soft_src | |
+| /data01/antdb/core | |
+
 ## 下载安装包和 Playbook 脚本
 
 在客户机上创建 playbook 脚本存放目录
