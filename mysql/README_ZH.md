@@ -255,7 +255,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
-**提示：** 此脚本首次执行耗时较长（因为需要上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 6 分钟
+**提示：** 此脚本首次执行耗时较长（因为需要上传约 1.3GB 的安装介质到所有目标服务器）。排除上传介质的耗时，此脚本在我的环境下执行耗时大约 7 分钟
 
 检查 MySQL 节点状态
 
@@ -421,11 +421,13 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 
 执行 MySQL router 安装脚本 `main-router.yml`
 
-> 此脚本将自动生成 mysqlrouter.conf 配置文件，并启动 MySQL Router 服务
+> 此脚本会根据集群 MGR 信息自动创建 MSQL router 存储目录、配置文件、启动停止脚本，并启动 MySQL Router 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
 ```
+
+**提示：** 在我的环境下执行耗时大约 2 分钟。
 
 查看 MySQL Router 进程
 

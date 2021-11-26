@@ -256,7 +256,7 @@ Run Ansible playbook scripts `main-mysql.yml` for install MySQL server
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
 ```
 
-**NOTICE:** This script takes a long time to execute for the first time (because about 1.3GB of installation media needs to be uploaded to all target servers). It takes about 6 minutes to execute in my environment after ignoring the upload time
+**NOTICE:** This script takes a long time to execute for the first time (because about 1.3GB of installation media needs to be uploaded to all target servers). It takes about 7 minutes to execute in my environment after ignoring the upload time
 
 Verify MySQL node status
 
@@ -422,11 +422,13 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 
 Run Ansible playbook scripts `main-router.yml` for install MySQL router
 
-> This script will automatically generate the mysqlrouter.conf configuration file and start the MySQL Router service
+> This script will automatically create the MSQL router storage directory, configuration files, start and stop scripts based on the cluster MGR information, and start the MySQL Router 
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
 ```
+
+**NOTICE：** It took about 2 minutes to execute in my environment.
 
 View MySQL Router process
 
