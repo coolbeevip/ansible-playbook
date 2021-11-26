@@ -68,7 +68,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### 安装三节点 Antdb 集群
+#### 安装 Antdb 集群
 
 执行安装脚本
 
