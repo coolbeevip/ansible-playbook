@@ -15,9 +15,9 @@
 
 | IP | MGR | GTM | DataNode | Coordinator | Agent |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | Secondary | Primary | | Install |
+| 10.1.207.180 | Primary | | Primary | | Install |
 | 10.1.207.181 | Secondary | Primary | Secondary | Primary | Install |
-| 10.1.207.182 | | | | Secondary | Install |
+| 10.1.207.182 | | Secondary | | Secondary | Install |
 
 节点安装路径
 

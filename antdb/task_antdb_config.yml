@@ -91,7 +91,7 @@
   check_mode: no
   when: inventory_hostname == antdb_mgr_primary
 - name: Install rpm package
-  shell: rpm -i {{ antdb_home_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb={{ antdb_app_dir }}
+  shell: rpm -i --force {{ antdb_home_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb={{ antdb_app_dir }}
   check_mode: no
   become: yes
   when: (inventory_hostname == antdb_mgr_primary) and (not check_result.stat.exists)
