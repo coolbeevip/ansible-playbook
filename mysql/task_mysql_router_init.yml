@@ -61,13 +61,13 @@
 - name: Create MySQL route stop.sh symbolic link
   file:
     src: "{{ mysql_router_dir }}/{{ cluster_name }}/stop.sh"
-    dest: "$HOME/stop.sh"
+    dest: "$HOME/mysql_router_stop.sh"
     state: link
   check_mode: no
 - name: Create MySQL route start.sh symbolic link
   file:
     src: "{{ mysql_router_dir }}/{{ cluster_name }}/start.sh"
-    dest: "$HOME/start.sh"
+    dest: "$HOME/mysql_router_start.sh"
     state: link
   check_mode: no
 

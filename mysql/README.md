@@ -38,18 +38,20 @@ Planning for installation directory
 | ---- | ---- |
 | /etc/hosts | Map Domain Address with IP Address |
 | /opt/mysql | Installation path of MySQL server、MySQL Shell、MySQL router |
-| ~/.my.cnf | MySQL database server configuration file |
-| ~/mysql_uninstall.sh | MySQL 卸载脚本 |
-| ~/mysql.server |  MySQL server Startup Script |
 | ~/.bash_profile | Configure MySQL environment and PATH |
+| ~/.my.cnf | MySQL database server configuration file |
+| ~/mysql_uninstall.sh | MySQL InnoDB Uninstall Script|
+| ~/mysql.server |  MySQL server Startup Script |
+| ~/mysql_router_start.sh | MySQL router Startup Script |
+| ~/mysql_router_stop.sh |  MySQL router Stop Script |
 | /data01/mysql/run |  MySQL server PID file |
 | /data01/mysql/logs | MySQL server log file path |
-| /data01/mysql/data | MySQL server log file path  |
+| /data01/mysql/data | MySQL server data file path  |
 | /data01/mysql/dump | MySQL server only allows import and export operations in this directory|
 | /data01/mysql/script | Temporary scripts file storage directory during installation |
 | /data01/mysql/binlog | MySQL server binary log file storage directory |
 | /data01/mysql/relaylog | MySQL server relay log files torage directory |
-| /data01/mysql/router/mycluster | Configuration file and startup script of MySQL router |
+| /data01/mysql/router/mycluster | Configuration data logs file of MySQL router |
 
 **NOTICE:** The existing /etc/my.cnf /etc/mysql/my.cnf file will be renamed to /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
@@ -608,7 +610,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --
 Start MySQL Router
 
 ```shell
-bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/start.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_router_start.sh'
 10.1.207.181 | CHANGED | rc=0 >>
 PID 26307 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
 logging facility initialized, switching logging to loggers specified in configuration
@@ -625,7 +627,7 @@ logging facility initialized, switching logging to loggers specified in configur
 Stop MySQL Router
 
 ```shell
-bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/stop.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_router_stop.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 

@@ -38,10 +38,12 @@ MySQL InnoDB 集群有以下服务组成
 | ---- | ---- |
 | /etc/hosts | 所有节点 IP 地址和主机名映射 |
 | /opt/mysql | MySQL server、MySQL Shell、MySQL router 程序安装路径 |
-| ~/.my.cnf | MySQL 配置文件 |
-| ~/mysql_uninstall.sh | MySQL 卸载脚本 |
 | ~/.bash_profile | 设置 MySQL 环境变量 |
+| ~/.my.cnf | MySQL 配置文件 |
+| ~/mysql_uninstall.sh | MySQL InnoDB 集群卸载脚本 |
 | ~/mysql.server | MySQL server 的启停脚本 |
+| ~/mysql_router_start.sh | MySQL router 启动脚本 |
+| ~/mysql_router_stop.sh |  MySQL router 停止脚本 |
 | /data01/mysql/run | MySQL server pid 文件路径 |
 | /data01/mysql/logs | MySQL server 日志文件路径 |
 | /data01/mysql/data | MySQL server 数据文件路径 |
@@ -49,7 +51,7 @@ MySQL InnoDB 集群有以下服务组成
 | /data01/mysql/script | 安装过程中临时脚本存放的目录 |
 | /data01/mysql/binlog | MySQL server bin-log 文件存储路径 |
 | /data01/mysql/relaylog | MySQL server relay-log 文件存储路径 |
-| /data01/mysql/router/mycluster | MySQL router 的配置文件和启动脚本 |
+| /data01/mysql/router/mycluster | MySQL router 的配置文件、数据文件、日志文件 |
 
 **提示:** 系统自带 /etc/my.cnf /etc/mysql/my.cnf 文件将被重命名为 /etc/my.cnf.deleted /etc/mysql/my.cnf.deleted
 
@@ -607,7 +609,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --
 启动 MySQL Router
 
 ```shell
-bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/start.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_router_start.sh'
 10.1.207.181 | CHANGED | rc=0 >>
 PID 26307 written to '/data01/mysql/router/mycluster/mysqlrouter.pid'
 logging facility initialized, switching logging to loggers specified in configuration
@@ -624,7 +626,7 @@ logging facility initialized, switching logging to loggers specified in configur
 停止 MySQL Router
 
 ```shell
-bash-5.0# ansible all -m shell -a '/data01/mysql/router/mycluster/stop.sh'
+bash-5.0# ansible all -m shell -a '~/mysql_router_stop.sh'
 10.1.207.180 | CHANGED | rc=0 >>
 
 
