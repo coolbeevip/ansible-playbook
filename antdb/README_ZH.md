@@ -89,3 +89,55 @@ bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main.yml
 | 10.1.207.182 | | Secondary | CN-3 | Primary,Secondary |
 | 10.1.207.183 | | | CN-4 | Primary,Secondary |
 | 10.1.207.184 | | | CN-5 | Primary,Secondary |
+
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   name   | user  | port  | protocol | agentport |   address    |      adbhome
+----------+-------+-------+----------+-----------+--------------+-------------------
+ antdb180 | antdb | 22022 | ssh      |     18432 | 10.1.207.180 | /data01/antdb/app
+ antdb181 | antdb | 22022 | ssh      |     18432 | 10.1.207.181 | /data01/antdb/app
+ antdb182 | antdb | 22022 | ssh      |     18432 | 10.1.207.182 | /data01/antdb/app
+(3 rows)
+```
+
+```shell
+# 添加主机信息
+# add host <node_name>(port=22, protocol='ssh', adbhome='<antdb_app_dir>', address='<ip>', agentport=<agentport>, user='<user>');
+#
+# example:
+# add host antdb180(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.180', agentport=18432,user='antdb');
+# add host antdb181(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.181', agentport=18432,user='antdb');
+# add host antdb182(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.182', agentport=18432,user='antdb');
+
+# 添加 GTM 节点
+# add gtmcoord master <gtm_master_name>(host=<node_name>, port=<antdb_gtm_port>, path='<antdb_data_dir>/<gtm_master_name>');
+# add gtmcoord slave <gtm_slave_name> for <gtm_master_name>(host='node_name', port=antdb_gtm_port, path='<antdb_data_dir>/<gtm_slave_name>');
+#
+# example:
+# add gtmcoord master gtm_master(host='antdb180', port=16655, path='/data01/antdb/data/gtm_master');
+# add gtmcoord slave gtm_slave_1 for gtm_master(host='antdb181', port=16655, path='/data01/antdb/data/gtm_slave_1');
+
+
+# 添加 Coordinator 节点
+# add coordinator master <coordinator_master_name>(host='<node_name>', port=<antdb_coordinator_port>, path='<antdb_data_dir>/<coordinator_master_name>');
+#
+# example:
+# add coordinator master cn_master_1(host='antdb181', port=15432, path='/data01/antdb/data/cn_master_1');
+# add coordinator master cn_master_2(host='antdb182', port=15432, path='/data01/antdb/data/cn_master_2');
+
+
+
+# 添加 DataNode 节点
+# add datanode master <datanode_master_name>(host='<node_name>', port=<antdb_datanode_port>, path='<antdb_data_dir>/<datanode_master_name>');
+# add datanode slave <datanode_slave_name> for <datanode_master_name>(host='<node_name>', port=<antdb_datanode_port>, path='<antdb_data_dir>/<datanode_slave_name>');
+#
+# example:
+# add datanode master dn_master_1(host='antdb180', port=14332, path='/data01/antdb/data/dn_master_1');
+# add datanode slave dn_slave_1 for dn_master_1(host='antdb181', port=14332, path='/data01/antdb/data/dn_slave_1');
+# add datanode master dn_master_2(host='antdb181', port=14332, path='/data01/antdb/data/dn_master_2');
+# add datanode slave dn_slave_2 for dn_master_2(host='antdb182', port=14332, path='/data01/antdb/data/dn_slave_2');
+# add datanode master dn_master_3(host='antdb182', port=14332, path='/data01/antdb/data/dn_master_3');
+# add datanode slave dn_slave_3 for dn_master_3(host='antdb180', port=14332, path='/data01/antdb/data/dn_slave_3');
+```

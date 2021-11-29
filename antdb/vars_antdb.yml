@@ -50,3 +50,49 @@ antdb_datanode_port: 14332
 # MGR
 antdb_mgr_primary: 10.1.207.180
 antdb_mgr_secondarys: [10.1.207.182]
+
+# 集群节点名称（注意这不是主机名)
+node_names:
+  10.1.207.180:
+    name: antdb180
+  10.1.207.181:
+    name: antdb181
+  10.1.207.182:
+    name: antdb182
+
+# GTM 节点配置
+gtm_nodes:
+  master:
+    name: gtm_master
+    node: antdb180
+  slaves:
+    - name: gtm_slave_1
+      node: antdb181
+
+# Coordinator 节点配置
+coordinator_nodes:
+  - name: coordinator_1
+    node: antdb181
+  - name: coordinator_2
+    node: antdb182
+
+# DataNodes 节点配置
+data_nodes:
+  - master:
+      name: dn_master_1
+      node: antdb180
+    slave:
+      name: dn_slave_1
+      node: antdb181
+  - master:
+      name: dn_master_2
+      node: antdb181
+    slave:
+      name: dn_slave_2
+      node: antdb182
+  - master:
+      name: dn_master_3
+      node: antdb182
+    slave:
+      name: dn_slave_3
+      node: antdb180               
