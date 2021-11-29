@@ -139,6 +139,23 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
+连接 Coordinator 节点（默认端口 15432）成功
+
+```shell
+[antdb@oss-irms-182 ~]$ psql -h 10.1.207.181 -p 15432 –d postgres
+psql: FATAL:  role "postgres" does not exist
+[antdb@oss-irms-182 ~]$ psql -h 10.1.207.181 -p 15432 -d postgres
+psql (5.0.1 based on PG 11.10)
+Type "help" for help.
+
+postgres=# \q
+[antdb@oss-irms-182 ~]$ psql -h 10.1.207.182 -p 15432 -d postgres
+psql (5.0.1 based on PG 11.10)
+Type "help" for help.
+
+postgres=#
+```
+
 ```shell
 # 添加主机信息
 # add host <node_name>(port=22, protocol='ssh', adbhome='<antdb_app_dir>', address='<ip>', agentport=<agentport>, user='<user>');
