@@ -8,8 +8,8 @@
   tasks:
     - include_tasks: task_antdb_os.yml
     - include_tasks: task_antdb_upload.yml
-    - include_tasks: task_antdb_config.yml
-    - include_tasks: task_antdb_mgr_init.yml
+    - include_tasks: task_antdb_mgr_primary_config.yml
+    - include_tasks: task_antdb_mgr_primary_init.yml
 
 - hosts: 10.1.207.181
   user: antdb
@@ -19,8 +19,8 @@
   tasks:
     - include_tasks: task_antdb_os.yml
     - include_tasks: task_antdb_upload.yml
-    - include_tasks: task_antdb_config.yml
-    - include_tasks: task_antdb_mgr_init.yml
+    - include_tasks: task_antdb_mgr_primary_config.yml
+    - include_tasks: task_antdb_mgr_primary_init.yml
 
 - hosts: 10.1.207.182
   user: antdb
@@ -30,5 +30,5 @@
   tasks:
     - include_tasks: task_antdb_os.yml
     - include_tasks: task_antdb_upload.yml
-    - include_tasks: task_antdb_config.yml
-    - include_tasks: task_antdb_mgr_init.yml
+    - include_tasks: task_antdb_mgr_primary_config.yml
+    - include_tasks: task_antdb_mgr_primary_init.yml

@@ -1,0 +1,11 @@
+# MGR 主节点初始化
+- name: include vars
+  include_vars: "vars_antdb.yml"
+
+# 启动 MGR 节点
+- name: Stop Mgr Primary Node
+  shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
+- name: Start Mgr Primary Node
+  shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
+  check_mode: no
+  when: inventory_hostname == antdb_mgr_primary
