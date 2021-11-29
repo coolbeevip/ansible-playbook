@@ -13,11 +13,11 @@
 
 分布式集群模块规划如下
 
-| IP | MGR | GTM | DataNode | Coordinator |
+| IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | | Primary | |
-| 10.1.207.181 | Secondary | Primary | Secondary | Primary |
-| 10.1.207.182 | | Secondary | | Secondary |
+| 10.1.207.180 | Primary | Primary | | DN1-Primary, DN3-Secondary |
+| 10.1.207.181 | | Secondary | CN1 | DN2-Primary, DN1-Secondary |
+| 10.1.207.182 | Secondary | | CN2 | DN3-Primary, DN2-Secondary |
 
 节点安装路径
 
@@ -75,3 +75,17 @@ docker run --name ansible --rm -it \
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main.yml
 ```
+
+## 其他
+
+推荐生产最小规模
+
+分布式集群模块规划如下
+
+| IP | MGR | GTM | Coordinator | DataNode |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Primary | Primary | CN-1 | Primary,Secondary |
+| 10.1.207.181 | Secondary | Secondary | CN-2 | Primary,Secondary |
+| 10.1.207.182 | | Secondary | CN-3 | Primary,Secondary |
+| 10.1.207.183 | | | CN-4 | Primary,Secondary |
+| 10.1.207.184 | | | CN-5 | Primary,Secondary |

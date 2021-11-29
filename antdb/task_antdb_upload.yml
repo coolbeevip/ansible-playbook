@@ -1,3 +1,5 @@
+# 创建上传目录 & 上传安装介质
+
 - name: include vars
   include_vars: "vars_antdb.yml"
 

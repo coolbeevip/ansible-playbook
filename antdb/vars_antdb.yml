@@ -37,4 +37,4 @@ antdb_conf_log_statement: ddl
 
 # MGR
 antdb_mgr_primary: 10.1.207.180
-antdb_mgr_secondarys: [10.1.207.181]
+antdb_mgr_secondarys: [10.1.207.182]

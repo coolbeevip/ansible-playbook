@@ -1,3 +1,7 @@
+# 创建安装目录
+# 设置环境变量
+# 初始化 MGR
+
 - name: include vars
   include_vars: "vars_antdb.yml"
 
@@ -105,7 +109,7 @@
     mode: "2755"
   check_mode: no
   become: yes
-  when: (inventory_hostname == antdb_mgr_primary) and (not check_result.stat.exists)
+  when: inventory_hostname == antdb_mgr_primary
 
 # Initialize MGR
 - name: Check initialize MGR
