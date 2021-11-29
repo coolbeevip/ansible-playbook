@@ -108,26 +108,35 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list n
 10.1.207.180 | CHANGED | rc=0 >>
      name      |   host   |        type        | mastername  | port  | sync_state |               path               | initialized | incluster | zone
 ---------------+----------+--------------------+-------------+-------+------------+----------------------------------+-------------+-----------+-------
- gtm_master    | antdb180 | gtmcoord master    |             | 16655 |            | /data01/antdb/data/gtm_master    | f           | f         | local
- gtm_slave_1   | antdb181 | gtmcoord slave     | gtm_master  | 16655 | sync       | /data01/antdb/data/gtm_slave_1   | f           | f         | local
- coordinator_1 | antdb181 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_1 | f           | f         | local
- coordinator_2 | antdb182 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_2 | f           | f         | local
- dn_master_1   | antdb180 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_1   | f           | f         | local
- dn_master_2   | antdb181 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_2   | f           | f         | local
- dn_master_3   | antdb182 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_3   | f           | f         | local
- dn_slave_1    | antdb180 | datanode slave     | dn_master_1 | 14333 | sync       | /data01/antdb/data/dn_slave_1    | f           | f         | local
- dn_slave_2    | antdb181 | datanode slave     | dn_master_2 | 14333 | sync       | /data01/antdb/data/dn_slave_2    | f           | f         | local
- dn_slave_3    | antdb182 | datanode slave     | dn_master_3 | 14333 | sync       | /data01/antdb/data/dn_slave_3    | f           | f         | local
-(10 rows)WARNING:  gtmcoord master gtm_master does not in the cluster
-WARNING:  gtmcoord slave gtm_slave_1 does not in the cluster
-WARNING:  coordinator master coordinator_1 does not in the cluster
-WARNING:  coordinator master coordinator_2 does not in the cluster
-WARNING:  datanode master dn_master_1 does not in the cluster
-WARNING:  datanode master dn_master_2 does not in the cluster
-WARNING:  datanode master dn_master_3 does not in the cluster
-WARNING:  datanode slave dn_slave_1 does not in the cluster
-WARNING:  datanode slave dn_slave_2 does not in the cluster
-WARNING:  datanode slave dn_slave_3 does not in the cluster
+ gtm_master    | antdb180 | gtmcoord master    |             | 16655 |            | /data01/antdb/data/gtm_master    | t           | t         | local
+ gtm_slave_1   | antdb181 | gtmcoord slave     | gtm_master  | 16655 | sync       | /data01/antdb/data/gtm_slave_1   | t           | t         | local
+ coordinator_1 | antdb181 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_1 | t           | t         | local
+ coordinator_2 | antdb182 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_2 | t           | t         | local
+ dn_master_1   | antdb180 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_1   | t           | t         | local
+ dn_master_2   | antdb181 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_2   | t           | t         | local
+ dn_master_3   | antdb182 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_3   | t           | t         | local
+ dn_slave_1    | antdb180 | datanode slave     | dn_master_1 | 14333 | sync       | /data01/antdb/data/dn_slave_1    | t           | t         | local
+ dn_slave_2    | antdb181 | datanode slave     | dn_master_2 | 14333 | sync       | /data01/antdb/data/dn_slave_2    | t           | t         | local
+ dn_slave_3    | antdb182 | datanode slave     | dn_master_3 | 14333 | sync       | /data01/antdb/data/dn_slave_3    | t           | t         | local
+(10 rows)
+```
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   nodename    |      nodetype      | status | description |     host     | port  | recovery |           boot time           | nodezone
+---------------+--------------------+--------+-------------+--------------+-------+----------+-------------------------------+----------
+ gtm_master    | gtmcoord master    | t      | running     | 10.1.207.180 | 16655 | false    | 2021-11-29 15:35:37.239812+08 | local
+ gtm_slave_1   | gtmcoord slave     | t      | running     | 10.1.207.181 | 16655 | true     | 2021-11-29 15:31:55.145147+08 | local
+ coordinator_1 | coordinator master | t      | running     | 10.1.207.181 | 15432 | false    | 2021-11-29 15:32:02.253647+08 | local
+ coordinator_2 | coordinator master | t      | running     | 10.1.207.182 | 15432 | false    | 2021-11-29 15:31:09.045575+08 | local
+ dn_master_1   | datanode master    | t      | running     | 10.1.207.180 | 14332 | false    | 2021-11-29 15:35:57.878057+08 | local
+ dn_master_2   | datanode master    | t      | running     | 10.1.207.181 | 14332 | false    | 2021-11-29 15:32:11.965045+08 | local
+ dn_master_3   | datanode master    | t      | running     | 10.1.207.182 | 14332 | false    | 2021-11-29 15:31:18.718835+08 | local
+ dn_slave_1    | datanode slave     | t      | running     | 10.1.207.180 | 14333 | true     | 2021-11-29 15:36:01.301736+08 | local
+ dn_slave_2    | datanode slave     | t      | running     | 10.1.207.181 | 14333 | true     | 2021-11-29 15:32:18.017186+08 | local
+ dn_slave_3    | datanode slave     | t      | running     | 10.1.207.182 | 14333 | true     | 2021-11-29 15:31:27.937421+08 | local
+(10 rows)
 ```
 
 ```shell

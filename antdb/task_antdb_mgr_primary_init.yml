@@ -16,7 +16,7 @@
 - name: Add hosts to MGR
   #debug:
   #  msg: adbmgr -c "add host {{ node_names[item].name }}(port=22022, protocol='ssh', adbhome='{{ antdb_app_dir }}', address='{{ item }}', agentport={{ andb_agent_port }}, user='{{ antdb_user }}');"
-  shell: psql -p 16432 -d postgres -c "add host {{ node_names[item].name }}(port=22022, protocol='ssh', adbhome='{{ antdb_app_dir }}', address='{{ item }}', agentport={{ andb_agent_port }}, user='{{ antdb_user }}');"
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "add host {{ node_names[item].name }}(port=22022, protocol='ssh', adbhome='{{ antdb_app_dir }}', address='{{ item }}', agentport={{ andb_agent_port }}, user='{{ antdb_user }}');"
   check_mode: no
   with_items: "{{ groups.all }}"
   ignore_errors: true
@@ -24,12 +24,12 @@
 
 # 添加 GTM 节点
 - name: Add GTM master to MGR
-  shell: psql -p 16432 -d postgres -c "add gtmcoord master {{ gtm_nodes.master.name }}(host='{{ gtm_nodes.master.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ gtm_nodes.master.name }}');"
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "add gtmcoord master {{ gtm_nodes.master.name }}(host='{{ gtm_nodes.master.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ gtm_nodes.master.name }}');"
   check_mode: no
   ignore_errors: true
   when: inventory_hostname == antdb_mgr_primary
 - name: Add GTM slave to MGR
-  shell: psql -p 16432 -d postgres -c "add gtmcoord slave {{ item.name }} for {{ gtm_nodes.master.name }}(host='{{ item.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ item.name }}');"
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "add gtmcoord slave {{ item.name }} for {{ gtm_nodes.master.name }}(host='{{ item.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ item.name }}');"
   check_mode: no
   with_items: "{{ gtm_nodes.slaves }}"
   ignore_errors: true
@@ -37,7 +37,7 @@
 
 # 添加 Coordinator 节点
 - name: Add Coordinator to MGR
-  shell: psql -p 16432 -d postgres -c "add coordinator master {{ item.name }}(host='{{ item.node }}', port={{ antdb_coordinator_port }}, path='{{ antdb_data_dir }}/{{ item.name }}');"
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "add coordinator master {{ item.name }}(host='{{ item.node }}', port={{ antdb_coordinator_port }}, path='{{ antdb_data_dir }}/{{ item.name }}');"
   check_mode: no
   with_items: "{{ coordinator_nodes }}"
   ignore_errors: true
@@ -46,8 +46,8 @@
 # 添加 Data 节点
 - name: Add DataNode to MGR
   shell: |
-      psql -p 16432 -d postgres -c "add datanode master {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_master_port }}, path='{{ antdb_data_dir }}/{{ item.master.name }}');"
-      psql -p 16432 -d postgres -c "add datanode slave {{ item.slave.name }} for {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_slave_port }}, path='{{ antdb_data_dir }}/{{ item.slave.name }}');"
+      psql -p {{ antdb_conf_port }} -d postgres -c "add datanode master {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_master_port }}, path='{{ antdb_data_dir }}/{{ item.master.name }}');"
+      psql -p {{ antdb_conf_port }} -d postgres -c "add datanode slave {{ item.slave.name }} for {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_slave_port }}, path='{{ antdb_data_dir }}/{{ item.slave.name }}');"
   check_mode: no
   with_items: "{{ data_nodes }}"
   ignore_errors: true
@@ -55,6 +55,17 @@
 
 # 部署 app 到所有节点
 - name: Deploy app
-  shell: psql -p 16432 -d postgres -c "deploy all password '{{ antdb_password }}';"
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "deploy all password '{{ antdb_password }}';"
+  check_mode: no
+  when: inventory_hostname == antdb_mgr_primary
+
+# 启动所有 Agent
+- name: Start agent
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "start agent all password '{{ antdb_password }}';"
+  check_mode: no
+  when: inventory_hostname == antdb_mgr_primary
+
+- name: Initialize all
+  shell: psql -p {{ antdb_conf_port }} -d postgres -c "init all;"
   check_mode: no
   when: inventory_hostname == antdb_mgr_primary

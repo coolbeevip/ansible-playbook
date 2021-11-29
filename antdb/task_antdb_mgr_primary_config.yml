@@ -56,7 +56,7 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^alias adbmgr=.*'
-    line: "alias adbmgr='psql -p 16432 -d postgres'"
+    line: "alias adbmgr='psql -p {{ antdb_conf_port }} -d postgres'"
     state: present
   check_mode: no
 
