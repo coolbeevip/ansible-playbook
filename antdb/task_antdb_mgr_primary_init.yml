@@ -2,12 +2,32 @@
 - name: include vars
   include_vars: "vars_antdb.yml"
 
-# 启动 MGR 节点
+# 重启 MGR 节点
 - name: Stop Mgr Primary Node
   shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary  
+  when: inventory_hostname == antdb_mgr_primary
 - name: Start Mgr Primary Node
   shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
   check_mode: no
   when: inventory_hostname == antdb_mgr_primary
+
+
+# 添加主机信息
+# add host <主机名>(port=22,protocol='ssh',adbhome='<antdb_app_dir>',address='<ip>',agentport=<agentport>,user='<user>');
+#
+# add host oss-irms-181(port=22022,protocol='ssh',adbhome='/data01/antdb/app',address='10.1.207.181',agentport=18432,user='antdb');
+
+
+# 添加 GTM 节点
+# add gtmcoord master <gtmname>(host=<主机名>,port=<antdb_gtm_port>, path='<antdb_data_dir>/<gtmname>');
+#
+# add gtmcoord master gc_1(host='adb03',port=16655, path='antdb_data_dir/gc_1');
+
+
+# 添加 Coordinator 节点
+# add coordinator master <coordinator_name>(host=<主机名>, path='<antdb_data_dir>/<coordinator_name>',port=<antdb_coordinator_port>);
+
+
+# 添加 DataNode 节点
+# add datanode master <datanode_name>(host=<主机名>, path='<antdb_data_dir>/<datanode_name>',port=<antdb_datanode_port>);

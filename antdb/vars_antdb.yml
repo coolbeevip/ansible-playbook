@@ -35,6 +35,18 @@ antdb_conf_log_rotation_size: 100MB
 antdb_conf_log_min_messages: error
 antdb_conf_log_statement: ddl
 
+# agent
+andb_agent_port: 18432
+
+# GTM
+antdb_gtm_port: 16655
+
+# Coordinator
+antdb_coordinator_port: 15432
+
+# DataNode
+antdb_datanode_port: 14332
+
 # MGR
 antdb_mgr_primary: 10.1.207.180
 antdb_mgr_secondarys: [10.1.207.182]
