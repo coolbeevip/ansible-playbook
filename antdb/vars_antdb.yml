@@ -13,6 +13,7 @@ limits_hard_memlock: '250000000'
 # Linux user & group
 antdb_user: 'antdb'
 antdb_group: 'antdb'
+antdb_password: '123456'
 
 # AntDB binary package
 antdb_tar: 'antdb.cluster-5.0.009be78c-centos7.9.rpm'
@@ -45,7 +46,8 @@ antdb_gtm_port: 16655
 antdb_coordinator_port: 15432
 
 # DataNode
-antdb_datanode_port: 14332
+antdb_datanode_master_port: 14332
+antdb_datanode_slave_port: 14333
 
 # MGR
 antdb_mgr_primary: 10.1.207.180
@@ -95,4 +97,4 @@ data_nodes:
       node: antdb182
     slave:
       name: dn_slave_3
-      node: antdb180               
+      node: antdb180
