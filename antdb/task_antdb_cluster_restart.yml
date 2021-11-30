@@ -1,0 +1,7 @@
+- name: include vars
+  include_vars: "vars_antdb.yml"
+
+# 倒入默认配置
+- name: Import Default Config SQL
+  shell: psql -p {{ antdb_conf_port }} -d postgres -f $HOME/antdb_config.sql
+  check_mode: no

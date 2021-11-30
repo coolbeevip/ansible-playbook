@@ -62,9 +62,3 @@
 - name: Initialize all
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "init all;"
   check_mode: no
-
-# 初始化配置
-- name: Import default config sql
-  shell: psql -p 16432 -d postgres -f /home/antdb/antdb_config.sql
-  check_mode: no
-  when: inventory_hostname in mgr_nodes.slave.ips
