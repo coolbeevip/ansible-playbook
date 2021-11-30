@@ -234,7 +234,7 @@ docker run --name ansible --rm -it \
 执行安装脚本上传安装介质、初始化目录
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-install.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml
 ```
 
 **提示：** 此脚本在我的环境下执行耗时大约 2 分钟
@@ -242,7 +242,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-install.yml
 执行集群初始化脚本并启动集群
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-init.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
 **提示：** 此脚本在我的环境下执行耗时大约 2 分钟
