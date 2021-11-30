@@ -1,4 +1,4 @@
-# MGR Master Node
+# MGR Master Node Initialize
 - hosts: 10.1.207.180
   user: antdb
   become: no
@@ -8,7 +8,7 @@
     - include_tasks: task_antdb_mgr_master_config.yml
     - include_tasks: task_antdb_mgr_master_init.yml
 
-# MGR Slave Node
+# MGR Slave Node Initialize
 - hosts: 10.1.207.182
   user: antdb
   become: no
@@ -19,7 +19,7 @@
   tasks:
     - include_tasks: task_antdb_mgr_slave_init.yml
 
-# MGR Master Node
+# Restart AntDB All NOdes on MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
   become: no

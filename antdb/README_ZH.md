@@ -80,19 +80,19 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 配置 AntDB MGR 主/备节点服务器 IP 地址，以及安装用系统用户名。备节点的名称 `mgr_slave_1`
 
 ```yaml
-# MGR Master Node for init
+# MGR Master Node Initialize
 - hosts: 10.1.207.180
   user: antdb
 
-# MGR Slave Node for init
+# MGR Slave Node Initialize
 - hosts: 10.1.207.182
   user: antdb
   vars:
-    mgr_slave_name: "mgr_slave_1"  
+    mgr_slave_name: "mgr_slave_1"
 
-# MGR Master Node for restart cluster
+# Restart AntDB All NOdes on MGR Master Node
 - hosts: 10.1.207.180
-  user: antdb    
+  user: antdb
 ```
 
 #### var_antdb.yml
