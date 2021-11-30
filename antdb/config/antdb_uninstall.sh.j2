@@ -2,7 +2,7 @@
 
 set -e
 
-echo 'Kill AntDB Process'
+echo 'Kill All AntDB Process'
 kill $(ps aux | grep '{{ antdb_app_dir }}/bin' | awk '{print $2}')
 
 echo 'Delete AntDB Data Files'
