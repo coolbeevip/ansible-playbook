@@ -62,8 +62,9 @@ node_names:
 mgr_nodes:
   master:
     ip: 10.1.207.180
-  slave:
-    ips: [10.1.207.182]
+  slaves:
+    - name: mgr_salve_1
+      ip: 10.1.207.182
 
 # GTM 节点配置
 gtm_nodes:

@@ -7,7 +7,7 @@
 #   shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
 #   check_mode: no
 #   when: inventory_hostname == mgr_nodes.master.ip
-- name: Start Mgr Primary Node
+- name: Start Mgr Master Node
   shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
   check_mode: no
 
@@ -57,6 +57,13 @@
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "start agent all password '{{ antdb_password }}';"
   check_mode: no
 
+# 初始化所有节点
 - name: Initialize all
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "init all;"
+  check_mode: no
+
+# 添加 MRG 备份节点
+- name: Add MGR salve to MGR
+  shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename {{ item.name }} -Xs -Fp -R
+  with_items: "{{ mgr_nodes.slaves }}"
   check_mode: no

@@ -244,7 +244,7 @@ docker run --name ansible --rm -it \
 
 ## 安装 Antdb 集群
 
-安装前初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质
+系统初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml
@@ -390,6 +390,8 @@ antdb    18775     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres -
 | 10.1.207.184 | Master | | Coordinator_5 | DataNode_Master_5, DataNode_Slave_4 |
 
 #### 如何强制卸载 AntDB 分布式集群
+
+使用强制卸载脚本，此脚本将 kill 所有 AndDB 进程，并删除程序和数据目录
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/antdb_uninstall.sh'

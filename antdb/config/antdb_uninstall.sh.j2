@@ -1,7 +1,17 @@
 #!/bin/bash
 
 echo 'Kill All AntDB Process'
-kill $(ps aux | grep '[a]uto {{ antdb_app_dir }}/bin' | awk '{print $2}')
+if [[ $(ps aux | grep '[b]in/postgres' | wc -l) != 0 ]]; then
+  kill $(ps aux | grep '[b]in/postgres' | awk '{print $2}')
+fi
+
+if [[ $(ps aux | grep '[b]in/agent' | wc -l) != 0 ]]; then
+  kill $(ps aux | grep '[b]in/agent' | awk '{print $2}')
+fi
+
+if [[ $(ps aux | grep '[b]in/adbmgrd' | wc -l) != 0 ]]; then
+  kill $(ps aux | grep '[b]in/adbmgrd' | awk '{print $2}')
+fi
 
 echo 'Delete AntDB Data Files'
 rm -rf {{ antdb_mgr_dir }}

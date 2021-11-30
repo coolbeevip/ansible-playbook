@@ -1,0 +1,101 @@
+# Data Node Configuration
+
+set datanode all("listen_addresses"="'*'");
+set datanode all("superuser_reserved_connections"="13");
+set datanode all("tcp_keepalives_idle"="60");
+set datanode all("tcp_keepalives_interval"="5");
+set datanode all("tcp_keepalives_count"="10");
+set datanode all("work_mem"="16MB");
+set datanode all("min_wal_size"="2048");
+set datanode all("maintenance_work_mem"="1GB");
+set datanode all("max_stack_depth"="8192");
+set datanode all("wal_sync_method"="open_datasync");
+set datanode all("wal_compression"="on");
+set datanode all("wal_log_hints"="on");
+set datanode all("checkpoint_timeout"="15min");
+set datanode all("checkpoint_completion_target"="0.9");
+set datanode all("archive_mode"="on");
+set datanode all("archive_command"="'/bin/date'");
+set datanode all("wal_keep_segments"="1024");
+set datanode all("log_destination"="'csvlog'");
+set datanode all("logging_collector"="on");
+set datanode all("log_directory"="'pg_log'");
+set datanode all("log_rotation_size"="100MB");
+set datanode all("log_min_messages"="error");
+set datanode all("log_statement"="ddl");
+set datanode all("track_activity_query_size"="2048");
+set datanode all("autovacuum_max_workers"="5");
+set datanode all("autovacuum_vacuum_threshold"="500");
+set datanode all("autovacuum_analyze_threshold"="500");
+set datanode all("max_locks_per_transaction"="256");
+set datanode all("enable_fast_query_shipping"="off");
+
+# 下面这些参数，需要根据实际需求来确定，替换掉加粗斜体部分
+set datanode all("max_connections"="自定义最大连接数");
+set datanode all("max_prepared_transactions"="等于最大连接数");
+set datanode all("max_worker_processes"="cpu*2");
+set datanode all("shared_buffers"="物理内存 * 25% GB");
+set datanode all("effective_cache_size"="物理内存 * 75% GB");
+set datanode all("max_wal_size"="2 * shared_buffers GB") FORCE;
+set datanode all("random_page_cost"="如果是SSD磁盘，设置为1；如果是SATA磁盘，保持默认值4");
+
+# Coordinator Node Configuration
+
+set coordinator all("listen_addresses"="'*'");
+set coordinator all("superuser_reserved_connections"="13");
+set coordinator all("tcp_keepalives_idle"="60");
+set coordinator all("tcp_keepalives_interval"="5");
+set coordinator all("tcp_keepalives_count"="10");
+set coordinator all("max_stack_depth"="8192");
+set coordinator all("wal_compression"="on");
+set coordinator all("wal_log_hints"="on");
+set coordinator all("checkpoint_timeout"="15min");
+set coordinator all("checkpoint_completion_target"="0.9");
+set coordinator all("archive_mode"="on");
+set coordinator all("archive_command"="'/bin/date'");
+set coordinator all("log_destination"="'csvlog'");
+set coordinator all("logging_collector"="on");
+set coordinator all("log_directory"="'pg_log'");
+set coordinator all("log_rotation_size"="100MB");
+set coordinator all("log_min_messages"="error");
+set coordinator all("log_statement"="ddl");
+set coordinator all("track_activity_query_size"="2048");
+set coordinator;
+set coordinator all("max_locks_per_transaction"="256");
+set coordinator all("enable_fast_query_shipping"="off");
+# 下面这些参数，需要根据实际需求来确定，替换掉加粗斜体部分
+set coordinator all("max_connections"="自定义最大连接数");
+set coordinator all("max_prepared_transactions"="等于最大连接数");
+set coordinator all("max_worker_processes"="cpu*2");
+
+# GTM Node Configuration
+set gtmcoord all("listen_addresses"="'*'");
+set gtmcoord all("superuser_reserved_connections"="13");
+set gtmcoord all("tcp_keepalives_idle"="60");
+set gtmcoord all("tcp_keepalives_interval"="5");
+set gtmcoord all("tcp_keepalives_count"="10");
+set gtmcoord all("max_stack_depth"="8192");
+set gtmcoord all("wal_compression"="on");
+set gtmcoord all("wal_log_hints"="on");
+set gtmcoord all("checkpoint_timeout"="15min");
+set gtmcoord all("checkpoint_completion_target"="0.9");
+set gtmcoord all("archive_mode"="on");
+set gtmcoord all("archive_command"="'/bin/date'");
+set gtmcoord all("log_destination"="'csvlog'");
+set gtmcoord all("logging_collector"="on");
+set gtmcoord all("log_directory"="'pg_log'");
+set gtmcoord all("log_rotation_size"="100MB");
+set gtmcoord all("log_min_messages"="error");
+set gtmcoord all("log_statement"="ddl");
+set gtmcoord all("track_activity_query_size"="2048");
+set gtmcoord all("max_locks_per_transaction"="256");
+set gtmcoord all("enable_fast_query_shipping"="off");
+# 下面这些参数，根据实际需求来确定，替换掉加粗斜体部分
+set gtmcoord all("max_connections"="自定义最大连接数");
+set gtmcoord all("max_prepared_transactions"="等于最大连接数");
+set gtmcoord all("max_worker_processes"="cpu*2");
+set gtmcoord all("shared_buffers"="物理内存 * 25% GB");
+
+# 重启整个集群
+stop all mode f;
+start all;
