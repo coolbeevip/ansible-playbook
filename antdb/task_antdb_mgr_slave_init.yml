@@ -6,3 +6,8 @@
 - name: Add MGR salve to MGR
   shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename {{ mgr_slave_name }} -Xs -Fp -R
   check_mode: no
+  
+# 启动 MGR 备份节点
+- name: Start Mgr Master Node
+  shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
+  check_mode: no
