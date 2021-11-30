@@ -3,14 +3,14 @@
   include_vars: "vars_antdb.yml"
 
 # 重启 MGR 节点
-- name: Stop Mgr Primary Node
-  shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
-  check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+# - name: Stop Mgr Primary Node
+#   shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
+#   check_mode: no
+#   when: inventory_hostname == mgr_nodes.master.ip
 - name: Start Mgr Primary Node
   shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 添加主机信息
 - name: Add hosts to MGR
@@ -20,20 +20,20 @@
   check_mode: no
   with_items: "{{ groups.all }}"
   ignore_errors: true
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 添加 GTM 节点
 - name: Add GTM master to MGR
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "add gtmcoord master {{ gtm_nodes.master.name }}(host='{{ gtm_nodes.master.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ gtm_nodes.master.name }}');"
   check_mode: no
   ignore_errors: true
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 - name: Add GTM slave to MGR
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "add gtmcoord slave {{ item.name }} for {{ gtm_nodes.master.name }}(host='{{ item.node }}', port={{ antdb_gtm_port }}, path='{{ antdb_data_dir }}/{{ item.name }}');"
   check_mode: no
   with_items: "{{ gtm_nodes.slaves }}"
   ignore_errors: true
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 添加 Coordinator 节点
 - name: Add Coordinator to MGR
@@ -41,7 +41,7 @@
   check_mode: no
   with_items: "{{ coordinator_nodes }}"
   ignore_errors: true
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 添加 Data 节点
 - name: Add DataNode to MGR
@@ -51,21 +51,21 @@
   check_mode: no
   with_items: "{{ data_nodes }}"
   ignore_errors: true
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 部署 app 到所有节点
 - name: Deploy app
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "deploy all password '{{ antdb_password }}';"
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 启动所有 Agent
 - name: Start agent
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "start agent all password '{{ antdb_password }}';"
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 - name: Initialize all
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "init all;"
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip

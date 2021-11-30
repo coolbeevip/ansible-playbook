@@ -21,7 +21,7 @@
     - "{{ antdb_core_dir }}"
   check_mode: no
   become: yes
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 设置 ADB_HOME 环境变量
 - name: configuring environment ADB_HOME
@@ -93,12 +93,12 @@
     path: "$ADB_HOME/bin"
   register: check_result
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 - name: Install rpm package
   shell: rpm -i --force {{ antdb_home_dir }}/{{ antdb_tar }} --relocate=/opt/app/antdb={{ antdb_app_dir }}
   check_mode: no
   become: yes
-  when: (inventory_hostname == antdb_mgr_primary) and (not check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (not check_result.stat.exists)
 - name: Change rpm file permission
   file:
     path: $ADB_HOME
@@ -109,7 +109,7 @@
     mode: "2755"
   check_mode: no
   become: yes
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # Initialize MGR
 - name: Check initialize MGR
@@ -120,7 +120,7 @@
 - name: Initialize MGR
   shell: initmgr -D $mgrdata
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (not check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (not check_result.stat.exists)
 
 # Configuring postgresql.conf
 - name: Configuring postgresql.conf listen_addresses
@@ -130,7 +130,7 @@
     line: "listen_addresses = '{{ antdb_conf_listen_addresses }}'"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf port
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -138,7 +138,7 @@
     line: "port = {{ antdb_conf_port }}"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf log_destination
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -146,7 +146,7 @@
     line: "log_destination = '{{ antdb_conf_log_destination }}'"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf logging_collector
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -154,7 +154,7 @@
     line: "logging_collector = {{ antdb_conf_logging_collector }}"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf log_directory
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -162,7 +162,7 @@
     line: "log_directory = '{{ antdb_conf_log_directory }}'"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf log_rotation_size
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -170,7 +170,7 @@
     line: "log_rotation_size = {{ antdb_conf_log_rotation_size }}"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf log_min_messages
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -178,7 +178,7 @@
     line: "log_min_messages = {{ antdb_conf_log_min_messages }}"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)
 - name: Configuring postgresql.conf log_statement
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/postgresql.conf"
@@ -186,4 +186,4 @@
     line: "log_statement = {{ antdb_conf_log_statement }}"
     state: present
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (check_result.stat.exists)

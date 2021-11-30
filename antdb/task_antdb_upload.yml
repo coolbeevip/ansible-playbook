@@ -13,7 +13,7 @@
     mode: "2750"
   become: yes
   check_mode: no
-  when: inventory_hostname == antdb_mgr_primary
+  when: inventory_hostname == mgr_nodes.master.ip
 
 # 上传卸载脚本 antdb_uninstall.sh
 - name: copy antdb_uninstall.sh
@@ -34,4 +34,4 @@
     src: "/ansible-playbook/packages/{{ antdb_tar }}"
     dest: "{{ antdb_home_dir }}/{{ antdb_tar }}"
   check_mode: no
-  when: (inventory_hostname == antdb_mgr_primary) and (not check_result.stat.exists)
+  when: (inventory_hostname == mgr_nodes.master.ip) and (not check_result.stat.exists)

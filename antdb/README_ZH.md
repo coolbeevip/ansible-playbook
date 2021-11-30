@@ -1,9 +1,15 @@
 # Ansible Playbook 安装 AntDB 集群 | [English](README.md)
 
+AntDB分布式数据库自动化安装脚本，此脚本仅供测试环境搭建使用
 
-## 目标服务器
+* MGR 集群的管理
+* GTM 全局事务管理
+* Coordinator 协调员管理用户会话
+* Data Node 数据节点
 
-假设您有以下三台服务器
+## 安装计划
+
+服务器规划
 
 | IP | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 |
 | ---- | ---- | ---- | ---- | ---- |
@@ -11,7 +17,7 @@
 | 10.1.207.181 | 22022 | antdb | 123456 | root123 |
 | 10.1.207.182 | 22022 | antdb | 123456 | root123 |
 
-分布式集群模块规划如下
+集群节点规划
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
@@ -23,13 +29,13 @@
 
 | 路径 | 描述 |
 | ---- | ---- |
-| /opt/antdb | |
-| ~/antdbb_uninstall.sh | AntDB 集群卸载脚本 |
-| /data01/antdb/mgr | AntDB MGR 程序文件 |
-| /data01/antdb/data | |
-| /data01/antdb/tools | |
-| /data01/antdb/app | AntDB 集群程序文件 |
-| /data01/antdb/core | |
+| /opt/antdb | rpm 安装介质存放路径 |
+| ~/antdb_uninstall.sh | 集群卸载脚本 |
+| /data01/antdb/app | PG 程序文件 |
+| /data01/antdb/mgr | MGR 程序文件 |
+| /data01/antdb/data | 数据文件目录 |
+| /data01/antdb/tools | 工具脚本存放路径 |
+| /data01/antdb/core | Core Dump 文件存放路径 |
 
 ## 下载安装包和 Playbook 脚本
 
@@ -47,6 +53,161 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
 下载 AntDB 安装包 `antdb.cluster-5.0.009be78c-centos7.9.rpm` 到 `~/my-docker-volume/ansible-playbook/packages` 目录
+
+## 配置安装脚本
+
+> 您可以编辑以下配置文件，修改默认参数
+
+
+#### main.yml
+
+安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名
+
+```shell
+- hosts: 10.1.207.180
+  user: antdb
+
+- hosts: 10.1.207.181
+  user: antdb
+
+- hosts: 10.1.207.182
+  user: antdb
+```
+
+操作系统内核参数
+
+```shell
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '278528'
+limits_soft_nofile: '278528'
+limits_soft_stack: 'unlimited'
+limits_soft_core: 'unlimited'
+limits_hard_core: 'unlimited'
+limits_soft_memlock: '250000000'
+limits_hard_memlock: '250000000'
+```
+
+安装用系统用户名和密码
+
+```shell
+antdb_user: 'antdb'
+antdb_group: 'antdb'
+antdb_password: '123456'
+```
+
+AntDB rpm 包名称
+
+```shell
+antdb_tar: 'antdb.cluster-5.0.009be78c-centos7.9.rpm'
+```
+
+AntDB 安装路径
+
+```shell
+antdb_home_dir: '/opt/antdb'
+antdb_mgr_dir: '/data01/antdb/mgr'
+antdb_data_dir: '/data01/antdb/data'
+antdb_tools_dir: '/data01/antdb/tools'
+antdb_app_dir: '/data01/antdb/app'
+antdb_core_dir: '/data01/antdb/core'
+```
+
+postgresql.conf 扩展参数
+
+```shell
+antdb_conf_listen_addresses: '*'
+antdb_conf_port: 16432
+antdb_conf_log_destination: 'csvlog'
+antdb_conf_logging_collector: on
+antdb_conf_log_directory: 'pg_log'
+antdb_conf_log_rotation_size: 100MB
+antdb_conf_log_min_messages: error
+antdb_conf_log_statement: ddl
+```
+
+集群所有节点名称(此名称不是主机名，是集群管理用的节点名称，不能包含中划线)
+
+```shell
+# 集群节点名称（注意这不是主机名)
+node_names:
+  10.1.207.180:
+    name: antdb180
+  10.1.207.181:
+    name: antdb181
+  10.1.207.182:
+    name: antdb182
+```    
+
+集群各个组件端口
+
+```shell
+# agent
+andb_agent_port: 18432
+# GTM
+antdb_gtm_port: 16655
+# Coordinator
+antdb_coordinator_port: 15432
+# DataNode
+antdb_datanode_master_port: 14332
+antdb_datanode_slave_port: 14333
+```
+
+MGR 节点配置
+
+```shell
+mgr_nodes:
+  master:
+    ip: 10.1.207.180
+  slave:
+    ips: [10.1.207.182]
+```
+
+GTM 节点配置
+
+```shell
+gtm_nodes:
+  master:
+    name: gtm_master
+    node: antdb180
+  slaves:
+    - name: gtm_slave_1
+      node: antdb181
+```
+
+Coordinator 节点配置
+
+```shell
+coordinator_nodes:
+  - name: coordinator_1
+    node: antdb181
+  - name: coordinator_2
+    node: antdb182
+```
+
+DataNodes 节点配置
+
+```shell
+data_nodes:
+  - master:
+      name: dn_master_1
+      node: antdb180
+    slave:
+      name: dn_slave_1
+      node: antdb181
+  - master:
+      name: dn_master_2
+      node: antdb181
+    slave:
+      name: dn_slave_2
+      node: antdb182
+  - master:
+      name: dn_master_3
+      node: antdb182
+    slave:
+      name: dn_slave_3
+      node: antdb180
+```
 
 ## 开始安装
 
@@ -68,7 +229,7 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### 安装 Antdb 集群
+## 安装 Antdb 集群
 
 执行安装脚本
 
@@ -76,50 +237,9 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main.yml
 ```
 
-## 其他
+**提示：** 此脚本在我的环境下执行耗时大约 7 分钟
 
-推荐生产最小规模
-
-分布式集群模块规划如下
-
-| IP | MGR | GTM | Coordinator | DataNode |
-| ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | Primary | CN-1 | Primary,Secondary |
-| 10.1.207.181 | Secondary | Secondary | CN-2 | Primary,Secondary |
-| 10.1.207.182 | | Secondary | CN-3 | Primary,Secondary |
-| 10.1.207.183 | | | CN-4 | Primary,Secondary |
-| 10.1.207.184 | | | CN-5 | Primary,Secondary |
-
-
-```shell
-bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
-10.1.207.180 | CHANGED | rc=0 >>
-   name   | user  | port  | protocol | agentport |   address    |      adbhome
-----------+-------+-------+----------+-----------+--------------+-------------------
- antdb180 | antdb | 22022 | ssh      |     18432 | 10.1.207.180 | /data01/antdb/app
- antdb181 | antdb | 22022 | ssh      |     18432 | 10.1.207.181 | /data01/antdb/app
- antdb182 | antdb | 22022 | ssh      |     18432 | 10.1.207.182 | /data01/antdb/app
-(3 rows)
-```
-
-
-```shell
-bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list node;"'
-10.1.207.180 | CHANGED | rc=0 >>
-     name      |   host   |        type        | mastername  | port  | sync_state |               path               | initialized | incluster | zone
----------------+----------+--------------------+-------------+-------+------------+----------------------------------+-------------+-----------+-------
- gtm_master    | antdb180 | gtmcoord master    |             | 16655 |            | /data01/antdb/data/gtm_master    | t           | t         | local
- gtm_slave_1   | antdb181 | gtmcoord slave     | gtm_master  | 16655 | sync       | /data01/antdb/data/gtm_slave_1   | t           | t         | local
- coordinator_1 | antdb181 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_1 | t           | t         | local
- coordinator_2 | antdb182 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_2 | t           | t         | local
- dn_master_1   | antdb180 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_1   | t           | t         | local
- dn_master_2   | antdb181 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_2   | t           | t         | local
- dn_master_3   | antdb182 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_3   | t           | t         | local
- dn_slave_1    | antdb180 | datanode slave     | dn_master_1 | 14333 | sync       | /data01/antdb/data/dn_slave_1    | t           | t         | local
- dn_slave_2    | antdb181 | datanode slave     | dn_master_2 | 14333 | sync       | /data01/antdb/data/dn_slave_2    | t           | t         | local
- dn_slave_3    | antdb182 | datanode slave     | dn_master_3 | 14333 | sync       | /data01/antdb/data/dn_slave_3    | t           | t         | local
-(10 rows)
-```
+安装完毕，连接 MGR 主节点检查集群状态，可以看到所有节点都已经 `running`
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
@@ -139,59 +259,84 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
-连接 Coordinator 节点（默认端口 15432）成功
+通过 `Coordinator` 节点端口，测试连接集群是否正常
 
 ```shell
-[antdb@oss-irms-182 ~]$ psql -h 10.1.207.181 -p 15432 –d postgres
-psql: FATAL:  role "postgres" does not exist
-[antdb@oss-irms-182 ~]$ psql -h 10.1.207.181 -p 15432 -d postgres
-psql (5.0.1 based on PG 11.10)
-Type "help" for help.
-
-postgres=# \q
-[antdb@oss-irms-182 ~]$ psql -h 10.1.207.182 -p 15432 -d postgres
-psql (5.0.1 based on PG 11.10)
-Type "help" for help.
-
-postgres=#
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SELECT datname FROM pg_database;"'
+10.1.207.180 | CHANGED | rc=0 >>
+  datname
+-----------
+ postgres
+ antdb
+ template1
+ template0
+(4 rows)
 ```
+
+## 常用运维命令
+
+连接 MGR 主节点，查看集群主机列表
 
 ```shell
-# 添加主机信息
-# add host <node_name>(port=22, protocol='ssh', adbhome='<antdb_app_dir>', address='<ip>', agentport=<agentport>, user='<user>');
-#
-# example:
-# add host antdb180(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.180', agentport=18432,user='antdb');
-# add host antdb181(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.181', agentport=18432,user='antdb');
-# add host antdb182(port=22022, protocol='ssh', adbhome='/data01/antdb/app', address='10.1.207.182', agentport=18432,user='antdb');
-
-# 添加 GTM 节点
-# add gtmcoord master <gtm_master_name>(host=<node_name>, port=<antdb_gtm_port>, path='<antdb_data_dir>/<gtm_master_name>');
-# add gtmcoord slave <gtm_slave_name> for <gtm_master_name>(host='node_name', port=antdb_gtm_port, path='<antdb_data_dir>/<gtm_slave_name>');
-#
-# example:
-# add gtmcoord master gtm_master(host='antdb180', port=16655, path='/data01/antdb/data/gtm_master');
-# add gtmcoord slave gtm_slave_1 for gtm_master(host='antdb181', port=16655, path='/data01/antdb/data/gtm_slave_1');
-
-
-# 添加 Coordinator 节点
-# add coordinator master <coordinator_master_name>(host='<node_name>', port=<antdb_coordinator_port>, path='<antdb_data_dir>/<coordinator_master_name>');
-#
-# example:
-# add coordinator master cn_master_1(host='antdb181', port=15432, path='/data01/antdb/data/cn_master_1');
-# add coordinator master cn_master_2(host='antdb182', port=15432, path='/data01/antdb/data/cn_master_2');
-
-
-
-# 添加 DataNode 节点
-# add datanode master <datanode_master_name>(host='<node_name>', port=<antdb_datanode_port>, path='<antdb_data_dir>/<datanode_master_name>');
-# add datanode slave <datanode_slave_name> for <datanode_master_name>(host='<node_name>', port=<antdb_datanode_port>, path='<antdb_data_dir>/<datanode_slave_name>');
-#
-# example:
-# add datanode master dn_master_1(host='antdb180', port=14332, path='/data01/antdb/data/dn_master_1');
-# add datanode slave dn_slave_1 for dn_master_1(host='antdb181', port=14332, path='/data01/antdb/data/dn_slave_1');
-# add datanode master dn_master_2(host='antdb181', port=14332, path='/data01/antdb/data/dn_master_2');
-# add datanode slave dn_slave_2 for dn_master_2(host='antdb182', port=14332, path='/data01/antdb/data/dn_slave_2');
-# add datanode master dn_master_3(host='antdb182', port=14332, path='/data01/antdb/data/dn_master_3');
-# add datanode slave dn_slave_3 for dn_master_3(host='antdb180', port=14332, path='/data01/antdb/data/dn_slave_3');
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   name   | user  | port  | protocol | agentport |   address    |      adbhome
+----------+-------+-------+----------+-----------+--------------+-------------------
+ antdb180 | antdb | 22022 | ssh      |     18432 | 10.1.207.180 | /data01/antdb/app
+ antdb181 | antdb | 22022 | ssh      |     18432 | 10.1.207.181 | /data01/antdb/app
+ antdb182 | antdb | 22022 | ssh      |     18432 | 10.1.207.182 | /data01/antdb/app
+(3 rows)
 ```
+
+连接 MGR 主节点，查看集群节点列表
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list node;"'
+10.1.207.180 | CHANGED | rc=0 >>
+     name      |   host   |        type        | mastername  | port  | sync_state |               path               | initialized | incluster | zone
+---------------+----------+--------------------+-------------+-------+------------+----------------------------------+-------------+-----------+-------
+ gtm_master    | antdb180 | gtmcoord master    |             | 16655 |            | /data01/antdb/data/gtm_master    | t           | t         | local
+ gtm_slave_1   | antdb181 | gtmcoord slave     | gtm_master  | 16655 | sync       | /data01/antdb/data/gtm_slave_1   | t           | t         | local
+ coordinator_1 | antdb181 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_1 | t           | t         | local
+ coordinator_2 | antdb182 | coordinator master |             | 15432 |            | /data01/antdb/data/coordinator_2 | t           | t         | local
+ dn_master_1   | antdb180 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_1   | t           | t         | local
+ dn_master_2   | antdb181 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_2   | t           | t         | local
+ dn_master_3   | antdb182 | datanode master    |             | 14332 |            | /data01/antdb/data/dn_master_3   | t           | t         | local
+ dn_slave_1    | antdb180 | datanode slave     | dn_master_1 | 14333 | sync       | /data01/antdb/data/dn_slave_1    | t           | t         | local
+ dn_slave_2    | antdb181 | datanode slave     | dn_master_2 | 14333 | sync       | /data01/antdb/data/dn_slave_2    | t           | t         | local
+ dn_slave_3    | antdb182 | datanode slave     | dn_master_3 | 14333 | sync       | /data01/antdb/data/dn_slave_3    | t           | t         | local
+(10 rows)
+```
+
+## 规划建议
+
+> 生产环境请以官方建议为准
+
+3 服务器推荐规划
+
+| IP | MGR | GTM | Coordinator | DataNode |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Master | Master | Coordinator_1 | DataNode_Master_1, DataNode_Slave_3 |
+| 10.1.207.181 | Slave_1 | | Coordinator_2 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | | Slave_1 | | DataNode_Master_3, DataNode_Slave_2 |
+
+
+4 服务器推荐规划
+
+| IP | MGR | GTM | Coordinator | DataNode |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Master | | | DataNode_Master_1, DataNode_Slave_3 |
+| 10.1.207.181 | Slave_1 | | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | | Master | | DataNode_Slave_2 |
+| 10.1.207.183 | | Slave_1 | Coordinator_2 | DataNode_Master_3 |
+
+
+5 服务器推荐规划
+
+| IP | MGR | GTM | Coordinator | DataNode |
+| ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | | Slave_1 | Coordinator_1 | DataNode_Master_1, DataNode_Slave_5 |
+| 10.1.207.181 | | Slave_2 | Coordinator_2 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | Slave_1 | Master | Coordinator_3 | DataNode_Master_3, DataNode_Slave_2 |
+| 10.1.207.183 | Slave_2 | | Coordinator_4 | DataNode_Master_4, DataNode_Slave_3 |
+| 10.1.207.184 | Master | | Coordinator_5 | DataNode_Master_5, DataNode_Slave_4 |
