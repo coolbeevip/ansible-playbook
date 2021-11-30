@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 echo 'Kill All AntDB Process'
 kill $(ps aux | grep '[a]uto {{ antdb_app_dir }}/bin' | awk '{print $2}')
 

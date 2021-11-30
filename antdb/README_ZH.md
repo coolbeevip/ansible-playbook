@@ -260,27 +260,27 @@ bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-install.yml
 
 **提示：** 此脚本在我的环境下执行耗时大约 2 分钟
 
-安装完毕，连接 MGR 主节点 **10.1.207.180** 检查集群状态，可以看到所有节点都已经 `running`
+安装完毕，登录到 MGR 主节点 **10.1.207.180** 检查集群状态，可以看到所有节点都已经 `running`
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
 10.1.207.180 | CHANGED | rc=0 >>
    nodename    |      nodetype      | status | description |     host     | port  | recovery |           boot time           | nodezone
 ---------------+--------------------+--------+-------------+--------------+-------+----------+-------------------------------+----------
- gtm_master    | gtmcoord master    | t      | running     | 10.1.207.180 | 16655 | false    | 2021-11-29 15:35:37.239812+08 | local
- gtm_slave_1   | gtmcoord slave     | t      | running     | 10.1.207.181 | 16655 | true     | 2021-11-29 15:31:55.145147+08 | local
- coordinator_1 | coordinator master | t      | running     | 10.1.207.181 | 15432 | false    | 2021-11-29 15:32:02.253647+08 | local
- coordinator_2 | coordinator master | t      | running     | 10.1.207.182 | 15432 | false    | 2021-11-29 15:31:09.045575+08 | local
- dn_master_1   | datanode master    | t      | running     | 10.1.207.180 | 14332 | false    | 2021-11-29 15:35:57.878057+08 | local
- dn_master_2   | datanode master    | t      | running     | 10.1.207.181 | 14332 | false    | 2021-11-29 15:32:11.965045+08 | local
- dn_master_3   | datanode master    | t      | running     | 10.1.207.182 | 14332 | false    | 2021-11-29 15:31:18.718835+08 | local
- dn_slave_1    | datanode slave     | t      | running     | 10.1.207.180 | 14333 | true     | 2021-11-29 15:36:01.301736+08 | local
- dn_slave_2    | datanode slave     | t      | running     | 10.1.207.181 | 14333 | true     | 2021-11-29 15:32:18.017186+08 | local
- dn_slave_3    | datanode slave     | t      | running     | 10.1.207.182 | 14333 | true     | 2021-11-29 15:31:27.937421+08 | local
+ gtm_master    | gtmcoord master    | t      | running     | 10.1.207.180 | 16655 | false    | 2021-11-30 13:39:48.610397+08 | local
+ gtm_slave_1   | gtmcoord slave     | t      | running     | 10.1.207.181 | 16655 | true     | 2021-11-30 13:36:06.056928+08 | local
+ coordinator_1 | coordinator master | t      | running     | 10.1.207.181 | 15432 | false    | 2021-11-30 13:36:12.660815+08 | local
+ coordinator_2 | coordinator master | t      | running     | 10.1.207.182 | 15432 | false    | 2021-11-30 13:35:19.633406+08 | local
+ dn_master_1   | datanode master    | t      | running     | 10.1.207.180 | 14332 | false    | 2021-11-30 13:40:08.57693+08  | local
+ dn_master_2   | datanode master    | t      | running     | 10.1.207.181 | 14332 | false    | 2021-11-30 13:36:22.518815+08 | local
+ dn_master_3   | datanode master    | t      | running     | 10.1.207.182 | 14332 | false    | 2021-11-30 13:35:29.467795+08 | local
+ dn_slave_1    | datanode slave     | t      | running     | 10.1.207.180 | 14333 | true     | 2021-11-30 13:40:12.453562+08 | local
+ dn_slave_2    | datanode slave     | t      | running     | 10.1.207.181 | 14333 | true     | 2021-11-30 13:36:29.635405+08 | local
+ dn_slave_3    | datanode slave     | t      | running     | 10.1.207.182 | 14333 | true     | 2021-11-30 13:35:39.245053+08 | local
 (10 rows)
 ```
 
-通过 `Coordinator` 节点端口，测试连接集群是否正常
+登录到 MGR 主节点 **10.1.207.180**，通过 `Coordinator` 节点端口，测试连接集群是否正常
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SELECT datname FROM pg_database;"'
@@ -296,7 +296,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SE
 
 ## 常用运维命令
 
-连接 MGR 主节点，查看集群主机列表
+登录到 MGR 主节点 **10.1.207.180**，查看集群主机列表
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
@@ -309,7 +309,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list h
 (3 rows)
 ```
 
-连接 MGR 主节点，查看集群节点列表
+登录到 MGR 主节点 **10.1.207.180**，查看集群节点列表
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list node;"'
@@ -332,32 +332,26 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list n
 查看所有服务器上 AntDB 集群相关的进程
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep /data01/antdb/app/bin'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [/]data01/antdb/app/bin'
 10.1.207.181 | CHANGED | rc=0 >>
-antdb    20804     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
-antdb    20840     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_slave_1 -i
-antdb    20899     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_1 -i
-antdb    20994     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_2 -i
-antdb    21047     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_2 -i
-antdb    31323 31322  0 11:35 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
-antdb    31325 31323  0 11:35 pts/3    00:00:00 grep /data01/antdb/app/bin
+antdb    25907     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    25938     1  0 13:36 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_slave_1 -i
+antdb    25987     1  0 13:36 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_1 -i
+antdb    26085     1  0 13:36 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_2 -i
+antdb    26149     1  0 13:36 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_2 -i
 
 10.1.207.180 | CHANGED | rc=0 >>
-antdb    16992     1  0 10:46 ?        00:00:00 /data01/antdb/app/bin/adbmgrd -D /data01/antdb/mgr
-antdb    18118     1  0 10:47 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
-antdb    18253     1  0 10:47 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_master -i
-antdb    18426     1  0 10:48 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_1 -i
-antdb    18479     1  0 10:48 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_1 -i
-antdb    28185 28184  0 11:39 pts/2    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
-antdb    28187 28185  0 11:39 pts/2    00:00:00 grep /data01/antdb/app/bin
+antdb    13429     1  0 13:39 ?        00:00:00 /data01/antdb/app/bin/adbmgrd -D /data01/antdb/mgr
+antdb    14465     1  0 13:39 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    14588     1  0 13:39 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_master -i
+antdb    14723     1  0 13:40 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_1 -i
+antdb    14779     1  0 13:40 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_1 -i
 
 10.1.207.182 | CHANGED | rc=0 >>
-antdb    20644     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
-antdb    20695     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_2 -i
-antdb    20751     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_3 -i
-antdb    20837     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_3 -i
-antdb    28825 28824  0 11:34 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
-antdb    28827 28825  0 11:34 pts/3    00:00:00 grep /data01/antdb/app/bin
+antdb    18597     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    18643     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_2 -i
+antdb    18722     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_3 -i
+antdb    18775     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_3 -i
 ```
 
 ## Q & A
