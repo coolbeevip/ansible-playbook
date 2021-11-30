@@ -3,7 +3,7 @@
 set -e
 
 echo 'Kill All AntDB Process'
-kill $(ps aux | grep '{{ antdb_app_dir }}/bin' | awk '{print $2}')
+kill $(ps aux | grep '[a]uto {{ antdb_app_dir }}/bin' | awk '{print $2}')
 
 echo 'Delete AntDB Data Files'
 rm -rf {{ antdb_mgr_dir }}
