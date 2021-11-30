@@ -23,7 +23,7 @@
     mode: u=rwx,g=rx,o=rx
   check_mode: no
 
-# 上传 mysql 安装包
+# 上传 rpm 安装包
 - name: check upload antdb
   stat:
     path: "{{ antdb_home_dir }}/{{ antdb_tar }}"
@@ -52,4 +52,3 @@
     - "{{ antdb_core_dir }}"
   check_mode: no
   become: yes
-  when: (inventory_hostname == mgr_nodes.master.ip) or (inventory_hostname in mgr_nodes.slave.ips)  

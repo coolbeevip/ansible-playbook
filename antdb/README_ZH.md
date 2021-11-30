@@ -231,7 +231,7 @@ docker run --name ansible --rm -it \
 
 ## 安装 Antdb 集群
 
-执行安装脚本上传安装介质、初始化目录
+安装前初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml
@@ -239,7 +239,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml
 
 **提示：** 此脚本在我的环境下执行耗时大约 2 分钟
 
-执行集群初始化脚本并启动集群
+安装并启动集群
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-install.yml
@@ -247,7 +247,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-install.yml
 
 **提示：** 此脚本在我的环境下执行耗时大约 2 分钟
 
-安装完毕，连接 MGR 主节点检查集群状态，可以看到所有节点都已经 `running`
+安装完毕，连接 MGR 主节点 **10.1.207.180** 检查集群状态，可以看到所有节点都已经 `running`
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
