@@ -370,9 +370,9 @@ antdb    28827 28825  0 11:34 pts/3    00:00:00 grep /data01/antdb/app/bin
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Master | Master | Coordinator_1 | DataNode_Master_1, DataNode_Slave_3 |
-| 10.1.207.181 | Slave_1 | | Coordinator_2 | DataNode_Master_2, DataNode_Slave_1 |
-| 10.1.207.182 | | Slave_1 | | DataNode_Master_3, DataNode_Slave_2 |
+| 10.1.207.180 | Master | Master | | DataNode_Master_1, DataNode_Slave_3 |
+| 10.1.207.181 | | Slave_1 | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | Slave_1 | | Coordinator_2 | DataNode_Master_3, DataNode_Slave_2 |
 
 
 4 服务器推荐规划
