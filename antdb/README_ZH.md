@@ -301,6 +301,26 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SE
 (4 rows)
 ```
 
+登录到 MGR 备节点 **10.1.207.182** 检查集群状态，可以看到所有节点都已经 `running`，说明 MGR 备节点可以正常工作
+
+```shell
+bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   nodename    |      nodetype      | status | description |     host     | port  | recovery |           boot time           | nodezone
+---------------+--------------------+--------+-------------+--------------+-------+----------+-------------------------------+----------
+ gtm_master    | gtmcoord master    | t      | running     | 10.1.207.180 | 16655 | false    | 2021-11-30 13:39:48.610397+08 | local
+ gtm_slave_1   | gtmcoord slave     | t      | running     | 10.1.207.181 | 16655 | true     | 2021-11-30 13:36:06.056928+08 | local
+ coordinator_1 | coordinator master | t      | running     | 10.1.207.181 | 15432 | false    | 2021-11-30 13:36:12.660815+08 | local
+ coordinator_2 | coordinator master | t      | running     | 10.1.207.182 | 15432 | false    | 2021-11-30 13:35:19.633406+08 | local
+ dn_master_1   | datanode master    | t      | running     | 10.1.207.180 | 14332 | false    | 2021-11-30 13:40:08.57693+08  | local
+ dn_master_2   | datanode master    | t      | running     | 10.1.207.181 | 14332 | false    | 2021-11-30 13:36:22.518815+08 | local
+ dn_master_3   | datanode master    | t      | running     | 10.1.207.182 | 14332 | false    | 2021-11-30 13:35:29.467795+08 | local
+ dn_slave_1    | datanode slave     | t      | running     | 10.1.207.180 | 14333 | true     | 2021-11-30 13:40:12.453562+08 | local
+ dn_slave_2    | datanode slave     | t      | running     | 10.1.207.181 | 14333 | true     | 2021-11-30 13:36:29.635405+08 | local
+ dn_slave_3    | datanode slave     | t      | running     | 10.1.207.182 | 14333 | true     | 2021-11-30 13:35:39.245053+08 | local
+(10 rows)
+```
+
 ## 常用运维命令
 
 登录到 MGR 主节点 **10.1.207.180**，查看集群主机列表
