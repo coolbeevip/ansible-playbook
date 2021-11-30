@@ -169,3 +169,9 @@
     line: "log_statement = {{ antdb_conf_log_statement }}"
     state: present
   check_mode: no
+
+- name: copy antdb_config.sql
+  template:
+    src: "/ansible-playbook/antdb/config/antdb_config.sql.j2"
+    dest: "$HOME/antdb_config.sql"
+  check_mode: no

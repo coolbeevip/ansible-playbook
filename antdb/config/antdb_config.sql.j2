@@ -1,5 +1,4 @@
 # Data Node Configuration
-
 set datanode all("listen_addresses"="'*'");
 set datanode all("superuser_reserved_connections"="13");
 set datanode all("tcp_keepalives_idle"="60");
@@ -29,15 +28,13 @@ set datanode all("autovacuum_vacuum_threshold"="500");
 set datanode all("autovacuum_analyze_threshold"="500");
 set datanode all("max_locks_per_transaction"="256");
 set datanode all("enable_fast_query_shipping"="off");
-
-# 下面这些参数，需要根据实际需求来确定，替换掉加粗斜体部分
-set datanode all("max_connections"="自定义最大连接数");
-set datanode all("max_prepared_transactions"="等于最大连接数");
-set datanode all("max_worker_processes"="cpu*2");
-set datanode all("shared_buffers"="物理内存 * 25% GB");
-set datanode all("effective_cache_size"="物理内存 * 75% GB");
-set datanode all("max_wal_size"="2 * shared_buffers GB") FORCE;
-set datanode all("random_page_cost"="如果是SSD磁盘，设置为1；如果是SATA磁盘，保持默认值4");
+set datanode all("max_connections"="{{ antdb_set.datanode.max_connections }}");
+set datanode all("max_prepared_transactions"="{{ antdb_set.datanode.max_prepared_transactions }}");
+set datanode all("max_worker_processes"="{{ antdb_set.datanode.max_worker_processes }}");
+set datanode all("shared_buffers"="{{ antdb_set.datanode.shared_buffers }}");
+set datanode all("effective_cache_size"="{{ antdb_set.datanode.effective_cache_size }}");
+set datanode all("max_wal_size"="{{ antdb_set.datanode.max_wal_size }}") FORCE;
+set datanode all("random_page_cost"="{{ antdb_set.datanode.random_page_cost }}");
 
 # Coordinator Node Configuration
 
@@ -63,12 +60,13 @@ set coordinator all("track_activity_query_size"="2048");
 set coordinator;
 set coordinator all("max_locks_per_transaction"="256");
 set coordinator all("enable_fast_query_shipping"="off");
-# 下面这些参数，需要根据实际需求来确定，替换掉加粗斜体部分
-set coordinator all("max_connections"="自定义最大连接数");
-set coordinator all("max_prepared_transactions"="等于最大连接数");
-set coordinator all("max_worker_processes"="cpu*2");
+## 以下参数在 vars_antdb.yml 中定义
+set coordinator all("max_connections"="{{ antdb_set.coordinator.max_connections }}");
+set coordinator all("max_prepared_transactions"="{{ antdb_set.coordinator.max_prepared_transactions }}");
+set coordinator all("max_worker_processes"="{{ antdb_set.coordinator.max_worker_processes }}");
 
 # GTM Node Configuration
+
 set gtmcoord all("listen_addresses"="'*'");
 set gtmcoord all("superuser_reserved_connections"="13");
 set gtmcoord all("tcp_keepalives_idle"="60");
@@ -90,12 +88,12 @@ set gtmcoord all("log_statement"="ddl");
 set gtmcoord all("track_activity_query_size"="2048");
 set gtmcoord all("max_locks_per_transaction"="256");
 set gtmcoord all("enable_fast_query_shipping"="off");
-# 下面这些参数，根据实际需求来确定，替换掉加粗斜体部分
-set gtmcoord all("max_connections"="自定义最大连接数");
-set gtmcoord all("max_prepared_transactions"="等于最大连接数");
-set gtmcoord all("max_worker_processes"="cpu*2");
-set gtmcoord all("shared_buffers"="物理内存 * 25% GB");
+## 以下参数在 vars_antdb.yml 中定义
+set gtmcoord all("max_connections"="{{ antdb_set.gtmcoord.max_connections }}");
+set gtmcoord all("max_prepared_transactions"="{{ antdb_set.gtmcoord.max_prepared_transactions }}");
+set gtmcoord all("max_worker_processes"="{{ antdb_set.gtmcoord.max_worker_processes }}");
+set gtmcoord all("shared_buffers"="{{ antdb_set.gtmcoord.shared_buffers }}");
 
-# 重启整个集群
+# 重启所有节点
 stop all mode f;
 start all;

@@ -60,12 +60,11 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 > 您可以编辑以下配置文件，修改默认参数
 
-
 #### maim-os-init.yml
 
 配置安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本用来设置内核参数，创建目录、上传安装介质
 
-```shell
+```yaml
 - hosts: 10.1.207.180
   user: antdb
 
@@ -80,7 +79,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 配置 AntDB MGR 主/备节点服务器 IP 地址，以及安装用系统用户名。备节点的名称 `mgr_slave_1`
 
-```shell
+```yaml
 # MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
@@ -96,7 +95,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 操作系统内核参数
 
-```shell
+```yaml
 limits_hard_nproc: '65535'
 limits_soft_nproc: '65535'
 limits_hard_nofile: '278528'
@@ -110,7 +109,7 @@ limits_hard_memlock: '250000000'
 
 安装用系统用户名和密码
 
-```shell
+```yaml
 antdb_user: 'antdb'
 antdb_group: 'antdb'
 antdb_password: '123456'
@@ -118,13 +117,13 @@ antdb_password: '123456'
 
 AntDB rpm 包名称
 
-```shell
+```yaml
 antdb_tar: 'antdb.cluster-5.0.009be78c-centos7.9.rpm'
 ```
 
 AntDB 安装路径
 
-```shell
+```yaml
 antdb_home_dir: '/opt/antdb'
 antdb_mgr_dir: '/data01/antdb/mgr'
 antdb_data_dir: '/data01/antdb/data'
@@ -135,7 +134,7 @@ antdb_core_dir: '/data01/antdb/core'
 
 postgresql.conf 扩展参数
 
-```shell
+```yaml
 antdb_conf_listen_addresses: '*'
 antdb_conf_port: 16432
 antdb_conf_log_destination: 'csvlog'
@@ -148,7 +147,7 @@ antdb_conf_log_statement: ddl
 
 集群所有节点名称(此名称不是主机名，是集群管理用的节点名称，不能包含中划线)
 
-```shell
+```yaml
 # 集群节点名称（注意这不是主机名)
 node_names:
   10.1.207.180:
@@ -161,7 +160,7 @@ node_names:
 
 集群各个组件端口
 
-```shell
+```yaml
 # agent
 andb_agent_port: 18432
 # GTM
@@ -175,7 +174,7 @@ antdb_datanode_slave_port: 14333
 
 MGR 节点配置
 
-```shell
+```yaml
 mgr_nodes:
   master:
     ip: 10.1.207.180
@@ -185,7 +184,7 @@ mgr_nodes:
 
 GTM 节点配置
 
-```shell
+```yaml
 gtm_nodes:
   master:
     name: gtm_master
@@ -197,7 +196,7 @@ gtm_nodes:
 
 Coordinator 节点配置
 
-```shell
+```yaml
 coordinator_nodes:
   - name: coordinator_1
     node: antdb181
@@ -207,7 +206,7 @@ coordinator_nodes:
 
 DataNodes 节点配置
 
-```shell
+```yaml
 data_nodes:
   - master:
       name: dn_master_1
@@ -227,6 +226,29 @@ data_nodes:
     slave:
       name: dn_slave_3
       node: antdb180
+```
+
+PG 节点配置参数，更多参数参见 `antdb_config.sql.j2` 文件
+
+```yaml
+antdb_set:
+  datanode:
+    max_connections: 1000 # 自定义最大连接数
+    max_prepared_transactions: 1000 # 等于最大连接数
+    max_worker_processes: 2 # cpu*2
+    shared_buffers: 2GB # 物理内存 * 25% GB
+    effective_cache_size: 3GB # 物理内存 * 75% GB
+    max_wal_size: 1GB # 2 * shared_buffers GB
+    random_page_cost: 4 # 如果是SSD磁盘，设置为1；如果是SATA磁盘，保持默认值4
+  coordinator:
+    max_connections: 1000 # 最大连接数
+    max_prepared_transactions: 1000 # 等于最大连接数
+    max_worker_processes: 2 # cpu*2
+  gtmcoord:
+    max_connections: 1000 # 最大连接数
+    max_prepared_transactions: 1000 # 等于最大连接数
+    max_worker_processes: 2 # cpu*2
+    shared_buffers: 2GB # 物理内存 * 25% GB
 ```
 
 ## 开始安装
@@ -319,6 +341,12 @@ bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monito
  dn_slave_2    | datanode slave     | t      | running     | 10.1.207.181 | 14333 | true     | 2021-11-30 13:36:29.635405+08 | local
  dn_slave_3    | datanode slave     | t      | running     | 10.1.207.182 | 14333 | true     | 2021-11-30 13:35:39.245053+08 | local
 (10 rows)
+```
+
+登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "antdb", database "postgres"** 类似的错误
+
+```shell10.4.16.156
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
 ```
 
 ## 常用运维命令

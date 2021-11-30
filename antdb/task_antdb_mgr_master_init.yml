@@ -4,8 +4,9 @@
 
 # 重启 MGR 节点
 # - name: Stop Mgr Primary Node
-#   shell: "source ~/.bashrc && mgr_ctl stop -D $mgrdata -m fast"
+#   shell: "kill $(head -n 1 /data01/antdb/mgr/postmaster.pid)"
 #   check_mode: no
+#   ignore_errors: true
 #   when: inventory_hostname == mgr_nodes.master.ip
 - name: Start Mgr Master Node
   shell: "source ~/.bashrc && mgr_ctl start -D $mgrdata"
