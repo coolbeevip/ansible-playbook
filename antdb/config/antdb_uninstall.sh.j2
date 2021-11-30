@@ -2,15 +2,15 @@
 
 echo 'Kill All AntDB Process'
 if [[ $(ps aux | grep '[b]in/postgres' | wc -l) != 0 ]]; then
-  kill $(ps aux | grep '[b]in/postgres' | awk '{print $2}')
+  kill -9 $(ps aux | grep '[b]in/postgres' | awk '{print $2}')
 fi
 
 if [[ $(ps aux | grep '[b]in/agent' | wc -l) != 0 ]]; then
-  kill $(ps aux | grep '[b]in/agent' | awk '{print $2}')
+  kill -9 $(ps aux | grep '[b]in/agent' | awk '{print $2}')
 fi
 
 if [[ $(ps aux | grep '[b]in/adbmgrd' | wc -l) != 0 ]]; then
-  kill $(ps aux | grep '[b]in/adbmgrd' | awk '{print $2}')
+  kill -9 $(ps aux | grep '[b]in/adbmgrd' | awk '{print $2}')
 fi
 
 set -e;

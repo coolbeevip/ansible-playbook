@@ -1,10 +1,20 @@
-# Install MySQL Server Nodes
-
+# MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
   become: no
   become_user: root
   become_method: su
   tasks:
-    - include_tasks: task_antdb_mgr_primary_config.yml
-    - include_tasks: task_antdb_mgr_primary_init.yml
+    - include_tasks: task_antdb_mgr_master_config.yml
+    - include_tasks: task_antdb_mgr_master_init.yml
+
+# MGR Slave Node
+- hosts: 10.1.207.182
+  user: antdb
+  become: no
+  become_user: root
+  become_method: su
+  vars:
+    mgr_slave_name: "mgr_slave_1"
+  tasks:
+    - include_tasks: task_antdb_mgr_slave_init.yml

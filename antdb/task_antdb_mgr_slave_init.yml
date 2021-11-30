@@ -1,0 +1,8 @@
+# MGR 主节点初始化
+- name: include vars
+  include_vars: "vars_antdb.yml"
+
+# 添加 MRG 备份节点
+- name: Add MGR salve to MGR
+  shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename {{ mgr_slave_name }} -Xs -Fp -R
+  check_mode: no
