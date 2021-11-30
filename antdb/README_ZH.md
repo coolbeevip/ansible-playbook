@@ -349,10 +349,12 @@ bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
-登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "antdb", database "postgres"** 类似的错误
+登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "antdb", database "postgres"** 类似的错误。
 
-```shell10.4.16.156
-bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
+命令格式：add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'add hba coordinator all ("host all all 10.4.16.0 24 md5");'
 ```
 
 ## 常用运维命令
