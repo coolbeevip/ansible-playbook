@@ -1,6 +1,8 @@
 # Ansible Playbook 安装 AntDB 集群 | [English](README.md)
 
-AntDB分布式数据库自动化安装脚本，此脚本仅供测试环境搭建使用
+> AntDB分布式数据库自动化安装脚本，能够自动配置内核参数、创建目录、初始化集群配置并启动集群。此脚本仅供测试环境搭建使用
+
+包含组件
 
 * MGR 集群的管理
 * GTM 全局事务管理
@@ -59,9 +61,9 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 > 您可以编辑以下配置文件，修改默认参数
 
 
-#### main.yml
+#### maim-os-init.yml
 
-安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名
+配置安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本用来设置内核参数，创建目录、上传安装介质
 
 ```shell
 - hosts: 10.1.207.180
@@ -73,6 +75,17 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 - hosts: 10.1.207.182
   user: antdb
 ```
+
+#### maim-cluster-install.yml
+
+配置 AntDB MGR 主节点服务器 IP 地址，以及安装用系统用户名。
+
+```shell
+- hosts: 10.1.207.180
+  user: antdb
+```
+
+#### var_antdb.yml
 
 操作系统内核参数
 
