@@ -63,15 +63,8 @@
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "init all;"
   check_mode: no
 
-# 添加 MRG 备份节点
-- name: Add MGR salve to MGR
-  shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename mgr_slave_1 -Xs -Fp -R
-  check_mode: no
-  when: inventory_hostname in mgr_nodes.slave.ips
-
 # 初始化配置
-- name: Import default config
-  shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename mgr_slave_1 -Xs -Fp -R
+- name: Import default config sql
+  shell: psql -p 16432 -d postgres -f /home/antdb/antdb_config.sql
   check_mode: no
   when: inventory_hostname in mgr_nodes.slave.ips
-psql -p 16432 -d postgres -f /home/antdb/antdb_config.sql
