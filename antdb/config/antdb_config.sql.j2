@@ -37,7 +37,6 @@ set datanode all("max_wal_size"="{{ antdb_set.datanode.max_wal_size }}") FORCE;
 set datanode all("random_page_cost"="{{ antdb_set.datanode.random_page_cost }}");
 
 # Coordinator Node Configuration
-
 set coordinator all("listen_addresses"="'*'");
 set coordinator all("superuser_reserved_connections"="13");
 set coordinator all("tcp_keepalives_idle"="60");
@@ -60,13 +59,11 @@ set coordinator all("track_activity_query_size"="2048");
 set coordinator;
 set coordinator all("max_locks_per_transaction"="256");
 set coordinator all("enable_fast_query_shipping"="off");
-## 以下参数在 vars_antdb.yml 中定义
 set coordinator all("max_connections"="{{ antdb_set.coordinator.max_connections }}");
 set coordinator all("max_prepared_transactions"="{{ antdb_set.coordinator.max_prepared_transactions }}");
 set coordinator all("max_worker_processes"="{{ antdb_set.coordinator.max_worker_processes }}");
 
 # GTM Node Configuration
-
 set gtmcoord all("listen_addresses"="'*'");
 set gtmcoord all("superuser_reserved_connections"="13");
 set gtmcoord all("tcp_keepalives_idle"="60");
@@ -88,12 +85,11 @@ set gtmcoord all("log_statement"="ddl");
 set gtmcoord all("track_activity_query_size"="2048");
 set gtmcoord all("max_locks_per_transaction"="256");
 set gtmcoord all("enable_fast_query_shipping"="off");
-## 以下参数在 vars_antdb.yml 中定义
 set gtmcoord all("max_connections"="{{ antdb_set.gtmcoord.max_connections }}");
 set gtmcoord all("max_prepared_transactions"="{{ antdb_set.gtmcoord.max_prepared_transactions }}");
 set gtmcoord all("max_worker_processes"="{{ antdb_set.gtmcoord.max_worker_processes }}");
 set gtmcoord all("shared_buffers"="{{ antdb_set.gtmcoord.shared_buffers }}");
 
-# 重启所有节点
+# Restart All Nodes
 stop all mode f;
 start all;
