@@ -23,9 +23,9 @@
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Master | Master | Coordinator_1 | DataNode_Master_1, DataNode_Slave_3 |
-| 10.1.207.181 | | Slave_1 | Coordinator_2 | DataNode_Master_2, DataNode_Slave_1 |
-| 10.1.207.182 | Slave_1 | | | DataNode_Master_3, DataNode_Slave_2 |
+| 10.1.207.180 | Master | Master | | DataNode_Master_1, DataNode_Slave_3 |
+| 10.1.207.181 | | Slave_1 | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | Slave_1 | Coordinator_2 | | DataNode_Master_3, DataNode_Slave_2 |
 
 节点安装路径
 
