@@ -103,14 +103,14 @@
   when: not check_result.stat.exists
 
 # Configuring pg_hba.conf
-- name: Configuring pg_hba.conf
+- name: Configuring pg_hba
   lineinfile:
     dest: "{{ antdb_mgr_dir }}/pg_hba.conf"
-    regexp: '^host    replication     all             {{ item.ip }}/0                 trust'
-    line: "host    replication     all             {{ item.ip }}/0                 trust"
+    regexp: "^host    replication     all             {{ item }}/0                 trust"
+    line: "host    replication     all             {{ item }}/0                 trust"
     state: present
   check_mode: no
-  with_items: "{{ mgr_nodes.slaves }}"
+  with_items: "{{ mgr_nodes.slave.ips }}"
 
 # Configuring postgresql.conf
 - name: Configuring postgresql.conf listen_addresses

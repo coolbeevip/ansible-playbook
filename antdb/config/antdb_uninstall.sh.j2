@@ -13,6 +13,8 @@ if [[ $(ps aux | grep '[b]in/adbmgrd' | wc -l) != 0 ]]; then
   kill $(ps aux | grep '[b]in/adbmgrd' | awk '{print $2}')
 fi
 
+set -e;
+
 echo 'Delete AntDB Data Files'
 rm -rf {{ antdb_mgr_dir }}
 rm -rf {{ antdb_data_dir }}
