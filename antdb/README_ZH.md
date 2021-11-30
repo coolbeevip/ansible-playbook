@@ -165,7 +165,7 @@ node_names:
 集群各个组件端口
 
 ```yaml
-# agent
+# Agent
 andb_agent_port: 18432
 # GTM
 antdb_gtm_port: 16655

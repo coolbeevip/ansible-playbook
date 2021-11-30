@@ -36,7 +36,7 @@ antdb_conf_log_rotation_size: 100MB
 antdb_conf_log_min_messages: error
 antdb_conf_log_statement: ddl
 
-# agent
+# Agent
 andb_agent_port: 18432
 
 # GTM
