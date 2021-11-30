@@ -1,4 +1,4 @@
-# Data Node Configuration
+-- Data Node Configuration
 set datanode all("listen_addresses"="'*'");
 set datanode all("superuser_reserved_connections"="13");
 set datanode all("tcp_keepalives_idle"="60");
@@ -36,7 +36,7 @@ set datanode all("effective_cache_size"="{{ antdb_set.datanode.effective_cache_s
 set datanode all("max_wal_size"="{{ antdb_set.datanode.max_wal_size }}") FORCE;
 set datanode all("random_page_cost"="{{ antdb_set.datanode.random_page_cost }}");
 
-# Coordinator Node Configuration
+--Coordinator Node Configuration
 set coordinator all("listen_addresses"="'*'");
 set coordinator all("superuser_reserved_connections"="13");
 set coordinator all("tcp_keepalives_idle"="60");
@@ -63,7 +63,7 @@ set coordinator all("max_connections"="{{ antdb_set.coordinator.max_connections 
 set coordinator all("max_prepared_transactions"="{{ antdb_set.coordinator.max_prepared_transactions }}");
 set coordinator all("max_worker_processes"="{{ antdb_set.coordinator.max_worker_processes }}");
 
-# GTM Node Configuration
+-- GTM Node Configuration
 set gtmcoord all("listen_addresses"="'*'");
 set gtmcoord all("superuser_reserved_connections"="13");
 set gtmcoord all("tcp_keepalives_idle"="60");
@@ -90,6 +90,6 @@ set gtmcoord all("max_prepared_transactions"="{{ antdb_set.gtmcoord.max_prepared
 set gtmcoord all("max_worker_processes"="{{ antdb_set.gtmcoord.max_worker_processes }}");
 set gtmcoord all("shared_buffers"="{{ antdb_set.gtmcoord.shared_buffers }}");
 
-# Restart All Nodes
+-- Restart All Nodes
 stop all mode f;
 start all;

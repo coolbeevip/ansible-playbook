@@ -68,3 +68,10 @@
   shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename mgr_slave_1 -Xs -Fp -R
   check_mode: no
   when: inventory_hostname in mgr_nodes.slave.ips
+
+# 初始化配置
+- name: Import default config
+  shell: pg_basebackup -h {{ mgr_nodes.master.ip }} -p {{ antdb_conf_port }} -U {{ antdb_user }} -D {{ antdb_mgr_dir }} --nodename mgr_slave_1 -Xs -Fp -R
+  check_mode: no
+  when: inventory_hostname in mgr_nodes.slave.ips
+psql -p 16432 -d postgres -f /home/antdb/antdb_config.sql
