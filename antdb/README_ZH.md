@@ -231,13 +231,21 @@ docker run --name ansible --rm -it \
 
 ## 安装 Antdb 集群
 
-执行安装脚本
+执行安装脚本上传安装介质、初始化目录
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-install.yml
 ```
 
-**提示：** 此脚本在我的环境下执行耗时大约 7 分钟
+**提示：** 此脚本在我的环境下执行耗时大约 2 分钟
+
+执行集群初始化脚本并启动集群
+
+```shell
+bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-init.yml
+```
+
+**提示：** 此脚本在我的环境下执行耗时大约 2 分钟
 
 安装完毕，连接 MGR 主节点检查集群状态，可以看到所有节点都已经 `running`
 
@@ -308,6 +316,37 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list n
 (10 rows)
 ```
 
+查看所有服务器上 AntDB 集群相关的进程
+
+```shell
+bash-5.0# ansible all -m shell -a 'ps -ef | grep /data01/antdb/app/bin'
+10.1.207.181 | CHANGED | rc=0 >>
+antdb    20804     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    20840     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_slave_1 -i
+antdb    20899     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_1 -i
+antdb    20994     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_2 -i
+antdb    21047     1  0 10:44 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_2 -i
+antdb    31323 31322  0 11:35 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    31325 31323  0 11:35 pts/3    00:00:00 grep /data01/antdb/app/bin
+
+10.1.207.180 | CHANGED | rc=0 >>
+antdb    16992     1  0 10:46 ?        00:00:00 /data01/antdb/app/bin/adbmgrd -D /data01/antdb/mgr
+antdb    18118     1  0 10:47 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    18253     1  0 10:47 ?        00:00:00 /data01/antdb/app/bin/postgres --gtm_coord -D /data01/antdb/data/gtm_master -i
+antdb    18426     1  0 10:48 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_1 -i
+antdb    18479     1  0 10:48 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_1 -i
+antdb    28185 28184  0 11:39 pts/2    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    28187 28185  0 11:39 pts/2    00:00:00 grep /data01/antdb/app/bin
+
+10.1.207.182 | CHANGED | rc=0 >>
+antdb    20644     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/agent -b -P 18432
+antdb    20695     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_2 -i
+antdb    20751     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_3 -i
+antdb    20837     1  0 10:43 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_3 -i
+antdb    28825 28824  0 11:34 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    28827 28825  0 11:34 pts/3    00:00:00 grep /data01/antdb/app/bin
+```
+
 ## 规划建议
 
 > 生产环境请以官方建议为准
@@ -340,3 +379,115 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list n
 | 10.1.207.182 | Slave_1 | Master | Coordinator_3 | DataNode_Master_3, DataNode_Slave_2 |
 | 10.1.207.183 | Slave_2 | | Coordinator_4 | DataNode_Master_4, DataNode_Slave_3 |
 | 10.1.207.184 | Master | | Coordinator_5 | DataNode_Master_5, DataNode_Slave_4 |
+
+## Q & A
+
+#### 如何强制卸载 AntDB 分布式集群
+
+```shell
+bash-5.0# ansible all -m shell -a '~/antdb_uninstall.sh'
+```
+
+#### 如何正常卸载 AntDB 分布式集群
+
+连接 MGR 主节点，停止所有节点服务
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop all mode f;"'
+10.1.207.180 | CHANGED | rc=0 >>
+     operation type      |   nodename    | status | description
+-------------------------+---------------+--------+-------------
+ stop datanode slave     | dn_slave_1    | t      | success
+ stop datanode slave     | dn_slave_2    | t      | success
+ stop datanode slave     | dn_slave_3    | t      | success
+ stop datanode master    | dn_master_1   | t      | success
+ stop datanode master    | dn_master_2   | t      | success
+ stop datanode master    | dn_master_3   | t      | success
+ stop coordinator master | coordinator_1 | t      | success
+ stop coordinator master | coordinator_2 | t      | success
+ stop gtmcoord slave     | gtm_slave_1   | t      | success
+ stop gtmcoord master    | gtm_master    | t      | success
+(10 rows)NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_1 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_2 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_3 -Z datanode -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for datanode slave to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_1 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_2 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_3 -Z datanode -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for datanode master to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/coordinator_1 -Z coordinator -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/coordinator_2 -Z coordinator -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for coordinator master to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP GTMCOORD SLAVE BACKEND) params( stop -D /data01/antdb/data/gtm_slave_1 -Z gtm_coord -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for gtmcoord slave to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/gtm_master -Z coordinator -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for gtmcoord master to stop ...
+```
+
+连接 MGR 主节点，清理数据
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "clean all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   nodename    |      nodetype      | status | description
+---------------+--------------------+--------+-------------
+ dn_slave_1    | datanode slave     | t      | success
+ dn_slave_2    | datanode slave     | t      | success
+ dn_slave_3    | datanode slave     | t      | success
+ dn_master_1   | datanode master    | t      | success
+ dn_master_2   | datanode master    | t      | success
+ dn_master_3   | datanode master    | t      | success
+ coordinator_1 | coordinator master | t      | success
+ coordinator_2 | coordinator master | t      | success
+ gtm_slave_1   | gtm slave          | t      | success
+ gtm_master    | gtm master         | t      | success
+(10 rows)
+```
+
+连接 MGR 主节点，停止所有节点 Agent
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop agent all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+ nodename | status | description
+----------+--------+-------------
+ antdb180 | t      | success
+ antdb181 | t      | success
+ antdb182 | t      | success
+(3 rows)
+```
+
+查询所有服务器上 AntDB 进程都已经停止
+
+```shell
+bash-5.0# ansible all -m shell -a 'ps -ef | grep /data01/antdb/app/bin'
+10.1.207.180 | CHANGED | rc=0 >>
+antdb    16992     1  0 10:46 ?        00:00:00 /data01/antdb/app/bin/adbmgrd -D /data01/antdb/mgr
+antdb    29175 29174 27 11:42 pts/2    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    29177 29175  0 11:42 pts/2    00:00:00 grep /data01/antdb/app/bin
+
+10.1.207.181 | CHANGED | rc=0 >>
+antdb    31995 31994  0 11:38 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    31998 31995  0 11:38 pts/3    00:00:00 grep /data01/antdb/app/bin
+
+10.1.207.182 | CHANGED | rc=0 >>
+antdb    29370 29369  0 11:37 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01/antdb/app/bin
+antdb    29372 29370  0 11:37 pts/3    00:00:00 grep /data01/antdb/app/bin
+```
+
+查询所有服务器上的数据文件都已经删除
+
+```shell
+bash-5.0# ansible all -m shell -a 'ls /data01/antdb'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+```

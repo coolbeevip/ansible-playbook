@@ -35,3 +35,21 @@
     dest: "{{ antdb_home_dir }}/{{ antdb_tar }}"
   check_mode: no
   when: (inventory_hostname == mgr_nodes.master.ip) and (not check_result.stat.exists)
+
+# 创建 antdb 数据目录
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ antdb_user }}"
+    group: "{{ antdb_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ antdb_mgr_dir }}"
+    - "{{ antdb_data_dir }}"
+    - "{{ antdb_tools_dir }}"
+    - "{{ antdb_app_dir }}"
+    - "{{ antdb_core_dir }}"
+  check_mode: no
+  become: yes
+  when: (inventory_hostname == mgr_nodes.master.ip) or (inventory_hostname in mgr_nodes.slave.ips)  

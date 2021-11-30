@@ -5,24 +5,6 @@
 - name: include vars
   include_vars: "vars_antdb.yml"
 
-# 创建 antdb 数据目录
-- name: create others directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ antdb_user }}"
-    group: "{{ antdb_group }}"
-    mode: "2750"
-  with_items:
-    - "{{ antdb_mgr_dir }}"
-    - "{{ antdb_data_dir }}"
-    - "{{ antdb_tools_dir }}"
-    - "{{ antdb_app_dir }}"
-    - "{{ antdb_core_dir }}"
-  check_mode: no
-  become: yes
-  when: inventory_hostname == mgr_nodes.master.ip
-
 # 设置 ADB_HOME 环境变量
 - name: configuring environment ADB_HOME
   lineinfile:
