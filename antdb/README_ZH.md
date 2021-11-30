@@ -21,9 +21,9 @@ AntDB分布式数据库自动化安装脚本，此脚本仅供测试环境搭建
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | Primary | | DN1-Primary, DN3-Secondary |
-| 10.1.207.181 | | Secondary | CN1 | DN2-Primary, DN1-Secondary |
-| 10.1.207.182 | Secondary | | CN2 | DN3-Primary, DN2-Secondary |
+| 10.1.207.180 | Master | Master | Coordinator_1 | DataNode_Master_1, DataNode_Slave_3 |
+| 10.1.207.181 | Slave_1 | | Coordinator_2 | DataNode_Master_2, DataNode_Slave_1 |
+| 10.1.207.182 | | Slave_1 | | DataNode_Master_3, DataNode_Slave_2 |
 
 节点安装路径
 
@@ -347,7 +347,9 @@ antdb    28825 28824  0 11:34 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01
 antdb    28827 28825  0 11:34 pts/3    00:00:00 grep /data01/antdb/app/bin
 ```
 
-## 规划建议
+## Q & A
+
+#### 多服务器如何规划节点类型
 
 > 生产环境请以官方建议为准
 
@@ -379,8 +381,6 @@ antdb    28827 28825  0 11:34 pts/3    00:00:00 grep /data01/antdb/app/bin
 | 10.1.207.182 | Slave_1 | Master | Coordinator_3 | DataNode_Master_3, DataNode_Slave_2 |
 | 10.1.207.183 | Slave_2 | | Coordinator_4 | DataNode_Master_4, DataNode_Slave_3 |
 | 10.1.207.184 | Master | | Coordinator_5 | DataNode_Master_5, DataNode_Slave_4 |
-
-## Q & A
 
 #### 如何强制卸载 AntDB 分布式集群
 
