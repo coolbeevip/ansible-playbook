@@ -12,6 +12,8 @@ rm -rf {{ antdb_tools_dir }}
 rm -rf {{ antdb_app_dir }}
 rm -rf {{ antdb_core_dir }}
 
+echo 'Delete AntDB RPM Package'
 rm -rf {{ antdb_home_dir }}/{{ antdb_tar }}
 
+echo 'Delete antdb_uninstall.sh'
 rm -rf $HOME/antdb_uninstall.sh
