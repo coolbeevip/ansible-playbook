@@ -78,11 +78,18 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 #### maim-cluster-install.yml
 
-配置 AntDB MGR 主节点服务器 IP 地址，以及安装用系统用户名。
+配置 AntDB MGR 主/备节点服务器 IP 地址，以及安装用系统用户名。备节点的名称 `mgr_slave_1`
 
 ```shell
+# MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
+
+# MGR Slave Node
+- hosts: 10.1.207.182
+  user: antdb
+  vars:
+    mgr_slave_name: "mgr_slave_1"  
 ```
 
 #### var_antdb.yml
