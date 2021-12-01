@@ -19,7 +19,7 @@
   tasks:
     - include_tasks: task_antdb_mgr_slave_init.yml
 
-# Restart AntDB All NOdes on MGR Master Node
+# Restart all node of AntDB cluster on MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
   become: no

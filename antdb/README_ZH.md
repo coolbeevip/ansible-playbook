@@ -93,7 +93,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
   vars:
     mgr_slave_name: "mgr_slave_1"
 
-# Restart AntDB All NOdes on MGR Master Node
+# Restart all node of AntDB cluster on MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
 ```
