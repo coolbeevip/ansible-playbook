@@ -383,6 +383,45 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hb
 
 ## 创建数据库
 
+SSH 登录到集群任一服务器，然后使用 `psql -h 10.1.207.181 -p 15432` 命令连接 `Coordinator` 主(备)节点
+
+```sql
+[antdb@oss-irms-180 ~]$ psql -h 10.1.207.181 -p 15432
+psql (5.0.1 based on PG 11.10)
+Type "help" for help.
+
+antdb=# create database testdb;
+CREATE DATABASE
+
+antdb=# create user testdbuser with encrypted password 'testdbpass';
+CREATE ROLE
+
+antdb=# grant all privileges on database testdb to testdbuser;
+GRANT
+```
+
+通过 CN 主节 **10.1.207.181** 连接数据库
+
+```shell
+[antdb@oss-irms-180 ~]$ psql -h 10.1.207.181 -p 15432 -d testdb -U testdbuser -w testdbpass
+psql: warning: extra command-line argument "testdbpass" ignored
+psql (5.0.1 based on PG 11.10)
+Type "help" for help.
+
+testdb=>
+```
+
+通过 CN 备节点 **10.1.207.182** 连接数据库
+
+```shell
+[antdb@oss-irms-180 ~]$ psql -h 10.1.207.182 -p 15432 -d testdb -U testdbuser -w testdbpass
+psql: warning: extra command-line argument "testdbpass" ignored
+psql (5.0.1 based on PG 11.10)
+Type "help" for help.
+
+testdb=>
+```
+
 ## 常用运维命令
 
 登录到 MGR 主节点 **10.1.207.180**，查看集群主机列表
