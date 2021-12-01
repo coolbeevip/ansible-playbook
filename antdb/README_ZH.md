@@ -687,3 +687,101 @@ bash-5.0# ansible all -m shell -a 'ls /data01/antdb'
 
 10.1.207.182 | CHANGED | rc=0 >>
 ```
+
+#### 从节点启动失败
+
+使用 monitor all 命令，查看到从节点启动失败
+
+```shell
+
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+   nodename    |      nodetype      | status | description |     host     | port  | recovery |           boot time           | nodezone
+---------------+--------------------+--------+-------------+--------------+-------+----------+-------------------------------+----------
+ gtm_master    | gtmcoord master    | t      | running     | 10.1.207.180 | 16655 | false    | 2021-12-01 10:49:12.169417+08 | local
+ gtm_slave_1   | gtmcoord slave     | f      | not running | 10.1.207.181 | 16655 | unknown  | unknown                       | local
+ coordinator_2 | coordinator master | t      | running     | 10.1.207.182 | 15432 | false    | 2021-12-01 10:46:03.882011+08 | local
+ coordinator_1 | coordinator master | t      | running     | 10.1.207.181 | 15432 | false    | 2021-12-01 10:46:56.865553+08 | local
+ dn_master_2   | datanode master    | t      | running     | 10.1.207.181 | 14332 | false    | 2021-12-01 10:46:57.42246+08  | local
+ dn_master_3   | datanode master    | t      | running     | 10.1.207.182 | 14332 | false    | 2021-12-01 10:46:04.535587+08 | local
+ dn_master_1   | datanode master    | t      | running     | 10.1.207.180 | 14332 | false    | 2021-12-01 10:50:43.884491+08 | local
+ dn_slave_1    | datanode slave     | f      | not running | 10.1.207.180 | 14333 | unknown  | unknown                       | local
+ dn_slave_2    | datanode slave     | f      | not running | 10.1.207.181 | 14333 | unknown  | unknown                       | local
+ dn_slave_3    | datanode slave     | f      | not running | 10.1.207.182 | 14333 | unknown  | unknown                       | local
+(10 rows)WARNING:  gtmcoord slave gtm_slave_1 recovery status is unknown
+WARNING:  datanode slave dn_slave_1 recovery status is unknown
+WARNING:  datanode slave dn_slave_2 recovery status is unknown
+WARNING:  datanode slave dn_slave_3 recovery status is unknown
+```
+
+例如： gtm_slave_1 这个从节点状态为 not running
+
+在 `/data01/antdb/data/gtm_slave_1/pg_log` 目录下查看最新日志，发现从节点 `max_worker_processes` 参数值小于主节点对应参数值，导致启动失败。
+
+```shell
+[antdb@oss-irms-181 gtm_slave_1]$ cat pg_log/postgresql-2021-12-01_104526.csv
+2021-12-01 10:45:26.926 CST,,,28219,,61a6e1c6.6e3b,3,,2021-12-01 10:45:26 CST,,0,FATAL,22023,"hot standby is not possible because max_worker_processes = 32 is a lower setting than on the master server (its value was 108)",,,,,,,,,""
+2021-12-01 10:45:26.929 CST,,,28215,,61a6e1c6.6e37,2,,2021-12-01 10:45:26 CST,,0,LOG,00000,"startup process (PID 28219) exited with exit code 1",,,,,,,,,""
+2021-12-01 10:45:26.929 CST,,,28215,,61a6e1c6.6e37,3,,2021-12-01 10:45:26 CST,,0,LOG,00000,"aborting startup due to startup process failure",,,,,,,,,""
+2021-12-01 10:45:26.948 CST,,,28215,,61a6e1c6.6e37,4,,2021-12-01 10:45:26 CST,,0,LOG,00000,"database system is shut down",,,,,,,,,""
+```
+
+但是服务器上的主节点对应参数值也是 32，108 这个数值是注释掉的
+
+```shell
+[antdb@oss-irms-180 gtm_master]$ cat postgresql.conf | grep max_worker_processes
+#max_worker_processes = 108		# (change requires restart)
+#max_parallel_workers = 8		# maximum number of max_worker_processes that
+#max_logical_replication_workers = 4	# taken from max_worker_processes
+max_worker_processes = 32
+```
+
+使用命令查看主节点 max_worker_processes 值也是 32
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show param gtm_master max;"'
+10.1.207.180 | CHANGED | rc=0 >>
+            type            | status |                             message
+----------------------------+--------+-----------------------------------------------------------------
+ gtmcoord slave gtm_slave_1 | f      | could not connect to server: Connection refused                +
+                            |        |         Is the server running on host "127.0.0.1" and accepting+
+                            |        |         TCP/IP connections on port 16655?                      +
+                            |        |
+ gtmcoord master gtm_master | t      | autovacuum_freeze_max_age = 200000000                          +
+                            |        | autovacuum_max_workers = 3                                     +
+                            |        | autovacuum_multixact_freeze_max_age = 400000000                +
+                            |        | bgwriter_lru_maxpages = 100                                    +
+                            |        | max_cn_prealloc_xid_size = 0                                   +
+                            |        | max_connections = 1000                                         +
+                            |        | max_coordinators = 16                                          +
+                            |        | max_datanodes = 16                                             +
+                            |        | max_files_per_process = 1000                                   +
+                            |        | max_function_args = 100                                        +
+                            |        | max_identifier_length = 63                                     +
+                            |        | max_index_keys = 32                                            +
+                            |        | max_locks_per_transaction = 256                                +
+                            |        | max_logical_replication_workers = 4                            +
+                            |        | max_parallel_maintenance_workers = 2                           +
+                            |        | max_parallel_workers = 8                                       +
+                            |        | max_parallel_workers_per_gather = 2                            +
+                            |        | max_pool_size = 100                                            +
+                            |        | max_pred_locks_per_page = 2                                    +
+                            |        | max_pred_locks_per_relation = -2                               +
+                            |        | max_pred_locks_per_transaction = 64                            +
+                            |        | max_prepared_transactions = 1000                               +
+                            |        | max_replication_slots = 10                                     +
+                            |        | max_stack_depth = 8MB                                          +
+                            |        | max_standby_archive_delay = 30s                                +
+                            |        | max_standby_streaming_delay = 30s                              +
+                            |        | max_sync_workers_per_subscription = 2                          +
+                            |        | max_wal_senders = 5                                            +
+                            |        | max_wal_size = 1GB                                             +
+                            |        | max_worker_processes = 32                                      +
+                            |        | reduce_scan_max_buckets = 2048                                 +
+                            |        | rep_max_avail_flag = off                                       +
+                            |        | rep_max_avail_lsn_lag = 8192                                   +
+                            |        | use_aux_max_times = 1
+(2 rows)
+```
+
+因为默认值是 108，通过 PG 流复制安装从节点参数值只能往大改。所以要不就不设置这个参数，要不就修改为大于等于 108。
