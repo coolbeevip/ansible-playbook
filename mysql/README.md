@@ -16,19 +16,19 @@ MySQL InnoDB Cluster is the Combination of,
 
 Planning for server
 
-| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD |
-| ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | mysql | 123456 | root123 |
-| 10.1.207.181 | 22022 | mysql | 123456 | root123 |
-| 10.1.207.182 | 22022 | mysql | 123456 | root123 |
+| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
 Planning for MySQL nodes
 
-| IP | Node |
-| ---- | ---- |
-| 10.1.207.180 | MySQL Primary Node, MySQL Router |
-| 10.1.207.181 | MySQL Secondary Node, MySQL Router |
-| 10.1.207.182 | MySQL Secondary Node, MySQL Router |
+| IP地址 | MySQL Server | MySQL Router | MySQL Shell |
+| ---- | ---- | ---- | ---- |
+| 10.1.207.180 | Primary | Primary | Primary |
+| 10.1.207.181 | Secondary | Primary | Primary |
+| 10.1.207.182 | Secondary | Primary | Primary |
 
 Planning for installation directory
 
@@ -246,21 +246,35 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### Install MySQL Server Configuration With Three Nodes
+#### Install MySQL InnoDB Cluster
 
-Run Ansible playbook scripts `main-mysql.yml` for install MySQL server
+This script will automate the following operations
 
-> This script will automatically modify the operating system kernel parameters, upload the installation media to the three target servers, set the MySQL environment variables, initialize the MySQL database, set the MySQL root password, and start the MySQL service
+* Configure operating system parameters
+* Upload the MySQL packages to each server
+* Configure MySQL environment variables
+* Initialize MySQL database，Configure MySQL root password and start MySQL service
+* Configure MySQL Group Replication on MySQL primary server
+* Install MySQL router to each server and start MySQL router
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-playbook/mysql/main-cluster.yml /ansible-playbook/mysql/main-router.yml
 ```
 
 **TIPS:** This script takes a long time to execute for the first time (because about 1.3GB of installation media needs to be uploaded to all target servers). It takes about 7 minutes to execute in my local after ignoring the upload time
 
-Verify MySQL node status
+If you see the following message, the installation is complete
 
-> You can see that the MySQL instances on the three servers have been started
+```shell
+TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "msg": "Install Succeed!"
+}
+```
+
+#### Verify MySQL InnoDB Cluster
+
+Verify MySQL node status
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql.server status'
@@ -274,9 +288,58 @@ bash-5.0# ansible all -m shell -a '~/mysql.server status'
  SUCCESS! MySQL running (28934)
 ```
 
-Verify the connection between MySQL instances
+Check MySQL cluster status
 
-> Before creating a cluster, we need to confirm that MySQL instances can connect to each other. When you see **The instance 'xxx' is valid to be used in an InnoDB cluster.**, the connection is normal.
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --password="CoolbeevipWowo" root@10.1.207.180:3336 -- cluster status'
+10.1.207.180 | CHANGED | rc=0 >>
+{
+    "clusterName": "mycluster",
+    "defaultReplicaSet": {
+        "name": "default",
+        "primary": "oss-irms-180:3336",
+        "ssl": "REQUIRED",
+        "status": "OK",
+        "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.",
+        "topology": {
+            "oss-irms-180:3336": {
+                "address": "oss-irms-180:3336",
+                "memberRole": "PRIMARY",
+                "mode": "R/W",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            },
+            "oss-irms-181:3336": {
+                "address": "oss-irms-181:3336",
+                "memberRole": "SECONDARY",
+                "mode": "R/O",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            },
+            "oss-irms-182:3336": {
+                "address": "oss-irms-182:3336",
+                "memberRole": "SECONDARY",
+                "mode": "R/O",
+                "readReplicas": {},
+                "replicationLag": null,
+                "role": "HA",
+                "status": "ONLINE",
+                "version": "8.0.27"
+            }
+        },
+        "topologyMode": "Single-Primary"
+    },
+    "groupInformationSourceMember": "oss-irms-180:3336"
+}
+```
+
+Verify the connection between MySQL instances
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'source ~/.bash_profile && mysqlsh --no-password < /data01/mysql/script/mysql_members_validate.sql'
@@ -308,128 +371,6 @@ Instance configuration is compatible with InnoDB cluster
 The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 ```
 
-#### Configure MySQL cluster
-
-> This script will create a cluster on the master node and join two slave nodes to the cluster
-
-```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-cluster.yml
-```
-
-**TIPS:** During the execution of this script, the MySQL instance will automatically restart and wait to synchronize the data of the master node and the slave node. It takes about 4 minutes to execute in my local.
-
-**NOTICE** After the script is executed, you can see the following cluster status information, one PRIMARY node `oss-irms-180` in read-write mode; two SECONDARY nodes with read-only mode `oss-irms-181` and `oss-irms -182`. And all three nodes are in ONLINE state
-
-```shell
-TASK [check mysql_cluster_status output] *******************************************************************************************************************************************************************
-ok: [10.1.207.180] => {
-    "check_result.stdout_lines": [
-        "{",
-        "    \"clusterName\": \"mycluster\", ",
-        "    \"defaultReplicaSet\": {",
-        "        \"name\": \"default\", ",
-        "        \"primary\": \"oss-irms-180:3336\", ",
-        "        \"ssl\": \"REQUIRED\", ",
-        "        \"status\": \"OK\", ",
-        "        \"statusText\": \"Cluster is ONLINE and can tolerate up to ONE failure.\", ",
-        "        \"topology\": {",
-        "            \"oss-irms-180:3336\": {",
-        "                \"address\": \"oss-irms-180:3336\", ",
-        "                \"memberRole\": \"PRIMARY\", ",
-        "                \"mode\": \"R/W\", ",
-        "                \"readReplicas\": {}, ",
-        "                \"replicationLag\": null, ",
-        "                \"role\": \"HA\", ",
-        "                \"status\": \"ONLINE\", ",
-        "                \"version\": \"8.0.27\"",
-        "            }, ",
-        "            \"oss-irms-181:3336\": {",
-        "                \"address\": \"oss-irms-181:3336\", ",
-        "                \"memberRole\": \"SECONDARY\", ",
-        "                \"mode\": \"R/O\", ",
-        "                \"readReplicas\": {}, ",
-        "                \"replicationLag\": null, ",
-        "                \"role\": \"HA\", ",
-        "                \"status\": \"ONLINE\", ",
-        "                \"version\": \"8.0.27\"",
-        "            }, ",
-        "            \"oss-irms-182:3336\": {",
-        "                \"address\": \"oss-irms-182:3336\", ",
-        "                \"memberRole\": \"SECONDARY\", ",
-        "                \"mode\": \"R/O\", ",
-        "                \"readReplicas\": {}, ",
-        "                \"replicationLag\": null, ",
-        "                \"role\": \"HA\", ",
-        "                \"status\": \"ONLINE\", ",
-        "                \"version\": \"8.0.27\"",
-        "            }",
-        "        }, ",
-        "        \"topologyMode\": \"Single-Primary\"",
-        "    }, ",
-        "    \"groupInformationSourceMember\": \"oss-irms-180:3336\"",
-        "}"
-    ]
-}
-```
-
-**TIPS:** See [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-innodb-cluster.html) for a more complete description of MySQL cluster.
-
-#### Install MySQL Router
-
-Pre-Installation
-
-> Need to allow the complete communication between the cluster nodes based on the hostname and IP. Usually, the /etc/hosts file is automatically modified when the previous script is installed.
-
-View the hostname of each server
-
-```shell
-bash-5.0# ansible all -m shell -a 'hostname'
-10.1.207.181 | CHANGED | rc=0 >>
-oss-irms-181
-
-10.1.207.180 | CHANGED | rc=0 >>
-oss-irms-180
-
-10.1.207.182 | CHANGED | rc=0 >>
-oss-irms-182
-```
-
-Check /etc/hosts file.
-
-```shell
-bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
-10.1.207.181 | CHANGED | rc=0 >>
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.1.207.180 oss-irms-180
-10.1.207.181 oss-irms-181
-10.1.207.182 oss-irms-182
-
-10.1.207.182 | CHANGED | rc=0 >>
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.1.207.180 oss-irms-180
-10.1.207.181 oss-irms-181
-10.1.207.182 oss-irms-182
-
-10.1.207.180 | CHANGED | rc=0 >>
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.1.207.180 oss-irms-180
-10.1.207.181 oss-irms-181
-10.1.207.182 oss-irms-182
-```
-
-Run Ansible playbook scripts `main-router.yml` for install MySQL router
-
-> This script will automatically create the MSQL router storage directory, configuration files, start and stop scripts based on the cluster MGR information, and start the MySQL Router
-
-```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml
-```
-
-**NOTICE：** It took about 2 minutes to execute in my local.
-
 View MySQL Router process
 
 ```shell
@@ -450,10 +391,10 @@ mysql    16463 16462  0 17:03 pts/3    00:00:00 /bin/sh -c ps -ef | grep mysql-r
 mysql    16465 16463  0 17:03 pts/3    00:00:00 grep mysql-router
 ```
 
-Verify through MySQL Router RW port **36446** to connect to the master node of the database to view MGR group information
+Verify through MySQL Router RW port **36447** to connect to the master node of the database to view MGR group information
 
 ```shell
-bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36446 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
+bash-5.0# ansible all -m shell -a 'source ~/.bash_profile && mysql -h 10.1.207.180 -P 36447 -uroot -pCoolbeevipWowo mysql -e "select * from performance_schema.replication_group_members;"'
 10.1.207.180 | CHANGED | rc=0 >>
 CHANNEL_NAME	MEMBER_ID	MEMBER_HOST	MEMBER_PORT	MEMBER_STATE	MEMBER_ROLE	MEMBER_VERSION	MEMBER_COMMUNICATION_STACK
 group_replication_applier	5e11bf00-4cf5-11ec-8798-5254005e1dd1	oss-irms-181	3336	ONLINE	SECONDARY	8.0.27	XCom
@@ -496,8 +437,6 @@ group_replication_applier	93a9227d-4cf5-11ec-9851-5254001a7e4c	oss-irms-182	3336
 group_replication_applier	9aed150e-4cf5-11ec-8819-525400506ca8	oss-irms-180	3336	ONLINE	PRIMARY	8.0.27	XCommysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
-**At this point, you have completed the installation of the MySQL InnoDB cluster**
-
 #### Remove setup files after complete installation
 
 Delete the temporary script file generated during the installation process (**because it contains sensitive information such as the root password**)
@@ -512,7 +451,49 @@ bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/script/*'
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
+**Congratulations！You have completed the installation of MySQL InnoDB cluster**
+
 ## Common Maintenance Commands
+
+View the hostname of each server
+
+```shell
+bash-5.0# ansible all -m shell -a 'hostname'
+10.1.207.181 | CHANGED | rc=0 >>
+oss-irms-181
+
+10.1.207.180 | CHANGED | rc=0 >>
+oss-irms-180
+
+10.1.207.182 | CHANGED | rc=0 >>
+oss-irms-182
+```
+
+Check /etc/hosts file.
+
+```shell
+bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
+10.1.207.181 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+
+10.1.207.182 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+
+10.1.207.180 | CHANGED | rc=0 >>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.1.207.180 oss-irms-180
+10.1.207.181 oss-irms-181
+10.1.207.182 oss-irms-182
+```
 
 Start MySQL
 

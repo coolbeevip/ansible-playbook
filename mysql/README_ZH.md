@@ -247,18 +247,17 @@ docker run --name ansible --rm -it \
 
 #### 安装 MySQL 集群
 
-此命令会自动化完成如下操作
+这个脚本将自动化完成如下操作
 
 * 在所有服务器上配置操作系统内核参数、自动上传安装介质，设置 MySQL 环境变量，初始化 MySQL 数据库，设置 MySQL root 密码，启动 MySQL 服务
 * 在主节点上创建集群并将两个从节点加入到集群
 * 在所有服务器上创建 MSQL router 存储目录、配置文件、启动停止脚本，安装并启动 MySQL Router 服务
 
-
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-playbook/mysql/main-cluster.yml /ansible-playbook/mysql/main-router.yml
 ```
 
-**提示：** 脚本首次执行时会将安装介质（大概1.3GB）上传到三个服务器上，所以耗时较长（这取决于你客户机和服务器之间的网速）。你也可以先手动将安装介质上传配置中定义的服务器目录 `mysql_home_dir=/opt/mysql` 后再执行此脚本（忽略上传介质的时间，在我的环境下自动化安装完成大约需要 21 分钟）
+**TIPS:** When the script is executed for the first time, the installation media (about 1.3GB) will be uploaded to the three servers, so it takes a long time (it depends on the network speed between your client and server). You can also manually upload the installation media to the server directory defined in the configuration `mysql_home_dir=/opt/mysql` and then execute this script (ignore the time to upload the media, it takes about 21 minutes to complete the automated installation in my local)
 
 如果你看到如下信息，说明安装完成
 
@@ -448,7 +447,7 @@ bash-5.0# ansible all -m shell -a 'rm -rf /data01/mysql/script/*'
 bash-5.0# ansible all -m shell -a 'rm /opt/*.tar.*'
 ```
 
-**至此，您已经完成 MySQLInnoDB 集群的安装**
+**恭喜！您已经完成 MySQL InnoDB 集群的安装**
 
 ## 常用运维命令
 
