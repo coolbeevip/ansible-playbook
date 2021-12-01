@@ -75,3 +75,8 @@
 - name: start MySQL Router
   shell: "{{ mysql_router_dir }}/{{ cluster_name }}/start.sh"
   check_mode: no
+
+- name: Install Succeed
+  debug:
+    msg: Install Succeed!
+  check_mode: no  
