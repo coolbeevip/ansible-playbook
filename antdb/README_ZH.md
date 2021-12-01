@@ -1,6 +1,6 @@
 # Ansible Playbook 安装 AntDB 集群 | [English](README.md)
 
-> AntDB分布式数据库自动化安装脚本，能够自动配置内核参数、创建目录、初始化集群配置并启动集群。此脚本仅供测试环境搭建使用
+> 6 分钟自动化安装一个 3 节点 AntDB 分布式数据库集群，能够自动配置内核参数、创建目录、初始化集群配置并启动集群。此脚本仅供测试环境搭建使用，生产环境请参考官方安装文档。
 
 包含组件
 
@@ -285,7 +285,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
-**提示：** 此脚本在我的环境下执行耗时大约 4 分钟
+**提示：** 此脚本在我的环境下执行耗时大约 6 分钟
 
 ## 验证集群
 
