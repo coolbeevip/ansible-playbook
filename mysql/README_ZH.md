@@ -258,7 +258,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-playbook/mysql/main-cluster.yml /ansible-playbook/mysql/main-router.yml
 ```
 
-**提示：** 脚本首次执行时会将安装介质（大概1.3GB）上传到三个服务器上，所以耗时较长（这取决于你客户机和服务器之间的网速）。你也可以先手动将安装介质上传到服务器的 `/opt/mysql` 目录后再执行此脚本（忽略上传介质的时间，在我的环境下大约需要执行 21 分钟）
+**提示：** 脚本首次执行时会将安装介质（大概1.3GB）上传到三个服务器上，所以耗时较长（这取决于你客户机和服务器之间的网速）。你也可以先手动将安装介质上传配置中定义的服务器目录 `mysql_home_dir=/opt/mysql` 后再执行此脚本（忽略上传介质的时间，在我的环境下大约需要执行 21 分钟）
 
 如果你看到如下信息，说明安装完成
 
