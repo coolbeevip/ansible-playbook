@@ -242,7 +242,7 @@ antdb_set:
   datanode:
     max_connections: 1000 # 自定义最大连接数
     max_prepared_transactions: 1000 # 等于最大连接数
-    max_worker_processes: 2 # cpu*2
+    max_worker_processes: 108 # cpu*2，不能小于 108
     shared_buffers: 2GB # 物理内存 * 25% GB
     effective_cache_size: 3GB # 物理内存 * 75% GB
     max_wal_size: 1GB # 2 * shared_buffers GB
@@ -250,12 +250,12 @@ antdb_set:
   coordinator:
     max_connections: 1000 # 最大连接数
     max_prepared_transactions: 1000 # 等于最大连接数
-    max_worker_processes: 2 # cpu*2
+    max_worker_processes: 108 # cpu*2，不能小于 108
   gtmcoord:
     max_connections: 1000 # 最大连接数
     max_prepared_transactions: 1000 # 等于最大连接数
-    max_worker_processes: 2 # cpu*2
-    shared_buffers: 2GB # 物理内存 * 25% GB
+    max_worker_processes: 108 # cpu*2，不能小于 108
+    shared_buffers: 5GB # 物理内存 * 25% GB
 ```    
 
 更多默认配置参见 `antdb_config.sql.j2` 文件
