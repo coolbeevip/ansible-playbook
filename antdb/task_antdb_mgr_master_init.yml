@@ -14,8 +14,6 @@
 
 # 添加主机信息
 - name: Add hosts to MGR
-  #debug:
-  #  msg: adbmgr -c "add host {{ node_names[item].name }}(port=22022, protocol='ssh', adbhome='{{ antdb_app_dir }}', address='{{ item }}', agentport={{ andb_agent_port }}, user='{{ antdb_user }}');"
   shell: psql -p {{ antdb_conf_port }} -d postgres -c "add host {{ node_names[item].name }}(port=22022, protocol='ssh', adbhome='{{ antdb_app_dir }}', address='{{ item }}', agentport={{ andb_agent_port }}, user='{{ antdb_user }}');"
   check_mode: no
   with_items: "{{ groups.all }}"
@@ -43,7 +41,7 @@
 - name: Add DataNode to MGR
   shell: |
       psql -p {{ antdb_conf_port }} -d postgres -c "add datanode master {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_master_port }}, path='{{ antdb_data_dir }}/{{ item.master.name }}');"
-      psql -p {{ antdb_conf_port }} -d postgres -c "add datanode slave {{ item.slave.name }} for {{ item.master.name }}(host='{{ item.master.node }}', port={{ antdb_datanode_slave_port }}, path='{{ antdb_data_dir }}/{{ item.slave.name }}');"
+      psql -p {{ antdb_conf_port }} -d postgres -c "add datanode slave {{ item.slave.name }} for {{ item.master.name }}(host='{{ item.slave.node }}', port={{ antdb_datanode_slave_port }}, path='{{ antdb_data_dir }}/{{ item.slave.name }}');"
   check_mode: no
   with_items: "{{ data_nodes }}"
   ignore_errors: true
