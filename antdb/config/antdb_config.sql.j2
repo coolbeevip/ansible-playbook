@@ -30,7 +30,6 @@ set datanode all("max_locks_per_transaction"="256");
 set datanode all("enable_fast_query_shipping"="off");
 set datanode all("max_connections"="{{ antdb_set.datanode.max_connections }}");
 set datanode all("max_prepared_transactions"="{{ antdb_set.datanode.max_prepared_transactions }}");
-set datanode all("max_worker_processes"="{{ antdb_set.datanode.max_worker_processes }}");
 set datanode all("shared_buffers"="{{ antdb_set.datanode.shared_buffers }}");
 set datanode all("effective_cache_size"="{{ antdb_set.datanode.effective_cache_size }}");
 set datanode all("max_wal_size"="{{ antdb_set.datanode.max_wal_size }}") FORCE;
@@ -60,7 +59,6 @@ set coordinator all("max_locks_per_transaction"="256");
 set coordinator all("enable_fast_query_shipping"="off");
 set coordinator all("max_connections"="{{ antdb_set.coordinator.max_connections }}");
 set coordinator all("max_prepared_transactions"="{{ antdb_set.coordinator.max_prepared_transactions }}");
-set coordinator all("max_worker_processes"="{{ antdb_set.coordinator.max_worker_processes }}");
 
 -- GTM Node Configuration
 set gtmcoord all("listen_addresses"="'*'");
@@ -86,7 +84,6 @@ set gtmcoord all("max_locks_per_transaction"="256");
 set gtmcoord all("enable_fast_query_shipping"="off");
 set gtmcoord all("max_connections"="{{ antdb_set.gtmcoord.max_connections }}");
 set gtmcoord all("max_prepared_transactions"="{{ antdb_set.gtmcoord.max_prepared_transactions }}");
-set gtmcoord all("max_worker_processes"="{{ antdb_set.gtmcoord.max_worker_processes }}");
 set gtmcoord all("shared_buffers"="{{ antdb_set.gtmcoord.shared_buffers }}");
 
 -- Restart All Nodes

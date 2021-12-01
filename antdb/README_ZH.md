@@ -493,6 +493,54 @@ NOTICE:  [SUCCESS] host(10.1.207.182) cmd(START DATANODE BACKEND) params( start 
 NOTICE:  waiting max 90 seconds for datanode slave to start ...
 ```
 
+查看节点数据库配置
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show param dn_master_1 max;"'
+10.1.207.180 | CHANGED | rc=0 >>
+            type             | status |                             message
+-----------------------------+--------+-----------------------------------------------------------------
+ datanode master dn_master_1 | t      | autovacuum_freeze_max_age = 200000000                          +
+                             |        | autovacuum_max_workers = 5                                     +
+                             |        | autovacuum_multixact_freeze_max_age = 400000000                +
+                             |        | bgwriter_lru_maxpages = 100                                    +
+                             |        | max_cn_prealloc_xid_size = 0                                   +
+                             |        | max_connections = 1000                                         +
+                             |        | max_coordinators = 16                                          +
+                             |        | max_datanodes = 16                                             +
+                             |        | max_files_per_process = 1000                                   +
+                             |        | max_function_args = 100                                        +
+                             |        | max_identifier_length = 63                                     +
+                             |        | max_index_keys = 32                                            +
+                             |        | max_locks_per_transaction = 256                                +
+                             |        | max_logical_replication_workers = 4                            +
+                             |        | max_parallel_maintenance_workers = 2                           +
+                             |        | max_parallel_workers = 8                                       +
+                             |        | max_parallel_workers_per_gather = 2                            +
+                             |        | max_pool_size = 100                                            +
+                             |        | max_pred_locks_per_page = 2                                    +
+                             |        | max_pred_locks_per_relation = -2                               +
+                             |        | max_pred_locks_per_transaction = 64                            +
+                             |        | max_prepared_transactions = 1000                               +
+                             |        | max_replication_slots = 10                                     +
+                             |        | max_stack_depth = 8MB                                          +
+                             |        | max_standby_archive_delay = 30s                                +
+                             |        | max_standby_streaming_delay = 30s                              +
+                             |        | max_sync_workers_per_subscription = 2                          +
+                             |        | max_wal_senders = 5                                            +
+                             |        | max_wal_size = 1GB                                             +
+                             |        | max_worker_processes = 32                                      +
+                             |        | reduce_scan_max_buckets = 2048                                 +
+                             |        | rep_max_avail_flag = off                                       +
+                             |        | rep_max_avail_lsn_lag = 8192                                   +
+                             |        | use_aux_max_times = 1
+ datanode slave dn_slave_1   | f      | could not connect to server: Connection refused                +
+                             |        |         Is the server running on host "127.0.0.1" and accepting+
+                             |        |         TCP/IP connections on port 14333?                      +
+                             |        |
+(2 rows)
+```
+
 ## Q & A
 
 #### 多服务器如何规划节点类型
