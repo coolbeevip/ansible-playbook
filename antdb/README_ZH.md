@@ -287,6 +287,15 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
+如果你看到如下信息，说明安装完成
+
+```shell
+TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "msg": "Install Succeed!"
+}
+```
+
 **提示：** 此脚本在我的环境下执行耗时大约 6 分钟
 
 ## 验证集群
