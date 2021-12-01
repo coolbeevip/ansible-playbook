@@ -400,7 +400,7 @@ antdb=# grant all privileges on database testdb to testdbuser;
 GRANT
 ```
 
-通过 CN 主节 **10.1.207.181** 连接数据库
+通过 Coordinator 主节 **10.1.207.181** 连接数据库
 
 ```shell
 [antdb@oss-irms-180 ~]$ psql -h 10.1.207.181 -p 15432 -d testdb -U testdbuser -w testdbpass
@@ -411,7 +411,7 @@ Type "help" for help.
 testdb=>
 ```
 
-通过 CN 备节点 **10.1.207.182** 连接数据库
+通过 Coordinator 备节点 **10.1.207.182** 连接数据库
 
 ```shell
 [antdb@oss-irms-180 ~]$ psql -h 10.1.207.182 -p 15432 -d testdb -U testdbuser -w testdbpass
