@@ -277,23 +277,17 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-## 安装 Antdb 集群
+## 安装集群
 
-系统初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质
-
-```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml
-```
-
-**提示：** 此脚本在我的环境下执行耗时大约 2 分钟
-
-安装并启动集群
+系统初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质，启动并初始化集群
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-cluster-install.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
-**提示：** 此脚本在我的环境下执行耗时大约 2 分钟
+**提示：** 此脚本在我的环境下执行耗时大约 4 分钟
+
+## 验证集群
 
 安装完毕，登录到 MGR 主节点 **10.1.207.180** 检查集群状态，可以看到所有节点都已经 `running`
 
