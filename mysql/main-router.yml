@@ -23,3 +23,8 @@
   become_method: su
   tasks:
     - include_tasks: task_mysql_router_init.yml
+
+- name: Install Succeed
+  debug:
+    msg: Install Succeed!
+  check_mode: no
