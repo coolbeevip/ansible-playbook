@@ -381,6 +381,8 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hb
 (1 row)
 ```
 
+## 创建数据库
+
 ## 常用运维命令
 
 登录到 MGR 主节点 **10.1.207.180**，查看集群主机列表
