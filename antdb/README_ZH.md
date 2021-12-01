@@ -688,9 +688,9 @@ bash-5.0# ansible all -m shell -a 'ls /data01/antdb'
 10.1.207.182 | CHANGED | rc=0 >>
 ```
 
-#### 从节点启动失败
+#### 从节点启动失败, 日志提示 **hot standby is not possible because xxx = xxx is a lower setting than on the master server**
 
-使用 monitor all 命令，查看到从节点启动失败
+使用 monitor all 命令，查看到从节点启动失败。
 
 ```shell
 
