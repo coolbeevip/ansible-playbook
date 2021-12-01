@@ -35,6 +35,7 @@
 | ---- | ---- |
 | /opt/antdb | rpm 安装介质存放路径 |
 | ~/antdb_uninstall.sh | 强制集群卸载脚本 |
+| ~/antdb_config.sql | 数据库参数脚本 |
 | /data01/antdb/app | PG 程序文件 |
 | /data01/antdb/mgr | MGR 程序文件 |
 | /data01/antdb/data | 数据文件目录 |
