@@ -235,7 +235,7 @@ data_nodes:
       node: antdb180
 ```
 
-PG 节点配置参数，更多参数参见 `antdb_config.sql.j2` 文件
+数据库配置参数
 
 ```yaml
 antdb_set:
@@ -257,8 +257,8 @@ antdb_set:
     max_worker_processes: 2 # cpu*2
     shared_buffers: 2GB # 物理内存 * 25% GB
 ```    
-#### antdb_config.sql.j2
 
+更多默认配置参见 `antdb_config.sql.j2` 文件
 
 ## 开始安装
 
@@ -355,12 +355,30 @@ bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
-登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "antdb", database "postgres"** 类似的错误。
+## 添加客户端白名单
 
-命令格式：add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");
+登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "antdb", database "postgres"** 类似的错误。命令格式：`add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");`
+
+例如：添加 C类地址段 10.4.16.0～10.4.16.255
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hba coordinator all (\"host all all 10.4.16.0 24 md5\");"'
+10.1.207.180 | CHANGED | rc=0 >>
+ nodename | values
+----------+---------
+ *        | success
+(1 row)
+```
+
+例如：添加 B类地址段 10.4.0.0～10.4.255.255
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hba coordinator all (\"host all all 10.4.0.0 16 md5\");"'
+10.1.207.180 | CHANGED | rc=0 >>
+ nodename | values
+----------+---------
+ *        | success
+(1 row)
 ```
 
 ## 常用运维命令
