@@ -93,7 +93,7 @@ Define the IP address of the AntDB MGR master/slave node server and the system u
   vars:
     mgr_slave_name: "mgr_slave_1"
 
-# Restart AntDB All NOdes on MGR Master Node
+# Restart all node of AntDB cluster on MGR Master Node
 - hosts: 10.1.207.180
   user: antdb
 ```
