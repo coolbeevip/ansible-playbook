@@ -354,7 +354,7 @@ bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monito
 命令格式：add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");
 
 ```shell
-bash-5.0# ansible 10.1.207.180 -m shell -a 'add hba coordinator all ("host all all 10.4.16.0 24 md5");'
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hba coordinator all (\"host all all 10.4.16.0 24 md5\");"'
 ```
 
 ## 常用运维命令
@@ -415,6 +415,82 @@ antdb    18597     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/agent -b -
 antdb    18643     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --coordinator -D /data01/antdb/data/coordinator_2 -i
 antdb    18722     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_master_3 -i
 antdb    18775     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_3 -i
+```
+
+停止所有节点
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop all mode f;"'
+10.1.207.180 | CHANGED | rc=0 >>
+     operation type      |   nodename    | status | description
+-------------------------+---------------+--------+-------------
+ stop datanode slave     | dn_slave_1    | t      | success
+ stop datanode slave     | dn_slave_2    | t      | success
+ stop datanode slave     | dn_slave_3    | t      | success
+ stop datanode master    | dn_master_1   | t      | success
+ stop datanode master    | dn_master_2   | t      | success
+ stop datanode master    | dn_master_3   | t      | success
+ stop coordinator master | coordinator_1 | t      | success
+ stop coordinator master | coordinator_2 | t      | success
+ stop gtmcoord slave     | gtm_slave_1   | t      | success
+ stop gtmcoord master    | gtm_master    | t      | success
+(10 rows)NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_1 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_2 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_slave_3 -Z datanode -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for datanode slave to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_1 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_2 -Z datanode -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP DATANODE BACKEND) params( stop -D /data01/antdb/data/dn_master_3 -Z datanode -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for datanode master to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/coordinator_1 -Z coordinator -m fast -o -i -c -W).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/coordinator_2 -Z coordinator -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for coordinator master to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(STOP GTMCOORD SLAVE BACKEND) params( stop -D /data01/antdb/data/gtm_slave_1 -Z gtm_coord -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for gtmcoord slave to stop ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP COORD BACKEND) params( stop -D /data01/antdb/data/gtm_master -Z coordinator -m fast -o -i -c -W).
+NOTICE:  waiting max 90 seconds for gtmcoord master to stop ...
+```
+
+启动所有节点
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "start all;"'
+10.1.207.180 | CHANGED | rc=0 >>
+      operation type      |   nodename    | status | description
+--------------------------+---------------+--------+-------------
+ start gtmcoord master    | gtm_master    | t      | success
+ start gtmcoord slave     | gtm_slave_1   | t      | success
+ start coordinator master | coordinator_1 | t      | success
+ start coordinator master | coordinator_2 | t      | success
+ start datanode master    | dn_master_1   | t      | success
+ start datanode master    | dn_master_2   | t      | success
+ start datanode master    | dn_master_3   | t      | success
+ start datanode slave     | dn_slave_1    | t      | success
+ start datanode slave     | dn_slave_2    | t      | success
+ start datanode slave     | dn_slave_3    | t      | success
+(10 rows)NOTICE:  [SUCCESS] host(10.1.207.180) cmd(START GTMCOORD MASTER BACKEND) params( start -D /data01/antdb/data/gtm_master -Z gtm_coord -o -i -c -W -l /data01/antdb/data/gtm_master/logfile).
+NOTICE:  waiting max 90 seconds for gtmcoord master to start ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(START GTMCOORD SLAVE BACKEND) params( start -D /data01/antdb/data/gtm_slave_1 -Z gtm_coord -o -i -c -W -l /data01/antdb/data/gtm_slave_1/logfile).
+NOTICE:  waiting max 90 seconds for gtmcoord slave to start ...
+
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(START COORD BACKEND) params( start -D /data01/antdb/data/coordinator_1 -Z coordinator -o -i -c -W -l /data01/antdb/data/coordinator_1/logfile).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(START COORD BACKEND) params( start -D /data01/antdb/data/coordinator_2 -Z coordinator -o -i -c -W -l /data01/antdb/data/coordinator_2/logfile).
+NOTICE:  waiting max 90 seconds for coordinator master to start ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_master_1 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_master_1/logfile).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_master_2 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_master_2/logfile).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_master_3 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_master_3/logfile).
+NOTICE:  waiting max 90 seconds for datanode master to start ...
+
+NOTICE:  [SUCCESS] host(10.1.207.180) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_slave_1 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_slave_1/logfile).
+NOTICE:  [SUCCESS] host(10.1.207.181) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_slave_2 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_slave_2/logfile).
+NOTICE:  [SUCCESS] host(10.1.207.182) cmd(START DATANODE BACKEND) params( start -D /data01/antdb/data/dn_slave_3 -Z datanode -o -i -c -W -l /data01/antdb/data/dn_slave_3/logfile).
+NOTICE:  waiting max 90 seconds for datanode slave to start ...
 ```
 
 ## Q & A

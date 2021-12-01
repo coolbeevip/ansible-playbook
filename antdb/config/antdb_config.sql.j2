@@ -56,7 +56,6 @@ set coordinator all("log_rotation_size"="100MB");
 set coordinator all("log_min_messages"="error");
 set coordinator all("log_statement"="ddl");
 set coordinator all("track_activity_query_size"="2048");
-set coordinator;
 set coordinator all("max_locks_per_transaction"="256");
 set coordinator all("enable_fast_query_shipping"="off");
 set coordinator all("max_connections"="{{ antdb_set.coordinator.max_connections }}");
