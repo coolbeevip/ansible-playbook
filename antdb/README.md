@@ -1,27 +1,27 @@
 # Automate Install AntDB Distributed Cluster with Ansible Playbook | [中文](README_ZH.md)
 
-> 6 分钟自动化安装一个 3 节点 AntDB 分布式数据库集群，能够自动配置内核参数、创建目录、初始化集群配置并启动集群。此脚本仅供测试环境搭建使用，生产环境请参考官方安装文档。
+> Automate install 3-node AntDB distributed database cluster in 6 minutes, automatically configure kernel parameters, initialize directories, cluster configuration, and startup the cluster. This script is only for test environment setup. For a production environment, please refer to the official installation document。
 
-包含组件
+AntDB Distributed Cluster is the Combination of,
 
-* MGR 集群的管理
-* GTM 全局事务管理
-* Coordinator 协调员管理用户会话
-* Data Node 数据节点
+* MGR - AntDB Manager
+* GTM - Global Transaction Manager
+* CN - Coordinator
+* DN - Data Node
 
-## 安装计划
+## Planning Your Installation
 
-服务器规划
+Planning for server
 
-| IP | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
+| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | 10.1.207.180 | 22022 | antdb | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.181 | 22022 | antdb | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.182 | 22022 | antdb | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
-**提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
+**TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
 
-集群节点规划
+Planning for nodes
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
@@ -29,43 +29,43 @@
 | 10.1.207.181 | | Slave_1 | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
 | 10.1.207.182 | Slave_1 | | Coordinator_2 | DataNode_Master_3, DataNode_Slave_2 |
 
-节点安装路径
+Planning for installation directory
 
-| 路径 | 描述 |
+| PATH | DESCRIPTION |
 | ---- | ---- |
-| /opt/antdb | rpm 安装介质存放路径 |
-| ~/antdb_uninstall.sh | 强制集群卸载脚本 |
-| ~/antdb_config.sql | 数据库参数脚本 |
-| /data01/antdb/app | PG 程序文件 |
-| /data01/antdb/mgr | MGR 程序文件 |
-| /data01/antdb/data | 数据文件目录 |
-| /data01/antdb/tools | 工具脚本存放路径 |
-| /data01/antdb/core | Core Dump 文件存放路径 |
+| /opt/antdb | PRM package |
+| ~/antdb_uninstall.sh | AntDB cluster uninstall script |
+| ~/antdb_config.sql | Database parameter script |
+| /data01/antdb/app | PG program directory |
+| /data01/antdb/mgr | MGR program directory |
+| /data01/antdb/data | Node data and configuration directory|
+| /data01/antdb/tools | Tool scripts |
+| /data01/antdb/core | core dump directory |
 
-## 下载安装包和 Playbook 脚本
+## Download MySQL Tar & Ansible Playbook Scripts
 
-在客户机上创建 playbook 脚本存放目录
+Create a directory for Ansible Playbook scripts
 
 ```shell
 mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-下载 playbook 脚本
+Download Ansible playbook scripts
 
 ```shell
 cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-下载 AntDB 安装包 `antdb.cluster-5.0.009be78c-centos7.9.rpm` 到 `~/my-docker-volume/ansible-playbook/packages` 目录
+Download AntDB RPM package `antdb.cluster-5.0.009be78c-centos7.9.rpm` to `~/my-docker-volume/ansible-playbook/packages`
 
-## 配置安装脚本
+## Configuration
 
-> 您可以编辑以下配置文件，修改默认参数
+> You can edit the following configuration files to modify the default parameters
 
 #### maim-os-init.yml
 
-配置安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本用来设置内核参数，创建目录、上传安装介质
+Define all the server IP addresses of the AntDB cluster and the system user. This script automatically config the kernel parameters, creates a directory and uploads the RPM package
 
 ```yaml
 - hosts: 10.1.207.180
@@ -80,7 +80,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 #### maim-cluster-install.yml
 
-配置 AntDB MGR 主/备节点服务器 IP 地址，以及安装用系统用户名。备节点的名称 `mgr_slave_1`
+Define the IP address of the AntDB MGR master/slave node server and the system user. MGR slave node name `mgr_slave_1`
 
 ```yaml
 # MGR Master Node Initialize
@@ -100,7 +100,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 #### var_antdb.yml
 
-操作系统内核参数
+Linux Limits
 
 ```yaml
 limits_hard_nproc: '65535'
@@ -114,7 +114,7 @@ limits_soft_memlock: '250000000'
 limits_hard_memlock: '250000000'
 ```
 
-安装用系统用户名和密码
+Linux User & Group
 
 ```yaml
 antdb_user: 'antdb'
@@ -122,13 +122,13 @@ antdb_group: 'antdb'
 antdb_password: '123456'
 ```
 
-AntDB rpm 包名称
+AntDB RPM package name
 
 ```yaml
 antdb_tar: 'antdb.cluster-5.0.009be78c-centos7.9.rpm'
 ```
 
-AntDB 安装路径
+AntDB Install Directories
 
 ```yaml
 antdb_home_dir: '/opt/antdb'
@@ -139,7 +139,7 @@ antdb_app_dir: '/data01/antdb/app'
 antdb_core_dir: '/data01/antdb/core'
 ```
 
-postgresql.conf 扩展参数
+AntDB postgresql.conf extended parameters
 
 ```yaml
 antdb_conf_listen_addresses: '*'
@@ -152,10 +152,9 @@ antdb_conf_log_min_messages: error
 antdb_conf_log_statement: ddl
 ```
 
-集群所有节点名称(此名称不是主机名，是集群管理用的节点名称，不能包含中划线)
+The names of all nodes in the cluster (this name is not a host name, it is a node name for cluster management, name can only contain letters, numbers, and underscores)
 
 ```yaml
-# 集群节点名称（注意这不是主机名)
 node_names:
   10.1.207.180:
     name: antdb180
@@ -165,7 +164,7 @@ node_names:
     name: antdb182
 ```    
 
-集群各个组件端口
+Component ports
 
 ```yaml
 # Agent
@@ -179,7 +178,7 @@ antdb_datanode_master_port: 14332
 antdb_datanode_slave_port: 14333
 ```
 
-MGR 节点配置
+MGR Configuration
 
 ```yaml
 mgr_nodes:
@@ -189,7 +188,7 @@ mgr_nodes:
     ips: [10.1.207.182]
 ```
 
-GTM 节点配置
+GTM Configuration
 
 ```yaml
 gtm_nodes:
@@ -201,7 +200,7 @@ gtm_nodes:
       node: antdb181
 ```
 
-Coordinator 节点配置
+Coordinator Configuration
 
 ```yaml
 coordinator_nodes:
@@ -211,7 +210,7 @@ coordinator_nodes:
     node: antdb182
 ```
 
-DataNodes 节点配置
+DataNodes Configuration
 
 ```yaml
 data_nodes:
@@ -235,7 +234,7 @@ data_nodes:
       node: antdb180
 ```
 
-数据库配置参数
+PostgreSQL Server Configuration Parameters
 
 ```yaml
 antdb_set:
@@ -258,15 +257,15 @@ antdb_set:
     shared_buffers: 5GB # 物理内存 * 25% GB
 ```    
 
-更多默认配置参见 `antdb_config.sql.j2` 文件
+For more default configuration, please refer to the `antdb_config.sql.j2` file
 
-## 开始安装
+## Installation
 
-启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂载到容器中。
+Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
-**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `antdb` 和密码 `123456`
+**NOTICE:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user redis and password
 
-**提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
+**NOTICE:** ANSIBLE_SU_PASSS is user root password
 
 ```shell
 docker run --name ansible --rm -it \
@@ -280,15 +279,15 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-## 安装集群
+#### Install AntDB Distributed Cluster
 
-系统初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质，启动并初始化集群
+Automatically configure system parameters, disable the firewall, create  installation directories, upload RPM package, initialize and startup the cluster
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
-如果你看到如下信息，说明安装完成
+If you see the following message, the installation is complete
 
 ```shell
 TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
@@ -297,11 +296,11 @@ ok: [10.1.207.180] => {
 }
 ```
 
-**提示：** 此脚本在我的环境下执行耗时大约 6 分钟
+**TIPS：** This script takes about 6 minutes to execute in my local
 
-## 验证集群
+## Verify the cluster
 
-安装完毕，登录到 MGR 主节点 **10.1.207.180** 检查集群状态，可以看到所有节点都已经 `running`
+Check the cluster status on MGR master node **10.1.207.180**, you can see that all nodes have been `running`
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
@@ -321,21 +320,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
-登录到 MGR 主节点 **10.1.207.180**，通过 `Coordinator` 节点端口，测试连接集群是否正常
-
-```shell
-bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SELECT datname FROM pg_database;"'
-10.1.207.180 | CHANGED | rc=0 >>
-  datname
------------
- postgres
- antdb
- template1
- template0
-(4 rows)
-```
-
-登录到 MGR 备节点 **10.1.207.182** 检查集群状态，可以看到所有节点都已经 `running`，说明 MGR 备节点可以正常工作
+Check the cluster status on MGR slave node **10.1.207.180**, you can see that all nodes have been `running`
 
 ```shell
 bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monitor all;"'
@@ -355,11 +340,31 @@ bash-5.0# ansible 10.1.207.182 -m shell -a 'psql -p 16432 -d postgres -c "monito
 (10 rows)
 ```
 
-## 添加客户端白名单
+Test the `Coordinator` connection on the MGR master node **10.1.207.180**
 
-登录到 MGR 主节点 **10.1.207.180**，增加客户端白名单，否则你连接的时候将会收到 **[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "xxx", database "xxx"** 类似的错误。命令格式：`add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");`
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -h 10.1.207.181 -p 15432 -c "SELECT datname FROM pg_database;"'
+10.1.207.180 | CHANGED | rc=0 >>
+  datname
+-----------
+ postgres
+ antdb
+ template1
+ template0
+(4 rows)
+```
 
-例如：添加 C类地址段 10.4.16.0～10.4.16.255
+## Configure client authentication
+
+When you receive a connection error `[28000] FATAL: no pg_hba.conf entry for host "x.x.x.x", user "xxx", database "xxx"`, You need add client authorization on MGR master node **10.1.207.180**.
+
+Command：
+
+```shell
+add hba coordinator all ("host <database> <user> <ip-address> <ip-mark> <auth-method>");
+```
+
+For example: add class-c address 10.4.16.0～10.4.16.255
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hba coordinator all (\"host all all 10.4.16.0 24 md5\");"'
@@ -370,7 +375,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hb
 (1 row)
 ```
 
-例如：添加 B类地址段 10.4.0.0～10.4.255.255
+For example: add class-b address 10.4.0.0～10.4.255.255
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hba coordinator all (\"host all all 10.4.0.0 16 md5\");"'
@@ -381,9 +386,9 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "add hb
 (1 row)
 ```
 
-## 创建数据库
+## Create Database & User
 
-SSH 登录到集群任一服务器，然后使用 `psql -h 10.1.207.181 -p 15432` 命令连接 `Coordinator` 主(备)节点
+Login to any server in the cluster using SSH, and use the `psql -h 10.1.207.181 -p 15432` command to connect to the any node of the `Coordinator`
 
 ```sql
 [antdb@oss-irms-180 ~]$ psql -h 10.1.207.181 -p 15432
@@ -400,7 +405,7 @@ antdb=# grant all privileges on database testdb to testdbuser;
 GRANT
 ```
 
-通过 Coordinator 主节 **10.1.207.181** 连接数据库
+Connect to the database through the Coordinator node **10.1.207.181**
 
 ```shell
 [antdb@oss-irms-180 ~]$ psql -h 10.1.207.181 -p 15432 -d testdb -U testdbuser -w testdbpass
@@ -411,7 +416,7 @@ Type "help" for help.
 testdb=>
 ```
 
-通过 Coordinator 备节点 **10.1.207.182** 连接数据库
+Connect to the database through the Coordinator node **10.1.207.182**
 
 ```shell
 [antdb@oss-irms-180 ~]$ psql -h 10.1.207.182 -p 15432 -d testdb -U testdbuser -w testdbpass
@@ -422,9 +427,9 @@ Type "help" for help.
 testdb=>
 ```
 
-## 常用运维命令
+## Common Maintenance Commands
 
-登录到 MGR 主节点 **10.1.207.180**，查看集群主机列表
+List hosts
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list host;"'
@@ -437,7 +442,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list h
 (3 rows)
 ```
 
-登录到 MGR 主节点 **10.1.207.180**，查看集群节点列表
+List nodes
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list node;"'
@@ -457,7 +462,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "list n
 (10 rows)
 ```
 
-查看所有服务器上 AntDB 集群相关的进程
+List process of AntDB each host
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep [/]data01/antdb/app/bin'
@@ -482,7 +487,7 @@ antdb    18722     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres -
 antdb    18775     1  0 13:35 ?        00:00:00 /data01/antdb/app/bin/postgres --datanode -D /data01/antdb/data/dn_slave_3 -i
 ```
 
-停止所有节点
+Stop all nodes of the cluster
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop all mode f;"'
@@ -520,7 +525,7 @@ NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP COORD BACKEND) params( stop -D /d
 NOTICE:  waiting max 90 seconds for gtmcoord master to stop ...
 ```
 
-启动所有节点
+Start all nodes of the cluster
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "start all;"'
@@ -558,7 +563,7 @@ NOTICE:  [SUCCESS] host(10.1.207.182) cmd(START DATANODE BACKEND) params( start 
 NOTICE:  waiting max 90 seconds for datanode slave to start ...
 ```
 
-查看节点数据库配置
+Show node database parameters
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show param dn_master_1 max;"'
@@ -608,11 +613,11 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 
 ## Q & A
 
-#### 多服务器如何规划节点类型
+#### How to plan node types for multiple servers
 
-> 生产环境请以官方建议为准
+> Please refer to official recommendations for production environment
 
-3 服务器推荐规划
+Planning for 3 servers
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
@@ -620,8 +625,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 | 10.1.207.181 | | Slave_1 | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
 | 10.1.207.182 | Slave_1 | | Coordinator_2 | DataNode_Master_3, DataNode_Slave_2 |
 
-
-4 服务器推荐规划
+Planning for 4 servers
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
@@ -630,8 +634,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 | 10.1.207.182 | | Master | | DataNode_Slave_2 |
 | 10.1.207.183 | | Slave_1 | Coordinator_2 | DataNode_Master_3 |
 
-
-5 服务器推荐规划
+Planning for 5 servers
 
 | IP | MGR | GTM | Coordinator | DataNode |
 | ---- | ---- | ---- | ---- | ---- |
@@ -641,17 +644,17 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 | 10.1.207.183 | Slave_2 | | Coordinator_4 | DataNode_Master_4, DataNode_Slave_3 |
 | 10.1.207.184 | Master | | Coordinator_5 | DataNode_Master_5, DataNode_Slave_4 |
 
-#### 如何强制卸载 AntDB 分布式集群
+#### How to force uninstall AntDB cluster
 
-使用强制卸载脚本，此脚本将 kill 所有 AndDB 进程，并删除程序和数据目录
+This script will kill -9 all AndDB processes and delete programs and data directories
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/antdb_uninstall.sh'
 ```
 
-#### 如何正常卸载 AntDB 分布式集群
+#### How to gracefully uninstall AntDB distributed cluster
 
-连接 MGR 主节点，停止所有节点服务
+Stop all node for AntDB cluster
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop all mode f;"'
@@ -689,7 +692,7 @@ NOTICE:  [SUCCESS] host(10.1.207.180) cmd(STOP COORD BACKEND) params( stop -D /d
 NOTICE:  waiting max 90 seconds for gtmcoord master to stop ...
 ```
 
-连接 MGR 主节点，清理数据
+Clean all datas;
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "clean all;"'
@@ -709,7 +712,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "clean 
 (10 rows)
 ```
 
-连接 MGR 主节点，停止所有节点 Agent
+Stop all Agent of AntDB cluster
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop agent all;"'
@@ -722,7 +725,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "stop a
 (3 rows)
 ```
 
-查询所有服务器上 AntDB 进程都已经停止
+Check that the AntDB process on all servers has stopped
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep /data01/antdb/app/bin'
@@ -740,7 +743,7 @@ antdb    29370 29369  0 11:37 pts/3    00:00:00 /bin/sh -c ps -ef | grep /data01
 antdb    29372 29370  0 11:37 pts/3    00:00:00 grep /data01/antdb/app/bin
 ```
 
-查询所有服务器上的数据文件都已经删除
+Check that all data files on the server have been deleted
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ls /data01/antdb'
@@ -753,9 +756,9 @@ bash-5.0# ansible all -m shell -a 'ls /data01/antdb'
 10.1.207.182 | CHANGED | rc=0 >>
 ```
 
-#### 从节点启动失败, 日志提示 **hot standby is not possible because xxx = xxx is a lower setting than on the master server**
+#### The slave node fails to start, the log prompts **hot standby is not possible because xxx = xxx is a lower setting than on the master server**
 
-使用 monitor all 命令，查看到从节点启动失败。
+Use the `monitor all;` to query the startup status of the node
 
 ```shell
 
@@ -779,9 +782,9 @@ WARNING:  datanode slave dn_slave_2 recovery status is unknown
 WARNING:  datanode slave dn_slave_3 recovery status is unknown
 ```
 
-例如： gtm_slave_1 这个从节点状态为 not running
+For example: gtm_slave_1 The status of this slave node is not running
 
-在 `/data01/antdb/data/gtm_slave_1/pg_log` 目录下查看最新日志，发现从节点 `max_worker_processes` 参数值小于主节点对应参数值，导致启动失败。
+Check the log file in the directory of `/data01/antdb/data/gtm_slave_1/pg_log` and find that the parameter value of `max_worker_processes` of the slave node is less than the corresponding parameter value of the master node, which causes the startup failure.
 
 ```shell
 [antdb@oss-irms-181 gtm_slave_1]$ cat pg_log/postgresql-2021-12-01_104526.csv
@@ -791,7 +794,7 @@ WARNING:  datanode slave dn_slave_3 recovery status is unknown
 2021-12-01 10:45:26.948 CST,,,28215,,61a6e1c6.6e37,4,,2021-12-01 10:45:26 CST,,0,LOG,00000,"database system is shut down",,,,,,,,,""
 ```
 
-但是服务器上的主节点对应参数值也是 32，108 这个数值是注释掉的
+The gtm master node is configured correctly in postgresql.conf
 
 ```shell
 [antdb@oss-irms-180 gtm_master]$ cat postgresql.conf | grep max_worker_processes
@@ -801,7 +804,7 @@ WARNING:  datanode slave dn_slave_3 recovery status is unknown
 max_worker_processes = 32
 ```
 
-使用命令查看主节点 max_worker_processes 值也是 32
+It is also correct to use the command `show param gtm_master max;` to view the parameters `max_worker_processes`
 
 ```shell
 bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show param gtm_master max;"'
@@ -849,4 +852,4 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 (2 rows)
 ```
 
-因为默认值是 108，通过 PG 流复制安装从节点参数值只能往大改。所以要不就不设置这个参数，要不就修改为大于等于 108。
+When installing the slave node through PG streaming replication, the parameter value should be greater than the default value. Delete this parameter or change it to be greater than or equal to 108 to solve the problem.

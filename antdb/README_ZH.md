@@ -33,14 +33,14 @@
 
 | 路径 | 描述 |
 | ---- | ---- |
-| /opt/antdb | rpm 安装介质存放路径 |
-| ~/antdb_uninstall.sh | 强制集群卸载脚本 |
+| /opt/antdb | RPM 安装介质 |
+| ~/antdb_uninstall.sh | 集群卸载脚本 |
 | ~/antdb_config.sql | 数据库参数脚本 |
 | /data01/antdb/app | PG 程序文件 |
 | /data01/antdb/mgr | MGR 程序文件 |
-| /data01/antdb/data | 数据文件目录 |
-| /data01/antdb/tools | 工具脚本存放路径 |
-| /data01/antdb/core | Core Dump 文件存放路径 |
+| /data01/antdb/data | 节点数据和配置目录  |
+| /data01/antdb/tools | 工具脚本 |
+| /data01/antdb/core | core dump 文件存放路径 |
 
 ## 下载安装包和 Playbook 脚本
 
@@ -65,7 +65,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 #### maim-os-init.yml
 
-配置安装 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本用来设置内核参数，创建目录、上传安装介质
+定义 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本自动设置内核参数，创建目录、上传 RPM package
 
 ```yaml
 - hosts: 10.1.207.180
@@ -80,7 +80,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 #### maim-cluster-install.yml
 
-配置 AntDB MGR 主/备节点服务器 IP 地址，以及安装用系统用户名。备节点的名称 `mgr_slave_1`
+定义 AntDB MGR 主/备节点服务器 IP 地址，系统用户。备节点的名称 `mgr_slave_1`
 
 ```yaml
 # MGR Master Node Initialize
@@ -152,7 +152,7 @@ antdb_conf_log_min_messages: error
 antdb_conf_log_statement: ddl
 ```
 
-集群所有节点名称(此名称不是主机名，是集群管理用的节点名称，不能包含中划线)
+集群所有节点名称(此名称不是主机名，是集群管理用的节点名称，名称只能包含字母、数字和下划线)
 
 ```yaml
 # 集群节点名称（注意这不是主机名)
@@ -282,7 +282,7 @@ docker run --name ansible --rm -it \
 
 ## 安装集群
 
-系统初始化，设置内核参数，关闭防火墙，创建安装目录，上传安装介质，启动并初始化集群
+自动配置系统参数，关闭防火墙，创建安装目录，上传安装介质，启动并初始化集群
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
@@ -620,7 +620,6 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 | 10.1.207.181 | | Slave_1 | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
 | 10.1.207.182 | Slave_1 | | Coordinator_2 | DataNode_Master_3, DataNode_Slave_2 |
 
-
 4 服务器推荐规划
 
 | IP | MGR | GTM | Coordinator | DataNode |
@@ -629,7 +628,6 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 | 10.1.207.181 | Slave_1 | | Coordinator_1 | DataNode_Master_2, DataNode_Slave_1 |
 | 10.1.207.182 | | Master | | DataNode_Slave_2 |
 | 10.1.207.183 | | Slave_1 | Coordinator_2 | DataNode_Master_3 |
-
 
 5 服务器推荐规划
 
