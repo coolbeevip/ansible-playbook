@@ -1,4 +1,4 @@
-# 使用 Ansible Playbook 配置 Linux 系统 | [English](README.md)
+# 使用 Ansible Playbook 自动化配置 Linux 系统 | [English](README.md)
 
 ## 配置系统(main-os.yml)
 

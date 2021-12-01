@@ -1,4 +1,4 @@
-# Ansible Playbook 安装 Elasticsearch 集群 | [English](README.md)
+# Ansible Playbook 自动化安装 Elasticsearch 集群 | [English](README.md)
 
 请先在目标服务器创建 `elasticsearch` 用户，密码 `123456`，脚本会在此用户下安装三节点集群，因为 7.X 版本后会自带 JDK，所以我们不需要提前安装 Java 环境。
 

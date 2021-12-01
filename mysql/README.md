@@ -1,4 +1,4 @@
-# Install MySQL InnoDB Cluster with Ansible Playbook | [中文](README_ZH.md)
+# Automate Install MySQL InnoDB Cluster with Ansible Playbook | [中文](README_ZH.md)
 
 ## Overview
 
@@ -422,7 +422,7 @@ bash-5.0# ansible all -m shell -a 'cat /etc/hosts'
 
 Run Ansible playbook scripts `main-router.yml` for install MySQL router
 
-> This script will automatically create the MSQL router storage directory, configuration files, start and stop scripts based on the cluster MGR information, and start the MySQL Router 
+> This script will automatically create the MSQL router storage directory, configuration files, start and stop scripts based on the cluster MGR information, and start the MySQL Router
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-router.yml

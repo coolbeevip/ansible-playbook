@@ -1,4 +1,4 @@
-# Ansible Playbook 安装 MySQL InnoDB 集群 | [English](README.md)
+# Ansible Playbook 自动化安装 MySQL InnoDB 集群 | [English](README.md)
 
 ## 集群概述
 

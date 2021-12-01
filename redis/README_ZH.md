@@ -1,4 +1,4 @@
-# Ansible Playbook 安装 Redis 主从哨兵 | [English](README.md)
+# Ansible Playbook 自动化安装 Redis 主从哨兵 | [English](README.md)
 
 请先在目标服务器创建 `redis` 用户，此脚本在此用户下使用源代码编译的方式安装一主两从三哨兵的集群
 

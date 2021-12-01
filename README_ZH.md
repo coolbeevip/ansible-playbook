@@ -151,7 +151,8 @@ bash-5.0# ansible all -m user -a 'name=mysql group=mysql password="$6$mysql$kZbS
 
 ## 使用 Ansible Playbook 脚本安装中间件
 
-* [Ansible Playbook 设置 Linux 系统配置](./system/README_ZH.md)
-* [Ansible Playbook 安装 Elasticsearch 集群](./elasticsearch/README_ZH.md)
-* [Ansible Playbook 安装 Redis 主从哨兵](./redis/README_ZH.md)
-* [Ansible Playbook 安装 MySQL InnoDB 集群](./mysql/README_ZH.md)
+* [Ansible Playbook 自动化设置 Linux 系统配置](./system/README_ZH.md)
+* [Ansible Playbook 自动化安装 Elasticsearch 集群](./elasticsearch/README_ZH.md)
+* [Ansible Playbook 自动化安装 Redis 主从哨兵](./redis/README_ZH.md)
+* [Ansible Playbook 自动化安装 MySQL InnoDB 集群](./mysql/README_ZH.md)
+* [Ansible Playbook 自动化安装 AntDB 分布式集群](./antdb/README_ZH.md)
