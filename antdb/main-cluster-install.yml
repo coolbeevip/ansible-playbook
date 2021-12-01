@@ -19,11 +19,11 @@
   tasks:
     - include_tasks: task_antdb_mgr_slave_init.yml
 
-# # Restart AntDB All NOdes on MGR Master Node
-# - hosts: 10.1.207.180
-#   user: antdb
-#   become: no
-#   become_user: root
-#   become_method: su
-#   tasks:
-#     - include_tasks: task_antdb_cluster_restart.yml
+# Restart AntDB All NOdes on MGR Master Node
+- hosts: 10.1.207.180
+  user: antdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_antdb_cluster_restart.yml
