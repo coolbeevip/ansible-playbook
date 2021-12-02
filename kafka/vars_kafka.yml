@@ -15,7 +15,7 @@ kafka_tar_unzip_dir: "kafka_2.12-2.6.3"
 
 # Java package
 java_tar: "jdk-8u202-linux-x64.tar.gz"
-java_tar_unzip_dir: "jdk-8u202-linux-x64"
+java_tar_unzip_dir: "jdk1.8.0_202"
 
 # Kafka install directory
 kafka_home_dir: "/opt/kafka"

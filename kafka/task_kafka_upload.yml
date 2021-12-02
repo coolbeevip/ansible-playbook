@@ -42,13 +42,13 @@
 # 解压缩 java 安装包
 - name: check unzip java
   stat:
-    path: "{{ kafka_home_dir }}/{{ java_tar }}"
+    path: "{{ kafka_home_dir }}/{{ java_tar_unzip_dir }}"
   register: check_result
   check_mode: no
 - name: unzip java
   shell: |
     cd "{{ kafka_home_dir }}"
-    tar zxf {{ kafka_tar }}
+    tar zxf {{ java_tar }} -C {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}
   check_mode: no
   when: not check_result.stat.exists
 

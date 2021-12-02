@@ -1,35 +1,7 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
-# 上传 mysql 安装包
-- name: check upload kafka
-  stat:
-    path: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}"
-  register: check_result
-  check_mode: no
-- name: upload kafka
-  synchronize:
-    src: /ansible-playbook/packages/{{ kafka_tar }}
-    dest: "{{ kafka_home_dir }}/{{ kafka_tar }}"
-  check_mode: no
-  when: not check_result.stat.exists
-
-# 上传 java 安装包
-- name: check upload java
-  stat:
-    path: "{{ kafka_home_dir }}/{{ java_tar }}"
-  register: check_result
-- name: upload java
-  synchronize:
-    src: /ansible-playbook/packages/{{ java_tar }}
-    dest: "{{ kafka_home_dir }}/{{ java_tar }}"
-  when: not check_result.stat.exists
-  check_mode: no
-
-# 上传卸载脚本 kafka_uninstall.sh
-- name: copy kafka_uninstall.sh
-  template:
-    src: "/ansible-playbook/mysql/config/kafka_uninstall.sh.j2"
-    dest: "$HOME/kafka_uninstall.sh"
-    mode: u=rwx,g=rx,o=rx
+- name: Install Succeed
+  debug:
+    msg: Install Succeed!
   check_mode: no
