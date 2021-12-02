@@ -264,6 +264,8 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-pl
 
 **提示:** 因为第一次执行脚本时，会上传MySQL 安装包到所有服务器（约1.3GB），所以执行时间较长（取决于你的客户端和服务器之间的网络速度）。 你也可以在执行以上脚本前手动将安装包上传到服务器的安装路径 `/opt/mysql` 下。在我本地环境首次安装大概耗时 25 分钟（上传安装包大概 5 分钟，安装集群大概 20 分钟）
 
+**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `MySQL has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/mysql_uninstall.sh'` 命令卸载之前的安装。
+
 如果你看到如下信息，说明安装完成
 
 ```shell

@@ -1,0 +1,12 @@
+- name: include vars
+  include_vars: "vars_mysql.yml"
+
+- name: check the files in the installation directory
+  find:
+    paths: "{{ mysql_home_dir }}"
+    file_type: directory
+  register: mysql_files
+  check_mode: no
+- fail:
+     msg: 'MySQL has been installed, please uninstall and then reinstall'
+  when: mysql_files.matched > 0

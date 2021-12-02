@@ -7,7 +7,6 @@
     path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
     state: absent
   check_mode: no
-  when: check_result.rc == 1
 - name: create mysql_cluster_init.sql file
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"

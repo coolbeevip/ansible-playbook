@@ -6,6 +6,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_mysql_pre_checks.yml
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
@@ -17,6 +18,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_mysql_pre_checks.yml
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
@@ -28,6 +30,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_mysql_pre_checks.yml
     - include_tasks: task_mysql_os.yml
     - include_tasks: task_mysql_upload.yml
     - include_tasks: task_mysql_config.yml
