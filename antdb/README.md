@@ -287,7 +287,7 @@ Automatically configure system parameters, disable the firewall, create  install
 bash-5.0# ansible-playbook -C /ansible-playbook/antdb/main-os-init.yml /ansible-playbook/antdb/main-cluster-install.yml
 ```
 
-If you see the following message, the installation is complete
+If you see the following message, the installation is completed
 
 ```shell
 TASK [Install Succeed] ********************************************************************************************************************************************************************************************************

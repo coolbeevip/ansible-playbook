@@ -25,15 +25,15 @@
   when: not check_result.stat.exists
 
 # 启动 mysql
-- name: check mysql server status
-  shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server status"
-  register: check_result
-  ignore_errors: true
-  check_mode: no
+# - name: check mysql server status
+#   shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server status"
+#   register: check_result
+#   ignore_errors: true
+#   check_mode: no
 - name: start mysql server
   shell: "source ~/.bash_profile && {{ mysql_home_dir }}/{{ mysql_tar_unzip_dir }}/support-files/mysql.server start"
   check_mode: no
-  when: check_result.rc == 3
+  #when: check_result.rc == 3
 
 # 初始化 root 用户
 - name: check init sql

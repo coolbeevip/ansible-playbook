@@ -251,16 +251,16 @@ docker run --name ansible --rm -it \
 
 * 配置操作系统参数
 * 上传安装介质到每个服务器
-* 配置 MySQL 环境变量
-* 初始化 MySQL 数据库，设置 root 密码并启动
-* 配置 MySQL 主从复制关系
-* 安装 MySQL router 到每个服务器，并启动
+* 配置每个服务器上的 MySQL 环境变量
+* 初始化每个服务器的 MySQL 数据库，设置 root 密码并启动
+* 子主节点服务器上配置 MySQL 主从复制关系
+* 在每个服务器上安装 MySQL router 并启动
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-playbook/mysql/main-cluster.yml /ansible-playbook/mysql/main-router.yml
 ```
 
-**提示:** 第一次执行脚本时，安装介质（约1.3GB）会上传到三台服务器，所以需要很长时间（取决于你的客户端和服务器之间的网络速度）。 也可以手动将安装介质上传到 配置文件定义的路径 `mysql_home_dir=/opt/mysql` 下，然后执行这个脚本（忽略上传介质的时间，我的自动安装完成大约需要 21 分钟）
+**提示:** 因为第一次执行脚本时，会上传MySQL 安装包到所有服务器（约1.3GB），所以执行时间较长（取决于你的客户端和服务器之间的网络速度）。 你也可以在执行以上脚本前手动将安装包上传到服务器的安装路径 `/opt/mysql` 下。在我本地环境首次安装大概耗时 25 分钟（上传安装包大概 5 分钟，安装集群大概 20 分钟）
 
 如果你看到如下信息，说明安装完成
 

@@ -250,20 +250,20 @@ docker run --name ansible --rm -it \
 
 This script will automate the following operations
 
-* Configure operating system parameters
-* Upload the MySQL packages to each server
-* Configure MySQL environment variables
-* Initialize MySQL database，Configure MySQL root password and start MySQL service
+* Configure operating system parameters on all server
+* Upload the MySQL packages to all server
+* Configure MySQL environment variables on all server
+* Initialize MySQL database，Configure MySQL root password and start MySQL service on all server
 * Configure MySQL Group Replication on MySQL primary server
-* Install MySQL router to each server and start MySQL router
+* Install and start MySQL router on all server
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-playbook/mysql/main-cluster.yml /ansible-playbook/mysql/main-router.yml
 ```
 
-**TIPS:** This script takes a long time to execute for the first time (because about 1.3GB of installation media needs to be uploaded to all target servers). It takes about 7 minutes to execute in my local after ignoring the upload time
+**TIPS:** Because the MySQL installation package will be uploaded to all servers (about 1.3GB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 25 minutes(upload package taske about 5 minutes, others take about 20 minutes.)
 
-If you see the following message, the installation is complete
+If you see the following message, the installation is completed
 
 ```shell
 TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
