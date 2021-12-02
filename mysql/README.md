@@ -674,7 +674,7 @@ A: Please check free memory
 
 Q: How to Uninstall MySQL InnoDB Cluster
 
-A: `~/mysql_uninstall.sh` script will kill -9 MySQL server and MySQL router, delete program files and data files**
+A: `~/mysql_uninstall.sh` script will **kill -9 MySQL server and MySQL router, delete program files and data files**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'

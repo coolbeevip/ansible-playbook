@@ -673,7 +673,7 @@ A: 请检查服务器内存是否够用
 
 Q: 如何彻底删除 MySQL InnoDB 集群
 
-A: `~/mysql_uninstall.sh` 脚本将 kill -9 MySQL server 和 MySQL router，删除程序文件和所有数据文件
+A: `~/mysql_uninstall.sh` 脚本将 **kill -9 MySQL server 和 MySQL router，删除程序文件和所有数据文件**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'

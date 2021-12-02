@@ -646,7 +646,7 @@ Planning for 5 servers
 
 #### How to force uninstall AntDB cluster
 
-This script will kill -9 all AndDB processes and delete programs and data directories
+This script will **kill -9 all AndDB processes and delete programs and data directories**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/antdb_uninstall.sh'

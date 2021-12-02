@@ -46,13 +46,13 @@ cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-Download MySQL tar ball from the https://kafka.apache.org/downloads web site to `~/my-docker-volume/ansible-playbook/packages`
+Download Kafka tar ball from the https://kafka.apache.org/downloads web site to `~/my-docker-volume/ansible-playbook/packages`
 
 ```shell
 wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/kafka/2.6.3/kafka_2.12-2.6.3.tgz --no-check-certificate
 ```
 
-Download JDK 8 `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansible-playbook/packages`
+Download JDK tar ball `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansible-playbook/packages`
 
 ## Configuration
 
@@ -174,7 +174,7 @@ Stop Zookeeper
 
 Q: How to Uninstall Kafka Cluster
 
-A: `~/kafka_uninstall.sh` script will kill -9 Kafka and Zookeeper, delete program files and data files**
+A: `~/kafka_uninstall.sh` script will **kill -9 Kafka and Zookeeper, delete program files and data files**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'

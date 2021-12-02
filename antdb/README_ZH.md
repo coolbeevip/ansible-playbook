@@ -641,7 +641,7 @@ bash-5.0# ansible 10.1.207.180 -m shell -a 'psql -p 16432 -d postgres -c "show p
 
 #### 如何强制卸载 AntDB 分布式集群
 
-使用强制卸载脚本，此脚本将 kill 所有 AndDB 进程，并删除程序和数据目录
+使用强制卸载脚本，此脚本将 **kill 所有 AndDB 进程，并删除程序和数据目录**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/antdb_uninstall.sh'
