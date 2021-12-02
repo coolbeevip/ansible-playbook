@@ -22,6 +22,8 @@ Planning for server
 | 10.1.207.181 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.182 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
+**TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
+
 Planning for MySQL nodes
 
 | IP地址 | MySQL Server | MySQL Router | MySQL Shell |
