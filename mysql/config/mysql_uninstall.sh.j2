@@ -4,14 +4,17 @@ set -e
 
 source ~/.bash_profile
 
-if [ -f "$HOME/mysql_router_stop.sh" ]; then
-  echo 'Stop MySQL router...'
-  $HOME/mysql_router_stop.sh
+echo 'kill MySQL Router'
+if [[ $(ps aux | grep '[b]in/mysqlrouter' | wc -l) != 0 ]]; then
+  kill -9 $(ps aux | grep '[b]in/mysqlrouter' | awk '{print $2}')
 fi
 
-echo 'Stop MySQL server'
-if [ -f "$HOME/mysql.server" ]; then
-  $HOME/mysql.server stop
+echo 'kill MySQL'
+if [[ $(ps aux | grep '[b]in/mysqld_safe' | wc -l) != 0 ]]; then
+  kill -9 $(ps aux | grep '[b]in/mysqld_safe' | awk '{print $2}')
+fi
+if [[ $(ps aux | grep '[b]in/mysqld' | wc -l) != 0 ]]; then
+  kill -9 $(ps aux | grep '[b]in/mysqld' | awk '{print $2}')
 fi
 
 echo 'Delete ~/.my.cnf file'

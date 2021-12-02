@@ -1,16 +1,6 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 检查集群状态
-- name: check mysql_cluster_status
-  shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
-  register: check_result
-  check_mode: no
-  ignore_errors: true
-- name: check mysql_cluster_status output
-  debug:
-    var: check_result.stdout_lines
-
 # 如果不存在集群，则生成集群初始化脚本
 - name: delete mysql_cluster_init.sql file
   file:
@@ -51,12 +41,3 @@
   debug:
     var: init_cluster_result.stdout_lines
   when: check_result.rc == 1
-
-# # 检查集群状态
-# - name: check mysql_cluster_status
-#   shell: "source ~/.bash_profile && mysqlsh --password='{{ mysql_user_root_password }}' root@{{ inventory_hostname }}:{{ mysqld_port }} -- cluster status"
-#   register: check_result
-#   check_mode: no
-# - name: check mysql_cluster_status output
-#   debug:
-#     var: check_result.stdout_lines

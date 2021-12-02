@@ -376,7 +376,7 @@ The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 View MySQL Router process
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [m]ysql-router'
 10.1.207.180 | CHANGED | rc=0 >>
 mysql    30445     1  1 17:05 ?        00:00:02 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
 mysql    30993 30991  0 17:07 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
@@ -623,7 +623,7 @@ bash-5.0# ansible all -m shell -a '~/mysql_router_stop.sh'
 Check MySQL Router process
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [m]ysql-router'
 10.1.207.180 | CHANGED | rc=0 >>
 mysql     8813     1  1 18:00 ?        00:00:01 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
 mysql     9154  9153  9 18:02 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
@@ -672,7 +672,7 @@ A: Please check free memory
 
 Q: How to Uninstall MySQL InnoDB Cluster
 
-A: `~/mysql_uninstall.sh` script will stop MySQL server and MySQL router, delete program files and data files**
+A: `~/mysql_uninstall.sh` script will kill -9 MySQL server and MySQL router, delete program files and data files**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'

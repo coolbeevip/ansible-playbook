@@ -375,7 +375,7 @@ The instance 'oss-irms-182:3336' is valid to be used in an InnoDB cluster.
 查看 MySQL Router 进程
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [m]ysql-router'
 10.1.207.180 | CHANGED | rc=0 >>
 mysql    30445     1  1 17:05 ?        00:00:02 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
 mysql    30993 30991  0 17:07 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
@@ -622,7 +622,7 @@ bash-5.0# ansible all -m shell -a '~/mysql_router_stop.sh'
 检查 MySQL Router 进程
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep mysql-router'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [m]ysql-router'
 10.1.207.180 | CHANGED | rc=0 >>
 mysql     8813     1  1 18:00 ?        00:00:01 /opt/mysql/mysql-router-8.0.27-linux-glibc2.12-x86_64/bin/mysqlrouter -c /data01/mysql/router/mycluster/mysqlrouter.conf
 mysql     9154  9153  9 18:02 pts/1    00:00:00 /bin/sh -c ps -ef | grep mysql-router
@@ -671,7 +671,7 @@ A: 请检查服务器内存是否够用
 
 Q: 如何彻底删除 MySQL InnoDB 集群
 
-A: `~/mysql_uninstall.sh` 脚本将停止 MySQL server 和 MySQL router，删除程序文件和所有数据文件
+A: `~/mysql_uninstall.sh` 脚本将 kill -9 MySQL server 和 MySQL router，删除程序文件和所有数据文件
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/mysql_uninstall.sh'
