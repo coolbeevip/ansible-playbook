@@ -1,6 +1,20 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
+# Configure Zookeeper Ids
+- name: Configure Zookeeper Ids
+  shell: echo "{{ hosts[inventory_hostname].zookeeper_id }}" > {{ zookeeper_data_dir }}/myid
+  with_items: "{{ groups.all }}"
+  check_mode: no
+
+# Configure Kafka server.properties
+
+# Configure Zookeeper server.properties
+
+# Create the Kafka and Zookeeper Service
+
+# Create a Topic for Test
+
 - name: Install Succeed
   debug:
     msg: Install Succeed!
