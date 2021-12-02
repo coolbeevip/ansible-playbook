@@ -265,7 +265,7 @@ bash-5.0# ansible-playbook -C /ansible-playbook/mysql/main-mysql.yml /ansible-pl
 
 **TIPS:** Because the MySQL installation package will be uploaded to all servers (about 1.3GB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 25 minutes(upload package taske about 5 minutes, others take about 20 minutes.)
 
-**TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `MySQL has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/mysql_uninstall. The sh'` uninstalls.
+**TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `MySQL has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/mysql_uninstall.sh'` uninstalls.
 
 If you see the following message, the installation is completed
 

@@ -1,12 +1,14 @@
 - name: include vars
   include_vars: "vars_mysql.yml"
 
-# 如果不存在集群，则生成集群初始化脚本
+# 删除以前集群初始化脚本
 - name: delete mysql_cluster_init.sql file
   file:
     path: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
     state: absent
   check_mode: no
+
+# 在集群初始化脚本中增加集群创建脚本
 - name: create mysql_cluster_init.sql file
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
@@ -19,7 +21,8 @@
     dba.createCluster('{{ cluster_name }}', {'localAddress': '{{ inventory_hostname }}'})
     var cluster=dba.getCluster('{{ cluster_name }}')
   check_mode: no
-  when: check_result.rc == 1
+
+# 在集群初始化脚本中增加从节点脚本
 - name: add slave script to mysql_cluster_init.sql
   lineinfile:
     dest: "{{ mysql_script_dir }}/mysql_cluster_init.sql"
@@ -28,15 +31,12 @@
     create: true
   with_items: "{{ groups.all | difference(inventory_hostname) }}"
   check_mode: no
-  when: check_result.rc == 1
 
-# 初始化集群
+# 执行集群初始化脚本
 - name: init mysql cluster
   shell: "source ~/.bash_profile && mysqlsh --no-password < {{ mysql_script_dir }}/mysql_cluster_init.sql"
   check_mode: no
   register: init_cluster_result
-  when: check_result.rc == 1
 - name: init mysql cluster result
   debug:
     var: init_cluster_result.stdout_lines
-  when: check_result.rc == 1
