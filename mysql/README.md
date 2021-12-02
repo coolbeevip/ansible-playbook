@@ -232,7 +232,7 @@ For more `my.cnf` configuration, you can modify the `mysql/conf/my.cnf.j2` templ
 
 Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
-**TIPS:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user redis and password
+**TIPS:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user mysql and password
 
 **TIPS:** ANSIBLE_SU_PASSS is user root password
 
