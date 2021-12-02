@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+source ~/.bash_profile
+
+echo 'Delete Kafka unzip directory'
+rm -rf {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}
+rm -rf {{ kafka_home_dir }}/{{ java_tar_unzip_dir }}
+
+rm -rf $HOME/kafka_uninstall.sh

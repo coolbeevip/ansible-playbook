@@ -1,0 +1,32 @@
+---
+# Linux limits
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '65535'
+limits_soft_nofile: '65535'
+
+# Linux user & group
+kafka_user: "kafka"
+kafka_group: "kafka"
+
+# Kafka package
+kafka_tar: "kafka_2.12-2.6.3.tgz"
+kafka_tar_unzip_dir: "kafka_2.12-2.6.3"
+
+# Java package
+java_tar: "jdk-8u202-linux-x64.tar.gz"
+java_tar_unzip_dir: "jdk-8u202-linux-x64"
+
+# Kafka install directory
+kafka_home_dir: "/opt/kafka"
+kafka_data_dir: "/data01/kafka/kafka_data"
+zookeeper_data_dir: "/data01/kafka/zookeeper_data"
+
+# zookeeper
+hosts:
+  10.1.207.180:
+    zookeeper_id: 180
+  10.1.207.181:
+    zookeeper_id: 181
+  10.1.207.182:
+    zookeeper_id: 182

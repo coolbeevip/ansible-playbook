@@ -1,0 +1,31 @@
+- name: include vars
+  include_vars: "vars_kafka.yml"
+
+# Disable RAM Swap
+# swapoff -a
+# sudo sed -i '/ swap / s/^/#/' /etc/fstab
+
+# 初始化程序目录
+- name: create kafka home
+  file:
+    path: "{{ kafka_home_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "2750"
+  become: yes
+  check_mode: no
+
+# 初始化数据目录
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ kafka_data_dir }}"
+    - "{{ zookeeper_data_dir }}"
+  check_mode: no
+  become: yes

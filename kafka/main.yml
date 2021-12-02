@@ -1,0 +1,29 @@
+- hosts: 10.1.207.180
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kafka_pre_checks.yml
+    - include_tasks: task_kafka_os.yml
+    - include_tasks: task_kafka_upload.yml
+
+- hosts: 10.1.207.181
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kafka_pre_checks.yml
+    - include_tasks: task_kafka_os.yml
+    - include_tasks: task_kafka_upload.yml
+
+- hosts: 10.1.207.182
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kafka_pre_checks.yml
+    - include_tasks: task_kafka_os.yml
+    - include_tasks: task_kafka_upload.yml
