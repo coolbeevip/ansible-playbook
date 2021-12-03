@@ -162,11 +162,60 @@ ok: [10.1.207.180] => {
 
 Start Kafka
 
+```shell
+bash-5.0# ansible all -m shell -a '~/kafka.sh start'
+```
+
 Stop Kafka
+
+```shell
+bash-5.0# ansible all -m shell -a '~/kafka.sh stop'
+```
+
+View status of Kafka
+
+```shell
+bash-5.0# ansible all -m shell -a '~/kafka.sh status'
+10.1.207.182 | CHANGED | rc=0 >>
+Kafka is Running as PID: 4140
+32752
+32753
+
+10.1.207.181 | CHANGED | rc=0 >>
+Kafka is Running as PID: 6949
+24057
+24058
+
+10.1.207.180 | CHANGED | rc=0 >>
+Kafka is Running as PID: 7940
+7941
+```
 
 Start Zookeeper
 
+```shell
+bash-5.0# ansible all -m shell -a '~/zookeeper.sh start'
+```
+
 Stop Zookeeper
+
+```shell
+bash-5.0# ansible all -m shell -a '~/zookeeper.sh stop'
+```
+
+View status of Zookeeper
+
+```shell
+bash-5.0# ansible all -m shell -a '~/zookeeper.sh status'
+10.1.207.180 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 16996
+
+10.1.207.182 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 2742
+
+10.1.207.181 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 3124
+```
 
 ## Q & A
 
