@@ -156,3 +156,4 @@ By now, you have mastered how to start the Ansible tool to connect to multiple t
 * [Automate Install Redis Master-Slave Sentinel with Ansible Playbook](./redis/README.md)
 * [Automate Install MySQL InnoDB Cluster with Ansible Playbook](./mysql/README.md)
 * [Automate Install AntDB Distributed Cluster with Ansible Playbook](./antdb/README.md)
+* [Automate Install Kafka Cluster with Ansible Playbook](./kafka/README.md)
