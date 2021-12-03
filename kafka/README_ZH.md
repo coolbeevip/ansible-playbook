@@ -2,7 +2,9 @@
 
 ## 概述
 
-此脚本中的配置基于 Kafka 2.6.3 版本，使用 Kafka 发布包中自带的 Zookeeper 组件，通常这没有问题，除非你要将 Zookeeper 安装在单独的服务器上。使用单独的 JDK 并将其安装在 Kafka 目录下。
+* 此脚本中的配置基于 Kafka 2.6.3 版本
+* 使用 Kafka 发布包中自带的 Zookeeper 组件（通常这没有问题，除非你要将 Zookeeper 安装在单独的服务器上）
+* 在 Kafka 安装目录下独立安装 JDK。
 
 ## 安装计划
 

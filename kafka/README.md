@@ -2,6 +2,10 @@
 
 ## Overview
 
+* The configuration parameters in this script are based on Kafka 2.6.3 version
+* Use use the bundled Zookeeper with the Kafka release package (usually this is no problem, unless you want to install Zookeeper on other servers)
+* Install the dedicated JDK in the Kafka installation directory
+
 ## Planning Your Installation
 
 Planning for server
