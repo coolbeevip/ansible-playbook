@@ -115,7 +115,6 @@
     line: "max.request.size={{ kafka_server_max_request_size }}"
     state: present
   check_mode: no
-
 - set_fact:
     zookeeper_connect: |
       {% set res = [] %}{% for key in hosts.keys() %}{{ res.append(key + ":" + zookeeper_client_port | string ) }}{% endfor %}{{ res | join(',') }}
@@ -126,8 +125,6 @@
     line: "zookeeper.connect={{ zookeeper_connect }}"
     state: present
   check_mode: no
-
-# Create the Kafka and Zookeeper Service
 
 # Create a Topic for Test
 

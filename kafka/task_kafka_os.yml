@@ -1,9 +1,54 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
-# Disable RAM Swap
-# swapoff -a
-# sudo sed -i '/ swap / s/^/#/' /etc/fstab
+# File Descriptors
+# Configuring Linux limits
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '{{ kafka_user }}'
+    limit_type: hard
+    limit_item: nofile
+    value: '{{ limits_hard_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '{{ kafka_user }}'
+    limit_type: soft
+    limit_item: nofile
+    value: '{{ limits_soft_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '{{ kafka_user }}'
+    limit_type: hard
+    limit_item: nproc
+    value: '{{ limits_hard_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '{{ kafka_user }}'
+    limit_type: soft
+    limit_item: nproc
+    value: '{{ limits_soft_nproc }}'
+  check_mode: no
+  become: yes
+
+# Configure kernel mmap
+- name: Configure kernel vm.max_map_count
+  shell: "/sbin/sysctl -w vm.max_map_count={{ kernel_max_map_count }}"
+  check_mode: no
+  become: yes
+- name: configure vm
+  lineinfile:
+    dest: /etc/sysctl.config
+    regexp: '^vm.max_map_count=.*'
+    line: "vm.max_map_count={{ kernel_max_map_count }}"
+    state: present
+  check_mode: no
+  become: yes
 
 # 初始化程序目录
 - name: create kafka home
