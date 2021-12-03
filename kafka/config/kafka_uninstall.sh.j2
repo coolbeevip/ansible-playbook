@@ -8,4 +8,11 @@ echo 'Delete Kafka unzip directory'
 rm -rf {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}
 rm -rf {{ kafka_home_dir }}/{{ java_tar_unzip_dir }}
 
+echo 'Delete Kafka Data directory'
+rm -rf {{ zookeeper_data_dir }}
+rm -rf {{ zookeeper_datalog_dir }}
+{% for dir in kafka_log_dirs %}
+rm -rf {{ dir }}
+{% endfor%}
+
 rm -rf $HOME/kafka_uninstall.sh

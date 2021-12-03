@@ -162,6 +162,8 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 ```
 
+Kafka more details[2.6.X](https://kafka.apache.org/26/documentation.html)
+
 ## Installation
 
 Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.

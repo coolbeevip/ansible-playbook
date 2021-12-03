@@ -25,9 +25,8 @@
     group: "{{ kafka_group }}"
     mode: "2750"
   with_items:
-    - "{{ kafka_data_dir }}"
     - "{{ zookeeper_data_dir }}"
-    - "{{ zookeeper_log_dir }}"
-    - "{{ kafka_server_log_dir }}"
+    - "{{ zookeeper_datalog_dir }}"
+    - "{{ kafka_log_dirs }}"
   check_mode: no
   become: yes

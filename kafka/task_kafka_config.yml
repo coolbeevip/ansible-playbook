@@ -1,11 +1,26 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
-# Configure Zookeeper
+# Configure Zookeeper IDs
 - name: Configure Zookeeper Ids
   shell: echo "{{ hosts[inventory_hostname].zookeeper_id }}" > {{ zookeeper_data_dir }}/myid
   check_mode: no
 
+# Configure zookeeper.properties
+- name: Configure Zookeeper dataDir
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^dataDir=.*"
+    line: "dataDir={{ zookeeper_data_dir }}"
+    state: present
+  check_mode: no
+- name: Configure Zookeeper dataLogDir
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^dataLogDir=.*"
+    line: "dataLogDir={{ zookeeper_datalog_dir }}"
+    state: present
+  check_mode: no
 - name: Configure Zookeeper servers ip and internal ports to zookeeper
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
@@ -34,7 +49,7 @@
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
     regexp: '^log.dirs=.*'
-    line: "log.dirs={{ kafka_log_dir }}"
+    line: "log.dirs={{ kafka_log_dirs | join(',') }}"
     state: present
   check_mode: no
 - name: Configure Kafka num.partitions
@@ -86,11 +101,24 @@
     line: "zookeeper.connection.timeout.ms={{ kafka_server_zookeeper_connection_timeout_ms }}"
     state: present
   check_mode: no
+- name: Configure Kafka log.retention.hours
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^log.retention.hours=.*'
+    line: "log.retention.hours={{ kafka_server_log_retention_hours }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka max.request.size
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^max.request.size=.*'
+    line: "max.request.size={{ kafka_server_max_request_size }}"
+    state: present
+  check_mode: no
+
 - set_fact:
     zookeeper_connect: |
       {% set res = [] %}{% for key in hosts.keys() %}{{ res.append(key + ":" + zookeeper_client_port | string ) }}{% endfor %}{{ res | join(',') }}
-- name: let's debug the crap out of this
-  debug: var=zookeeper_connect
 - name: Configure Kafka zookeeper.connect
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"

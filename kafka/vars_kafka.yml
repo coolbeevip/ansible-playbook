@@ -19,10 +19,15 @@ java_tar_unzip_dir: "jdk1.8.0_202"
 
 # Kafka install directory
 kafka_home_dir: "/opt/kafka"
-kafka_data_dir: "/data01/kafka/kafka_data"
-kafka_log_dir: "/data01/kafka/kafka_log"
+
+# Kafka 数据目录，如果你有多个挂载盘，建议在每个挂载盘上定义一个目录（一下仅仅是为了演示有多个挂载盘的情况）
+kafka_log_dirs:
+  - "/data01/kafka/kafka_log_1"
+  - "/data01/kafka/kafka_log_2"
+
+# Zookeeper 数据目录
 zookeeper_data_dir: "/data01/kafka/zookeeper_data"
-zookeeper_log_dir: "/data01/kafka/zookeeper_log"
+zookeeper_datalog_dir: "/data01/kafka/zookeeper_datalog"
 
 # Node configuration
 hosts:
@@ -37,7 +42,6 @@ hosts:
     kafka_broker_id: 182
 
 # Zookeeper configuration
-
 zookeeper_client_port: 2181 # the port at which the clients will connect
 zookeeper_follower_port: 2888 # the port for follower connections
 zookeeper_election_port: 3888 # the port for other server connections during the leader election phase
@@ -55,3 +59,5 @@ kafka_server_transaction_state_log_min_isr: 2
 kafka_server_default_replication_factor: 3 # default replica count based on the number of brokers
 kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
+kafka_server_log_retention_hours: 168 # 数据保留时长（小时），建议业务侧评估好数据量的大小，调整合适的保留时间。一般情况下，建议使用7天即可。
+kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建议和业务侧评估单条数据的大小。数据大于 1MB 时建议发送端开启压缩模式，不建议发送大于 5MB 的数据
