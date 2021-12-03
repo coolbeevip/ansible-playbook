@@ -88,11 +88,7 @@
   check_mode: no
 - set_fact:
     zookeeper_connect: |
-      {% set res = [] %}
-      {% for key in hosts.keys() %}
-      {{   res.append(key + ":" + zookeeper_client_port | string ) }}
-      {% endfor %}
-      {{ res.join(,) }}
+      {% set res = [] %}{% for key in hosts.keys() %}{{ res.append(key + ":" + zookeeper_client_port | string ) }}{% endfor %}{{ res | join(',') }}
 - name: let's debug the crap out of this
   debug: var=zookeeper_connect
 - name: Configure Kafka zookeeper.connect
