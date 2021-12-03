@@ -52,6 +52,36 @@
   check_mode: no
   when: not check_result.stat.exists
 
+# 配置 JAVA 环境变量
+- name: configuring environment JAVA_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JAVA_HOME=.*$'
+    line: "export JAVA_HOME={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/{{ java_tar_unzip_dir }}"
+    state: present
+  check_mode: no
+- name: configuring environment JRE_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JRE_HOME=.*$'
+    line: "export JRE_HOME={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/{{ java_tar_unzip_dir }}/jre"
+    state: present
+  check_mode: no
+- name: configuring environment CLASSPATH
+  lineinfile:
+    dest: "~/.bashrc"
+    regexp: "^export CLASSPATH=.*$"
+    line: "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH"
+    state: present
+  check_mode: no
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH=${JAVA_HOME}/bin:$PATH"
+    state: present
+  check_mode: no  
+
 # 上传卸载脚本 kafka_uninstall.sh
 - name: copy kafka_uninstall.sh
   template:
