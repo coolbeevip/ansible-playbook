@@ -34,7 +34,7 @@
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
     regexp: '^log.dirs=.*'
-    line: "log.dirs={{ kafka_server_log_dir }}"
+    line: "log.dirs={{ kafka_log_dir }}"
     state: present
   check_mode: no
 - name: Configure Kafka num.partitions

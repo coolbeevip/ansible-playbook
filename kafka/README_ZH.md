@@ -1,68 +1,72 @@
-# Automate Install Kafka Cluster with Ansible Playbook | [中文](README_ZH.md)
+# Ansible Playbook 自动化安装 Kafka 集群 | [English](README.md)
 
-## Overview
+## 概述
 
-## Planning Your Installation
+此脚本中的配置基于 Kafka 2.6.3 版本，使用 Kafka 发布包中自带的 Zookeeper 组件，通常这没有问题，除非你要将 Zookeeper 安装在单独的服务器上。使用单独的 JDK 并将其安装在 Kafka 目录下。
 
-Planning for server
+## 安装计划
 
-| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
+服务器规划
+
+| IP | SSH 端口 | SSH 用户 | SSH 密码 | ROOT 密码 | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | 10.1.207.180 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.181 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.182 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
-**TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
+**TIPS：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook#create-user--group)
 
-Planning for Kafka nodes
+集群节点规划
 
-| IP | Kafka | Zookeeper | Java |
+| IP地址 | Kafka | Zookeeper | Java |
 | ---- | ---- | ---- | ---- |
 | 10.1.207.180 | ✓ | ✓ | ✓ |
 | 10.1.207.181 | ✓ | ✓ | ✓ |
 | 10.1.207.182 | ✓ | ✓ | ✓ |
 
-Planning for installation directory
+节点安装路径
 
-| PATH | DESCRIPTION |
+| 路径 | 描述 |
 | ---- | ---- |
-| /opt/kafka | Installation path of Kafka, Zookeeper, Java |
-| ~/zookeeper.sh | Zookeeper start & stop & status script|
-| ~/kafka.sh | Kafka start & stop & status script|
-| ~/kafka_uninstall.sh | Kafka Cluster Uninstall script|
-| /data01/kafka/kafka_data |  Kafka Data |
-| /data01/kafka/kafka_log |  Kafka Logs |
-| /data01/kafka/zookeeper_data |  Zookeeper Data |
-| /data01/kafka/zookeeper_log |  Zookeeper Logs |
+| /opt/kafka | Kafka, Zookeeper, Java 软件安装路径 |
+| ~/zookeeper.sh | Zookeeper 启动，停止，状态命令脚本|
+| ~/kafka.sh | Kafka 启动，停止，状态命令脚本|
+| ~/kafka_uninstall.sh | Kafka 集群卸载脚本|
+| /data01/kafka/kafka_data | Kafka 数据目录 |
+| /data01/kafka/kafka_log | Kafka 日志目录 |
+| /data01/kafka/zookeeper_data | Zookeeper 数据目录 |
+| /data01/kafka/zookeeper_log | Zookeeper 日志目录 |
 
-## Download Kafka & Java & Ansible Playbook Scripts
+## 下载安装包和 Playbook 脚本
 
-Create a directory for Ansible Playbook scripts
+在客户机上创建 playbook 脚本存放目录
 
 ```shell
 mkdir -p ~/my-docker-volume/ansible-playbook
 ```
 
-Download Ansible playbook scripts
+下载 playbook 脚本
 
 ```shell
 cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-Download Kafka tar ball from the https://kafka.apache.org/downloads web site to `~/my-docker-volume/ansible-playbook/packages`
+从 https://kafka.apache.org/downloads 下载 Kafka 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
 wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/kafka/2.6.3/kafka_2.12-2.6.3.tgz --no-check-certificate
 ```
 
-Download JDK tar ball `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansible-playbook/packages`
+下载 JDK 安装包 `jdk-8u202-linux-x64.tar.gz` 到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
-## Configuration
+## 配置安装脚本
 
-> You can edit the following configuration files to modify the default parameters
+> 您可以编辑以下配置文件，修改默认参数
 
 #### main.yml
+
+安装 Kafka 集群的服务器 IP 地址，以及系统用户名
 
 ```yaml
 - hosts: 10.1.207.180
@@ -77,7 +81,7 @@ Download JDK tar ball `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansibl
 
 ### vars_kafka.yml
 
-Linux Limits
+操作系统 Limits
 
 ```yaml
 # Linux limits
@@ -87,7 +91,7 @@ limits_hard_nofile: '65535'
 limits_soft_nofile: '65535'
 ```
 
-Linux user and group
+安装用的用户名、用户组
 
 ```yaml
 # Linux user & group
@@ -95,7 +99,7 @@ kafka_user: "kafka"
 kafka_group: "kafka"
 ```
 
-Kafka & Java binary package and unzip directory
+安装介质名称以及解压后的目录名
 
 ```yaml
 # Kafka package
@@ -107,7 +111,7 @@ java_tar: "jdk-8u202-linux-x64.tar.gz"
 java_tar_unzip_dir: "jdk-8u202-linux-x64"
 ```
 
-Install directory
+安装目录
 
 ```yaml
 kafka_home_dir: "/opt/kafka"
@@ -117,7 +121,7 @@ zookeeper_data_dir: "/data01/kafka/zookeeper_data"
 zookeeper_log_dir: "/data01/kafka/zookeeper_log"
 ```
 
-Kafka & Zookeeper IDs
+kafka & Zookeeper 在每个服务器上的 ID
 
 ```yaml
 # Node configuration
@@ -133,7 +137,7 @@ hosts:
     kafka_broker_id: 182
 ```    
 
-Zookeeper server properties
+Zookeeper 服务配置
 
 ```yaml
 zookeeper_client_port: 2181 # the port at which the clients will connect
@@ -145,7 +149,7 @@ zookeeper_init_limit: 10  # time for initial synchronization
 zookeeper_sync_limit: 5   # how many ticks can pass before timeout
 ```
 
-Kafka server properties
+Kafka 服务配置
 
 ```yaml
 kafka_server_port: 9003
@@ -158,13 +162,13 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 ```
 
-## Installation
+## 开始安装
 
-Start the ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
+启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂载到容器中。
 
-**TIPS:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user kafka and password
+提示： ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 kafka 和密码 123456
 
-**TIPS:** ANSIBLE_SU_PASSS is user root password
+提示： ANSIBLE_SU_PASSS 为 root 用户的密码
 
 ```shell
 docker run --name ansible --rm -it \
@@ -178,23 +182,25 @@ docker run --name ansible --rm -it \
   /bin/bash  
 ```
 
-#### Install Kafka Cluster
+#### 安装 Kafka 集群
 
-This script will automate the following operations
+这个脚本将自动化完成如下操作：
 
-* Configure operating system parameters on all server
-* Upload the Kafka & Java packages to all server
-* ...
+* 在每个服务器上配置系统参数 & 创建安装目录
+* 上传 Kafka & JDK 安装介质上传到每个服务器
+* 配置每个服务器上的 server.properties 和 zookeeper.properties
+* 启动 Zookeeper & Kafka 服务
+* 自动创建测试用 Topic 并简单测试
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
 ```
 
-**TIPS:** Because the Kafka & Java package will be uploaded to all servers (about 65MB+194MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 25 minutes(upload package taske about 5 minutes, others take about 20 minutes.)
+**提示:** 因为第一次执行脚本时，会上传MySQL 安装包到所有服务器（约 260MB），所以执行时间较长（取决于你的客户端和服务器之间的网络速度）。 你也可以在执行以上脚本前手动将安装包上传到服务器的安装路径 /opt/kafka 下。在我本地环境首次安装大概耗时 25 分钟（上传安装包大概 5 分钟，安装集群大概 20 分钟）
 
-**TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Kafka has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/kafka_uninstall.sh'` uninstalls.
+**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 Kafka has been installed, please uninstall and then reinstall 提示，此时需要先要使用 ansible all -m shell -a '~/kafka_uninstall.sh' 命令卸载之前的安装。
 
-If you see the following message, the installation is completed
+如果你看到如下信息，说明安装完成
 
 ```shell
 TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
@@ -203,23 +209,23 @@ ok: [10.1.207.180] => {
 }
 ```
 
-#### Verify Kafka Cluster
+#### 验证 Kafka 集群
 
-## Common Maintenance Commands
+## 常用运维命令
 
-Start Kafka
+启动 Kafka
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh start'
 ```
 
-Stop Kafka
+停止 Kafka
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh stop'
 ```
 
-View status of Kafka
+查看 Kafka 状态
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh status'
@@ -238,19 +244,19 @@ Kafka is Running as PID: 7940
 7941
 ```
 
-Start Zookeeper
+启动 Zookeeper
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh start'
 ```
 
-Stop Zookeeper
+停止 Zookeeper
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh stop'
 ```
 
-View status of Zookeeper
+查看 Zookeeper 状态
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh status'
@@ -266,11 +272,11 @@ Zookeeper is Running as PID: 3124
 
 ## Q & A
 
-#### Uninstall Kafka Cluster
+#### 如何彻底删除 Kafka 集群
 
-Q: How to Uninstall Kafka Cluster
+Q: 如何彻底删除使用自脚本安装的集群程序和数据
 
-A: `~/kafka_uninstall.sh` script will **kill -9 Kafka and Zookeeper, delete program files and data files**
+A: `~/kafka_uninstall.sh` 脚本将 **kill -9 MySQL server 和 MySQL router，删除程序文件和所有数据文件**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
