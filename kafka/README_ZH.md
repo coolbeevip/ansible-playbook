@@ -16,7 +16,7 @@
 | 10.1.207.181 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 | 10.1.207.182 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
-**TIPS：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook#create-user--group)
+**提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
 
 集群节点规划
 
