@@ -20,13 +20,37 @@ java_tar_unzip_dir: "jdk1.8.0_202"
 # Kafka install directory
 kafka_home_dir: "/opt/kafka"
 kafka_data_dir: "/data01/kafka/kafka_data"
-zookeeper_data_dir: "/data01/kafka/zookeeper_data"
 
-# zookeeper
+# Node configuration
 hosts:
   10.1.207.180:
     zookeeper_id: 180
+    kafka_broker_id: 180
   10.1.207.181:
     zookeeper_id: 181
+    kafka_broker_id: 181
   10.1.207.182:
     zookeeper_id: 182
+    kafka_broker_id: 182
+
+# Zookeeper configuration
+zookeeper_data_dir: "/data01/kafka/zookeeper_data" # the directory where the snapshot is stored.
+zookeeper_log_dir: "/data01/kafka/zookeeper_log"
+zookeeper_client_port: 2181 # the port at which the clients will connect
+zookeeper_follower_port: 2888 # the port for follower connections
+zookeeper_election_port: 3888 # the port for other server connections during the leader election phase
+zookeeper_max_client_cnxns: 0 # setting number of connections to unlimited
+zookeeper_tick_time: 2000 # keeps a heartbeat of zookeeper in milliseconds
+zookeeper_init_limit: 10  # time for initial synchronization
+zookeeper_sync_limit: 5   # how many ticks can pass before timeout
+
+# Kafka configuration
+kafka_server_port: 9003
+kafka_server_log_dir: "/data01/kafka/kafka_log" # Where logs are stored
+kafka_server_num_partitions: 8 # default number of partitions
+kafka_server_offsets_topic_replication_factor: 3 # The replication factor for the group metadata internal topics "__consumer_offsets"
+kafka_server_transaction_state_log_replication_factor: 3 # The replication factor for the group metadata internal topics "__transaction_state"
+kafka_server_transaction_state_log_min_isr: 2
+kafka_server_default_replication_factor: 3 # default replica count based on the number of brokers
+kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
+kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper

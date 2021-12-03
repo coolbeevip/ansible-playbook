@@ -1,15 +1,107 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
-# Configure Zookeeper Ids
+# Configure Zookeeper
 - name: Configure Zookeeper Ids
   shell: echo "{{ hosts[inventory_hostname].zookeeper_id }}" > {{ zookeeper_data_dir }}/myid
-  with_items: "{{ groups.all }}"
+  check_mode: no
+
+- name: Configure Zookeeper servers ip and internal ports to zookeeper
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: '^server.{{ hosts[item].zookeeper_id }}=.*'
+    line: "server.{{ hosts[item].zookeeper_id }}={{ item }}:{{ zookeeper_follower_port }}:{{ zookeeper_election_port }}"
+    state: present
+  with_items: "{{ hosts.keys() | list }}"
   check_mode: no
 
 # Configure Kafka server.properties
-
-# Configure Zookeeper server.properties
+- name: Configure Kafka broker.id
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: "^broker.id=.*"
+    line: "broker.id={{ hosts[inventory_hostname].kafka_broker_id }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka listeners
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^#listeners=.*'
+    line: "listeners=PLAINTEXT://{{ inventory_hostname }}:{{ kafka_server_port }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka log.dirs
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^log.dirs=.*'
+    line: "log.dirs={{ kafka_server_log_dir }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka num.partitions
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^num.partitions=.*'
+    line: "num.partitions={{ kafka_server_num_partitions }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka offsets.topic.replication.factor
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^offsets.topic.replication.factor=.*'
+    line: "offsets.topic.replication.factor={{ kafka_server_offsets_topic_replication_factor }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka transaction.state.log.replication.factor
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^transaction.state.log.replication.factor=.*'
+    line: "transaction.state.log.replication.factor={{ kafka_server_transaction_state_log_replication_factor }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka transaction.state.log.min.isr
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^transaction.state.log.min.isr=.*'
+    line: "transaction.state.log.min.isr={{ kafka_server_transaction_state_log_min_isr }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka default.replication.factor
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^default.replication.factor=.*'
+    line: "default.replication.factor={{ kafka_server_default_replication_factor }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka min.insync.replicas
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^min.insync.replicas=.*'
+    line: "min.insync.replicas={{ kafka_server_min_insync_replicas }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka zookeeper.connection.timeout.ms
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^zookeeper.connection.timeout.ms=.*'
+    line: "zookeeper.connection.timeout.ms={{ kafka_server_zookeeper_connection_timeout_ms }}"
+    state: present
+  check_mode: no
+- set_fact:
+    zookeeper_connect: |
+      {% set res = [] %}
+      {% for key in hosts.keys() %}
+      {{   res.append(key + ":" + zookeeper_client_port | string ) }}
+      {% endfor %}
+      {{ res.join(,) }}
+- name: let's debug the crap out of this
+  debug: var=zookeeper_connect
+- name: Configure Kafka zookeeper.connect
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^zookeeper.connect=.*'
+    line: "zookeeper.connect={{ zookeeper_connect }}"
+    state: present
+  check_mode: no
 
 # Create the Kafka and Zookeeper Service
 

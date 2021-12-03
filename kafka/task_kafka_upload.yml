@@ -59,3 +59,19 @@
     dest: "$HOME/kafka_uninstall.sh"
     mode: u=rwx,g=rx,o=rx
   check_mode: no
+
+# 上传 Zookeeper 启停脚本 zookeeper.sh
+- name: copy zookeeper.sh
+  template:
+    src: "/ansible-playbook/kafka/config/zookeeper.sh.j2"
+    dest: "$HOME/zookeeper.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
+
+# 上传 Kafka 启停脚本 kafka.sh
+- name: copy kafka.sh
+  template:
+    src: "/ansible-playbook/kafka/config/kafka.sh.j2"
+    dest: "$HOME/kafka.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no

@@ -27,5 +27,7 @@
   with_items:
     - "{{ kafka_data_dir }}"
     - "{{ zookeeper_data_dir }}"
+    - "{{ zookeeper_log_dir }}"
+    - "{{ kafka_server_log_dir }}"
   check_mode: no
   become: yes
