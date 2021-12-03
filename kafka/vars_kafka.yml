@@ -63,6 +63,10 @@ kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with
 kafka_server_log_retention_hours: 168 # 数据保留时长（小时），建议业务侧评估好数据量的大小，调整合适的保留时间。一般情况下，建议使用7天即可。
 kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建议和业务侧评估单条数据的大小。数据大于 1MB 时建议发送端开启压缩模式，不建议发送大于 5MB 的数据
 
-# JVM options
+# kafka JVM options
 kafka_heap_opts: "--Xms6g  --Xmx6g" # 最大不建议超过 6g
 kafka_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+
+# zookeeper JVM options
+zookeeper_heap_opts: "--Xms1g  --Xmx1g" # 通常 1g 够用了
+zookeeper_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"

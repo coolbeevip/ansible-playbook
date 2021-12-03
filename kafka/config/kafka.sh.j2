@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export JAVA_HOME="{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/{{ java_tar_unzip_dir }}"
 export KAFKA_HEAP_OPTS="{{ kafka_heap_opts }}"
 export KAFKA_JVM_PERFORMANCE_OPTS="{{ kafka_jvm_performance_opts }}"
 
