@@ -27,7 +27,7 @@ Planning for installation directory
 | PATH | DESCRIPTION |
 | ---- | ---- |
 | ---- | ---- |
-| /opt/redis | 源代码上传路径 |
+| /opt/redis | source package |
 | ~/redis_uninstall.sh | uninstall script |
 | ~/redis.sh | Redis start & stop script |
 | ~/sentinel.sh | Sentinel start & stop script |
