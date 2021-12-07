@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo 'Kill Redis Process'
-kill $(cat {{ redis_log_dir }}/sentinel.pid && echo)
+kill -9 $(cat {{ redis_log_dir }}/sentinel.pid && echo)
 
 echo 'Kill Sentinel Process'
-kill $(cat {{ redis_log_dir }}/redis.pid && echo)
+kill -9 $(cat {{ redis_log_dir }}/redis.pid && echo)
 
 echo 'Delete Redis Data Files'
 rm -rf {{ redis_log_dir }}
