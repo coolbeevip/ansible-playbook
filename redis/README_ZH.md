@@ -148,24 +148,15 @@ ok: [10.1.207.180] => {
 查看目标服务器 redis 进程信息，可以看到每个节点的redis和哨兵进程都已经启动
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep redis'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [b]in/redis-'
+10.1.207.181 | CHANGED | rc=0 >>
+redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+
 10.1.207.180 | CHANGED | rc=0 >>
-redis     27426     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     27545     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     27784 27782  0 16:22 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     27786 27784  0 16:22 pts/1    00:00:00 grep redis
+redis    19121     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
 
 10.1.207.182 | CHANGED | rc=0 >>
-redis     10404     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     10485     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     10653 10651  0 16:17 pts/0    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     10655 10653  0 16:17 pts/0    00:00:00 grep redis
-
-10.1.207.181 | CHANGED | rc=0 >>
-redis     22964     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     23045     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     23215 23214  0 16:18 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     23217 23215  0 16:18 pts/1    00:00:00 grep redis
+redis    22537     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
 ```
 
 查看每个节点的状态，您可以看到主从节点信息

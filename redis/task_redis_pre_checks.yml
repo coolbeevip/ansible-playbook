@@ -7,6 +7,6 @@
     file_type: directory
   register: redis_files
   check_mode: no
-- fail:
-     msg: 'Redis has been installed, please uninstall and then reinstall'
-  when: redis_files.matched > 0
+# - fail:
+#      msg: 'Redis has been installed, please uninstall and then reinstall'
+#   when: redis_files.matched > 0
