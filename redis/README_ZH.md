@@ -149,14 +149,17 @@ ok: [10.1.207.180] => {
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep [b]in/redis-'
-10.1.207.181 | CHANGED | rc=0 >>
-redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
-
 10.1.207.180 | CHANGED | rc=0 >>
 redis    19121     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    20011     1  0 19:01 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 
 10.1.207.182 | CHANGED | rc=0 >>
 redis    22537     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    23467     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
+
+10.1.207.181 | CHANGED | rc=0 >>
+redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    11187     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 ```
 
 查看每个节点的状态，您可以看到主从节点信息
