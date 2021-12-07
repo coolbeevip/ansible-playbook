@@ -80,7 +80,8 @@ Edit `redis/main.yml` script, You can define the target server address here. In 
 #### var_redis.yml
 
 You can define the installation directory, redis tar version, port, default master node address, etc.
-```properties
+
+```shell
 # 源码包
 redis_tar: "redis-6.2.6.tar.gz"       # 源码包文件名
 redis_tar_unzip_dir: "redis-6.2.6"    # 源码包解压后的目录名

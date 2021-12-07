@@ -80,7 +80,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 您可以在此处定义安装目录，版本，端口，默认主节点地址等配置信息。
 
-```properties
+```shell
 # 源码包
 redis_tar: "redis-6.2.6.tar.gz"       # 源码包文件名
 redis_tar_unzip_dir: "redis-6.2.6"    # 源码包解压后的目录名
