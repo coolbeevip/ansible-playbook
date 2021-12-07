@@ -8,9 +8,9 @@
 
 | IP | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.181 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.182 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.180 | 22022 | redis | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | redis | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | redis | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
 **提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
 
@@ -58,7 +58,9 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## 配置安装脚本
 
-打开 `redis/main-install.yml` 脚本，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
+#### main-install.yml
+
+您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
 
 ```yaml
 - hosts: 10.1.207.180
@@ -76,36 +78,48 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
   ...
 ```
 
-在 `var_redis.yml` 文件中定义了安装目录，版本，端口，默认主节点地址等配置信息。其中 **redis_port**、**redis_master_ip** 和您的真实规划有关
+#### var_redis.yml
 
-```environment
----
-redis_tar: "redis-6.2.6.tar.gz"
-redis_tar_unzip_dir: "redis-6.2.6"
-redis_home_dir: "/opt/redis"
-redis_log_dir: "/opt/redis/logs"
-redis_data_dir: "/opt/redis/data"
-redis_conf_dir: "/opt/redis/conf"
-redis_user: "redis"
-redis_group: "redis"
-redis_password: "redis"
-redis_network_host: "0.0.0.0"
-redis_port: 7000
-redis_maxmemory: 31457280
-redis_maxclients: 1000
-redis_master_ip: 10.1.207.180
+您可以在此处定义安装目录，版本，端口，默认主节点地址等配置信息。
 
-redis_sentinel_port: 27000
-redis_sentinel_master: "mymaster"
-redis_sentinel_master_quorum: 2
-redis_sentinel_down_after_milliseconds: 5000
-redis_sentinel_failover_timeout: 10000
-redis_sentinel_parallel_syncs: 2
+```properties
+# 源码包
+redis_tar: "redis-6.2.6.tar.gz"       # 源码包文件名
+redis_tar_unzip_dir: "redis-6.2.6"    # 源码包解压后的目录名
+
+# 安装目录
+redis_home_dir: "/opt/redis"          # 源码包上传目录
+redis_bin_dir: "/data01/redis/bin"    # 编译后程序文件
+redis_log_dir: "/data01/redis/logs"   # 运行日志，PID 文件
+redis_data_dir: "/data01/redis/data"  # 数据文件
+redis_conf_dir: "/data01/redis/conf"  # 配置文件
+
+# 操作系统用户和组
+redis_user: "redis"                   # 操作系统用户名
+redis_group: "redis"                  # 操作系统组名
+
+# redis configuration
+redis_password: "redis"               # redis 密码
+redis_network_host: "0.0.0.0"         # 服务绑定 IP 地址
+redis_port: 7000                      # Redis 服务端口
+redis_maxmemory: 31457280             # 最大内存
+redis_maxclients: 1000                # 客户端最大连接数
+redis_io_threads_do_reads: "yes"      # 开启多线程支持
+redis_io_threads: 4                   # 线程数，线程数一定要小于机器核数并且不要大于 8
+redis_master_ip: 10.1.207.180         # 主节点 IP 地址
+
+# sentinel configuration
+redis_sentinel_port: 27000            # Sentinel 端口
+redis_sentinel_master: "mymaster"     # 监控 master 名称
+redis_sentinel_master_quorum: 2       # master 切换投票数，当集群中有 N 个sentinel 认为 master 宕机后就切换
+redis_sentinel_down_after_milliseconds: 5000  # master ping 检测超时时间
+redis_sentinel_failover_timeout: 10000        # 故障切换超时时间
+redis_sentinel_parallel_syncs: 2              # 故障切换后，每次向新的主节点发起复制操作的从节点个数
 ```
 
 您可以在 `redis/config/redis.conf.j2` 和 `redis/config/sentinel.conf.j2` 文件中找到更多的默认配置
 
-## 安装集群
+## 开始安装
 
 启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
 
@@ -126,7 +140,9 @@ docker run --name ansible --rm -it \
 bash-5.0#  
 ```
 
-执行安装脚本
+## 安装集群
+
+执行一下脚本将自动上传源码包，编译源码包，配置主从哨兵模式，设置环境变量 PATH 并启动服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
@@ -165,7 +181,7 @@ redis    11187     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel
 查看每个节点的状态，您可以看到主从节点信息
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
+bash-5.0# ansible all -m shell -a 'redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
 
 10.1.207.182 | CHANGED | rc=0 >>
 # Replication
