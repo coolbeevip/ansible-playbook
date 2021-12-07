@@ -62,16 +62,12 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 #### main-install.yml
 
-您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
+您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录。
 
 ```yaml
 - hosts: 10.1.207.180
   user: redis
   ...
-  vars:
-    im_master: true
-  tasks:
-    ...
 - hosts: 10.1.207.181
   user: redis
   ...

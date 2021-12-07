@@ -63,16 +63,12 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 #### main-install.yml
 
-Edit `redis/main.yml` script, You can define the target server address here. In the following snippet, you can see that three servers and logged in using  `redis`, The `10.1.207.180` is master.
+Edit `redis/main.yml` script, You can define the target server address here. In the following snippet, you can see that three servers and logged in using  `redis`.
 
 ```yaml
 - hosts: 10.1.207.180
   user: redis
   ...
-  vars:
-    im_master: true
-  tasks:
-    ...
 - hosts: 10.1.207.181
   user: redis
   ...

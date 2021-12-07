@@ -3,8 +3,6 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    im_master: true
   tasks:
     - include_tasks: task_redis_pre_checks.yml
     - include_tasks: task_redis_os.yml

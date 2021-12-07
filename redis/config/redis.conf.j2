@@ -21,7 +21,7 @@ maxclients {{ redis_maxclients }}
 appendonly no
 appendfsync everysec
 
-{% if im_master is not defined %}
+{% if redis_master_ip != inventory_hostname %}
 slaveof {{ redis_master_ip }} {{ redis_port }}
 {% endif %}
 
