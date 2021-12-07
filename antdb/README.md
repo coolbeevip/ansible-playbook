@@ -63,7 +63,7 @@ Download AntDB RPM package `antdb.cluster-5.0.009be78c-centos7.9.rpm` to `~/my-d
 
 > You can edit the following configuration files to modify the default parameters
 
-#### maim-os-init.yml
+#### main-os-init.yml
 
 Define all the server IP addresses of the AntDB cluster and the system user. This script automatically config the kernel parameters, creates a directory and uploads the RPM package
 
@@ -78,7 +78,7 @@ Define all the server IP addresses of the AntDB cluster and the system user. Thi
   user: antdb
 ```
 
-#### maim-cluster-install.yml
+#### main-cluster-install.yml
 
 Define the IP address of the AntDB MGR master/slave node server and the system user. MGR slave node name `mgr_slave_1`
 

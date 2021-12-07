@@ -63,7 +63,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 
 > 您可以编辑以下配置文件，修改默认参数
 
-#### maim-os-init.yml
+#### main-os-init.yml
 
 定义 AntDB 集群的所有服务器 IP 地址，以及安装用系统用户名，此脚本自动设置内核参数，创建目录、上传 RPM package
 
@@ -78,7 +78,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
   user: antdb
 ```
 
-#### maim-cluster-install.yml
+#### main-cluster-install.yml
 
 定义 AntDB MGR 主/备节点服务器 IP 地址，系统用户。备节点的名称 `mgr_slave_1`
 
