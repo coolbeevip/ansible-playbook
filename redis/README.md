@@ -260,7 +260,7 @@ repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on 
 bash-5.0#
 ```
 
-Get the address of the master host by using Sentinel and any Redis host:
+Get the address of the master host by using Sentinel and any Redis host
 
 ```shell
 bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel get-master-addr-by-name mymaster | head -n 1'
@@ -271,7 +271,8 @@ bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel g
 10.1.207.180
 
 10.1.207.180 | CHANGED | rc=0 >>
-10.1.
+10.1.207.180
+```
 
 ## Common Maintenance Commands
 
