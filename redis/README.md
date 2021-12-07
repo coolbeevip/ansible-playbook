@@ -2,6 +2,40 @@
 
 Please create a `redis` user on the linux server before starting. This playbook script uses Redis source code compilation to install one master, two slaves, and three sentinels
 
+## Planning Your Installation
+
+Planning for server
+
+| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+
+**TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
+
+Planning for nodes
+
+| IP | Redis | Sentinel |
+| ---- | ---- | ---- |
+| 10.1.207.180 | master | ✓ |
+| 10.1.207.181 | slave | ✓ |
+| 10.1.207.182 | slave | ✓ |
+
+Planning for installation directory
+
+| PATH | DESCRIPTION |
+| ---- | ---- |
+| ---- | ---- |
+| /opt/redis | 源代码上传路径 |
+| ~/redis_uninstall.sh | uninstall script |
+| ~/redis.sh | Redis start & stop script |
+| ~/sentinel.sh | Sentinel start & stop script |
+| /data01/redis/bin | redis executable file directory |
+| /data01/redis/log | log directory |
+| /data01/redis/data | data directory |
+| /data01/redis/conf | configuration directory |
+
 ## Download Redis Tar & Ansible Playbook scripts
 
 Create a directory for Ansible Playbook scripts
@@ -25,6 +59,10 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## Configuration
 
+> You can edit the following configuration files to modify the default parameters
+
+#### main-install.yml
+
 Edit `redis/main.yml` script, You can define the target server address here. In the following snippet, you can see that three servers and logged in using  `redis`, The `10.1.207.180` is master.
 
 ```yaml
@@ -43,33 +81,42 @@ Edit `redis/main.yml` script, You can define the target server address here. In 
   ...
 ```
 
-The installation directory, version, port, default master node address, and other configuration information are defined in the `var_redis.yml` file.
+#### var_redis.yml
 
-**NOTICE:** Please check if the variables redis_port, redis_password, redis_master_ip are what you want.
+You can define the installation directory, redis tar version, port, default master node address, etc.
+```properties
+# 源码包
+redis_tar: "redis-6.2.6.tar.gz"       # 源码包文件名
+redis_tar_unzip_dir: "redis-6.2.6"    # 源码包解压后的目录名
 
-```environment
----
-redis_tar: "redis-6.2.6.tar.gz"
-redis_tar_unzip_dir: "redis-6.2.6"
-redis_home_dir: "/opt/redis"
-redis_log_dir: "/opt/redis/logs"
-redis_data_dir: "/opt/redis/data"
-redis_conf_dir: "/opt/redis/conf"
-redis_user: "redis"
-redis_group: "redis"
-redis_password: "redis"
-redis_network_host: "0.0.0.0"
-redis_port: 7000
-redis_maxmemory: 31457280
-redis_maxclients: 1000
-redis_master_ip: 10.1.207.180
+# 安装目录
+redis_home_dir: "/opt/redis"          # 源码包上传目录
+redis_bin_dir: "/data01/redis/bin"    # 编译后程序文件
+redis_log_dir: "/data01/redis/logs"   # 运行日志，PID 文件
+redis_data_dir: "/data01/redis/data"  # 数据文件
+redis_conf_dir: "/data01/redis/conf"  # 配置文件
 
-redis_sentinel_port: 27000
-redis_sentinel_master: "mymaster"
-redis_sentinel_master_quorum: 2
-redis_sentinel_down_after_milliseconds: 5000
-redis_sentinel_failover_timeout: 10000
-redis_sentinel_parallel_syncs: 2
+# 操作系统用户和组
+redis_user: "redis"                   # 操作系统用户名
+redis_group: "redis"                  # 操作系统组名
+
+# redis configuration
+redis_password: "redis"               # redis 密码
+redis_network_host: "0.0.0.0"         # 服务绑定 IP 地址
+redis_port: 7000                      # Redis 服务端口
+redis_maxmemory: 31457280             # 最大内存
+redis_maxclients: 1000                # 客户端最大连接数
+redis_io_threads_do_reads: "yes"      # 开启多线程支持
+redis_io_threads: 4                   # 线程数，线程数一定要小于机器核数并且不要大于 8
+redis_master_ip: 10.1.207.180         # 主节点 IP 地址
+
+# sentinel configuration
+redis_sentinel_port: 27000            # Sentinel 端口
+redis_sentinel_master: "mymaster"     # 监控 master 名称
+redis_sentinel_master_quorum: 2       # master 切换投票数，当集群中有 N 个sentinel 认为 master 宕机后就切换
+redis_sentinel_down_after_milliseconds: 5000  # master ping 检测超时时间
+redis_sentinel_failover_timeout: 10000        # 故障切换超时时间
+redis_sentinel_parallel_syncs: 2              # 故障切换后，每次向新的主节点发起复制操作的从节点个数
 ```
 
 You can find more default configuration in `redis/config/redis.conf.j2` and `redis/config/sentinel.conf.j2` files
@@ -95,65 +142,46 @@ docker run --name ansible --rm -it \
 bash-5.0#  
 ```
 
-Run Ansible playbook scripts to install
+#### Install Redis Master-Slave & Sentinel
+
+Running the following script will automatically upload the source code package, compile the source code package, configure the master-slave sentinel mode, set the environment variable PATH and start the service
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/redis/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
 ```
 
-At this point, the installation is complete, and you can see the Redis node that has been configured in the installation directory of each target server.
-
-You can use the following script to delete the temporary files generated during the installation
+If you see the following message, the installation is completed
 
 ```shell
-bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
+TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "msg": "Install Succeed!"
+}
 ```
 
-## Start & Stop
+## Verify Redis Master-Slave & Sentinel
 
-### Start Redis
-
-The sentinel mode cluster needs to start each role in the order of `Master->Slave->Sentinel`, the startup sequence is as follows
-
-start Redis node
+Check the Redis process information of each target server, you can see that the Redis and Sentinel processes of each node have been started
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-server /opt/redis/conf/redis.conf'
-```
-
-start Redis Sentinel node
-
-```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-sentinel /opt/redis/conf/sentinel.conf'
-```
-
-Check the Redis process information of the target server, you can see that the Redis and sentinel processes of each node have been started
-
-```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep redis'
+bash-5.0# ansible all -m shell -a 'ps -ef | grep [b]in/redis-'
 10.1.207.180 | CHANGED | rc=0 >>
-redis     27426     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     27545     1  0 16:21 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     27784 27782  0 16:22 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     27786 27784  0 16:22 pts/1    00:00:00 grep redis
+redis    19121     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    20011     1  0 19:01 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 
 10.1.207.182 | CHANGED | rc=0 >>
-redis     10404     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     10485     1  0 16:16 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     10653 10651  0 16:17 pts/0    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     10655 10653  0 16:17 pts/0    00:00:00 grep redis
+redis    22537     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    23467     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 
 10.1.207.181 | CHANGED | rc=0 >>
-redis     22964     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-server 0.0.0.0:7000
-redis     23045     1  0 16:17 ?        00:00:00 /opt/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-redis     23215 23214  0 16:18 pts/1    00:00:00 /bin/sh -c ps -ef | grep redis
-redis     23217 23215  0 16:18 pts/1    00:00:00 grep redis
+redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
+redis    11187     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 ```
 
-View the status of each node, you can see the master and slave node information
+View the replication information of each node
 
 ```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
+bash-5.0# ansible all -m shell -a 'redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
 
 10.1.207.182 | CHANGED | rc=0 >>
 # Replication
@@ -222,16 +250,58 @@ repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on 
 bash-5.0#
 ```
 
-### Stop Redis
+## Common Maintenance Commands
 
-stop Redis Sentinel node
+**TIPS：** Need to start each node in the order of `Master->Slave->Sentinel`
 
-```shell
-bash-5.0# ansible all -m shell -a 'kill $(cat /opt/redis/logs/sentinel.pid && echo)'
-```
-
-stop Redis node
+Start Redis
 
 ```shell
-bash-5.0# ansible all -m shell -a 'kill $(cat /opt/redis/logs/redis.pid && echo)'
+bash-5.0# ansible all -m shell -a '~/redis.sh start'
 ```
+
+Stop Redis
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis.sh stop'
+```
+
+Restart Redis
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis.sh restart'
+```
+
+Start Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh start'
+```
+
+Stop Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh stop'
+```
+
+Restart Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh restart'
+```
+
+## Q & A
+
+#### How to force uninstall
+
+A: The `~/redis_uninstall.sh`  script will **kill -9 all Redis and Sentinel processes and delete programs and data directories**
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis_uninstall.sh'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>

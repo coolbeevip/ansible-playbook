@@ -26,7 +26,7 @@
 
 | 路径 | 描述 |
 | ---- | ---- |
-| /opt/redis | RPM 安装介质 |
+| /opt/redis | 源代码上传路径 |
 | ~/redis_uninstall.sh | 集群卸载脚本 |
 | ~/redis.sh | Redis 启停脚本 |
 | ~/sentinel.sh | Sentinel 启停脚本 |
@@ -57,6 +57,8 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 ```
 
 ## 配置安装脚本
+
+> 你可以编辑如下文件修改默认配置
 
 #### main-install.yml
 
@@ -142,7 +144,7 @@ bash-5.0#
 
 ## 安装集群
 
-执行一下脚本将自动上传源码包，编译源码包，配置主从哨兵模式，设置环境变量 PATH 并启动服务
+执行以下脚本将自动上传源码包，编译源码包，配置主从哨兵模式，设置环境变量 PATH 并启动服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
@@ -161,7 +163,7 @@ ok: [10.1.207.180] => {
 
 ## 验证集群
 
-查看目标服务器 redis 进程信息，可以看到每个节点的redis和哨兵进程都已经启动
+查看每个目标服务器 redis 进程信息，可以看到每个节点 redis 和 sentinel 进程都已经启动
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps -ef | grep [b]in/redis-'
@@ -178,7 +180,7 @@ redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0
 redis    11187     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
 ```
 
-查看每个节点的状态，您可以看到主从节点信息
+查看每个节点的复制信息
 
 ```shell
 bash-5.0# ansible all -m shell -a 'redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
