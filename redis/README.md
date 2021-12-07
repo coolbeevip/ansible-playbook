@@ -144,11 +144,21 @@ bash-5.0#
 
 #### Install Redis Master-Slave & Sentinel
 
-Running the following script will automatically upload the source code package, compile the source code package, configure the master-slave sentinel mode, set the environment variable PATH and start the service
+This script will automate the following operations
+
+* Install Redis build dependency libraries
+* Upload the Redis source package to each server
+* Configure Redis execution file PATH path
+* Configure Redis and Sentinel configuration files
+* Start Redis and Sentinel services
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
 ```
+
+**TIPS:** Because the Redis installation package (about 2.5MB) will be uploaded to all servers and buid(1 minutes per server) when the script is executed for the first time. The first installation on my local machine takes < 5 minutes.
+
+**TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Redis has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/redis_uninstall.sh'` uninstalls.
 
 If you see the following message, the installation is completed
 
@@ -250,6 +260,19 @@ repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on 
 bash-5.0#
 ```
 
+Get the address of the master host by using Sentinel and any Redis host:
+
+```shell
+bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel get-master-addr-by-name mymaster | head -n 1'
+10.1.207.181 | CHANGED | rc=0 >>
+10.1.207.180
+
+10.1.207.182 | CHANGED | rc=0 >>
+10.1.207.180
+
+10.1.207.180 | CHANGED | rc=0 >>
+10.1.
+
 ## Common Maintenance Commands
 
 **TIPS：** Need to start each node in the order of `Master->Slave->Sentinel`
@@ -294,14 +317,28 @@ bash-5.0# ansible all -m shell -a '~/sentinel.sh restart'
 
 #### How to force uninstall
 
-A: The `~/redis_uninstall.sh`  script will **kill -9 all Redis and Sentinel processes and delete programs and data directories**
+A: The `~/redis_uninstall.sh`  script will **kill -9 all Redis and Sentinel processes and delete programs and all data**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/redis_uninstall.sh'
-10.1.207.180 | CHANGED | rc=0 >>
-
-
 10.1.207.182 | CHANGED | rc=0 >>
-
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
 
 10.1.207.181 | CHANGED | rc=0 >>
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
+
+10.1.207.180 | CHANGED | rc=0 >>
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
+```

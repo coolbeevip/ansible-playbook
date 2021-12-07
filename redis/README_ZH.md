@@ -144,7 +144,13 @@ bash-5.0#
 
 ## 安装集群
 
-执行以下脚本将自动上传源码包，编译源码包，配置主从哨兵模式，设置环境变量 PATH 并启动服务
+这个脚本将自动化完成如下操作：
+
+* 安装 Redis 编译用依赖库
+* 上传 Redis 源码包到每个服务器
+* 配置 Redis 执行文件 PATH 路径
+* 配置 Redis 和 Sentinel 配置文件
+* 启动 Redis 和 Sentinel 服务
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
@@ -159,7 +165,9 @@ ok: [10.1.207.180] => {
 }
 ```
 
-**提示：** 此脚本在我的环境下执行耗时大约 3 分钟
+**提示:** 因为第一次执行脚本时，会上传 Redis 源码包（约 2.5MB）到所有服务器并在服务器上编译（每服务器约 1分钟）。在我本地环境首次安装大概耗时 5 分钟
+
+**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `Redis has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/redis_uninstall.sh'` 命令卸载之前的安装。
 
 ## 验证集群
 
@@ -252,6 +260,20 @@ repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on 
 bash-5.0#
 ```
 
+连接任意哨兵节点获取 Redis Master 地址
+
+```shell
+bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel get-master-addr-by-name mymaster | head -n 1'
+10.1.207.181 | CHANGED | rc=0 >>
+10.1.207.180
+
+10.1.207.182 | CHANGED | rc=0 >>
+10.1.207.180
+
+10.1.207.180 | CHANGED | rc=0 >>
+10.1.207.180
+```
+
 ## 常用运维命令
 
 **提示：** 哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个节点
@@ -300,10 +322,24 @@ A: `~/redis_uninstall.sh` 脚本将 **kill Redis 和 Sentinel，删除程序文�
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/redis_uninstall.sh'
-10.1.207.180 | CHANGED | rc=0 >>
-
-
 10.1.207.182 | CHANGED | rc=0 >>
-
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
 
 10.1.207.181 | CHANGED | rc=0 >>
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
+
+10.1.207.180 | CHANGED | rc=0 >>
+Kill Redis Process
+Kill Sentinel Process
+Delete Redis Data Files
+Delete Redis Package
+Delete redis_uninstall.sh
+```
