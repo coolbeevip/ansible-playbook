@@ -1,33 +1,33 @@
 ---
 # 源码包
-redis_tar: "redis-6.2.6.tar.gz"
-redis_tar_unzip_dir: "redis-6.2.6"
+redis_tar: "redis-6.2.6.tar.gz"       # 源码包文件名
+redis_tar_unzip_dir: "redis-6.2.6"    # 源码包解压后的目录名
 
 # 安装目录
-redis_home_dir: "/opt/redis"
-redis_bin_dir: "/data01/redis/bin"
-redis_log_dir: "/data01/redis/logs"
-redis_data_dir: "/data01/redis/data"
-redis_conf_dir: "/data01/redis/conf"
+redis_home_dir: "/opt/redis"          # 源码包上传目录
+redis_bin_dir: "/data01/redis/bin"    # 编译后程序文件
+redis_log_dir: "/data01/redis/logs"   # 运行日志，PID 文件
+redis_data_dir: "/data01/redis/data"  # 数据文件
+redis_conf_dir: "/data01/redis/conf"  # 配置文件
 
 # 操作系统用户和组
-redis_user: "redis"
-redis_group: "redis"
+redis_user: "redis"                   # 操作系统用户名
+redis_group: "redis"                  # 操作系统组名
 
-# redis.conf
-redis_password: "redis"
-redis_network_host: "0.0.0.0"
-redis_port: 7000
-redis_maxmemory: 31457280
-redis_maxclients: 1000
-redis_master_ip: 10.1.207.180
-redis_io_threads_do_reads: "yes" # 开启多线程支持
-redis_io_threads: 4 # 多线程数，线程数一定要小于机器核数并且不要大于 8
+# redis configuration
+redis_password: "redis"               # redis 密码
+redis_network_host: "0.0.0.0"         # 服务绑定 IP 地址
+redis_port: 7000                      # Redis 服务端口
+redis_maxmemory: 31457280             # 最大内存
+redis_maxclients: 1000                # 客户端最大连接数
+redis_io_threads_do_reads: "yes"      # 开启多线程支持
+redis_io_threads: 4                   # 线程数，线程数一定要小于机器核数并且不要大于 8
+redis_master_ip: 10.1.207.180         # 主节点 IP 地址
 
-# sentinel.conf
-redis_sentinel_port: 27000
-redis_sentinel_master: "mymaster"
-redis_sentinel_master_quorum: 2
-redis_sentinel_down_after_milliseconds: 5000
-redis_sentinel_failover_timeout: 10000
-redis_sentinel_parallel_syncs: 2
+# sentinel configuration
+redis_sentinel_port: 27000            # Sentinel 端口
+redis_sentinel_master: "mymaster"     # 监控 master 名称
+redis_sentinel_master_quorum: 2       # master 切换投票数，当集群中有 N 个sentinel 认为 master 宕机后就切换
+redis_sentinel_down_after_milliseconds: 5000  # master ping 检测超时时间
+redis_sentinel_failover_timeout: 10000        # 故障切换超时时间
+redis_sentinel_parallel_syncs: 2              # 故障切换后，每次向新的主节点发起复制操作的从节点个数
