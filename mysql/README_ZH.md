@@ -28,9 +28,9 @@ MySQL InnoDB 集群有以下服务组成
 
 | IP地址 | MySQL Server | MySQL Router | MySQL Shell |
 | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | Primary | Primary | Primary |
-| 10.1.207.181 | Secondary | Primary | Primary |
-| 10.1.207.182 | Secondary | Primary | Primary |
+| 10.1.207.180 | Primary | ✓ | ✓ |
+| 10.1.207.181 | Secondary | ✓ | ✓ |
+| 10.1.207.182 | Secondary | ✓ | ✓ |
 
 节点安装路径
 
