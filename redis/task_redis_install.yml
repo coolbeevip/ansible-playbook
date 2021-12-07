@@ -18,17 +18,16 @@
 # 安装 redis
 - name: check install redis
   stat:
-    path: "{{ redis_home_dir }}/bin"
+    path: "{{ redis_bin_dir }}"
   register: check_result
   check_mode: no
 - name: install redis
   shell: |
-    mkdir -p "{{ redis_home_dir }}/bin"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-server" "{{ redis_home_dir }}/bin/"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-cli" "{{ redis_home_dir }}/bin/"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-sentinel" "{{ redis_home_dir }}/bin/"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-aof" "{{ redis_home_dir }}/bin/"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-rdb" "{{ redis_home_dir }}/bin/"
-    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-benchmark" "{{ redis_home_dir }}/bin/"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-server" "{{ redis_bin_dir }}"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-cli" "{{ redis_bin_dir }}"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-sentinel" "{{ redis_bin_dir }}"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-aof" "{{ redis_bin_dir }}"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-check-rdb" "{{ redis_bin_dir }}"
+    cp "{{ redis_home_dir }}/{{ redis_tar_unzip_dir }}/src/redis-benchmark" "{{ redis_bin_dir }}"
   check_mode: no
   when: not check_result.stat.exists

@@ -25,6 +25,9 @@ appendfsync everysec
 slaveof {{ redis_master_ip }} {{ redis_port }}
 {% endif %}
 
+io-threads-do-reads {{ redis_io_threads_do_reads }}
+io-threads {{ redis_io_threads }}
+
 pidfile {{ redis_log_dir }}/redis.pid
 
 loglevel notice

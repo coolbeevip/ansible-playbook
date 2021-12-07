@@ -1,0 +1,31 @@
+#!/bin/bash
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i $(cat {{ redis_log_dir }}/sentinel.pid) | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Sentinel is already running"
+  else
+    echo "Starting Sentinel"
+    {{ redis_bin_dir }}/redis-sentinel {{ redis_conf_dir }}/sentinel.conf
+  fi
+;;
+
+stop)
+  echo "Shutting down Sentinel"
+  kill $(cat {{ redis_log_dir }}/sentinel.pid && echo)
+;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+;;
+
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  exit 1
+  esac
+
+exit 0

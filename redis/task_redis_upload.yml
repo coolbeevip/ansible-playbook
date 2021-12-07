@@ -1,16 +1,6 @@
 - name: include vars
   include_vars: "vars_redis.yml"
 
-# 初始化目录
-- name: create redis home
-  file:
-    path: "{{ redis_home_dir }}"
-    state: directory
-    owner: "{{ redis_user }}"
-    group: "{{ redis_group }}"
-  become: yes
-  check_mode: no
-
 # 上传安装包
 - name: check upload redis
   stat:
@@ -37,3 +27,27 @@
     tar zxf {{ redis_tar }}
   check_mode: no
   when: not check_result.stat.exists
+
+# 上传卸载脚本
+- name: copy redis_uninstall.sh
+  template:
+    src: "/ansible-playbook/redis/config/redis_uninstall.sh.j2"
+    dest: "$HOME/redis_uninstall.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
+
+# 上传 redis 启停脚本
+- name: copy redis.sh
+  template:
+    src: "/ansible-playbook/redis/config/redis.sh.j2"
+    dest: "$HOME/redis.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
+
+# 上传 sentinel 启停脚本
+- name: copy sentinel.sh
+  template:
+    src: "/ansible-playbook/redis/config/sentinel.sh.j2"
+    dest: "$HOME/sentinel.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no

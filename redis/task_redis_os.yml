@@ -1,3 +1,6 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
 # 安装编译用 REDIS 用依赖
 - name: install packages
   yum:
@@ -10,3 +13,27 @@
     state: present
   check_mode: no
   become: yes
+
+# 初始化目录
+- name: create redis home
+  file:
+    path: "{{ redis_home_dir }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+  become: yes
+  check_mode: no
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ redis_log_dir }}"
+    - "{{ redis_data_dir }}"
+    - "{{ redis_conf_dir }}"
+    - "{{ redis_bin_dir }}"
+  become: yes
+  check_mode: no

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i $(cat {{ redis_log_dir }}/redis.pid) | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Redis is already running"
+  else
+    echo "Starting Redis"
+    {{ redis_bin_dir }}/redis-server {{ redis_conf_dir }}/redis.conf
+  fi
+;;
+
+stop)
+  echo "Shutting down Redis"
+  kill $(cat {{ redis_log_dir }}/redis.pid && echo)
+;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+;;
+
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  exit 1
+  esac
+
+exit 0

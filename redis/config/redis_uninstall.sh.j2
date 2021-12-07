@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo 'Kill Redis Process'
+kill $(cat {{ redis_log_dir }}/sentinel.pid && echo)
+
+echo 'Kill Sentinel Process'
+kill $(cat {{ redis_log_dir }}/redis.pid && echo)
+
+echo 'Delete Redis Data Files'
+rm -rf {{ redis_log_dir }}
+rm -rf {{ redis_data_dir }}
+rm -rf {{ redis_conf_dir }}
+rm -rf {{ redis_bin_dir }}
+
+echo 'Delete Redis Package'
+rm -rf {{ redis_home_dir }}/{{ redis_tar_unzip_dir }}
+
+echo 'Delete redis_uninstall.sh'
+rm -rf $HOME/redis_uninstall.sh

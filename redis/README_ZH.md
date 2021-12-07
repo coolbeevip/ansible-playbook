@@ -2,6 +2,39 @@
 
 请先在目标服务器创建 `redis` 用户，此脚本在此用户下使用源代码编译的方式安装一主两从三哨兵的集群
 
+## 安装计划
+
+服务器规划
+
+| IP | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | redis | redis123 | root123 | CentOS Linux release 7.9.2009 |
+
+**提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
+
+集群节点规划
+
+| IP | Redis | Sentinel |
+| ---- | ---- | ---- |
+| 10.1.207.180 | ✓ | ✓ |
+| 10.1.207.181 | ✓ | ✓ |
+| 10.1.207.182 | ✓ | ✓ |
+
+节点安装路径
+
+| 路径 | 描述 |
+| ---- | ---- |
+| /opt/redis | RPM 安装介质 |
+| ~/redis_uninstall.sh | 集群卸载脚本 |
+| ~/redis.sh | Redis 启停脚本 |
+| ~/sentinel.sh | Sentinel 启停脚本 |
+| /data01/redis/bin | redis 编译后的程序 |
+| /data01/redis/log | 日志目录 |
+| /data01/redis/data | 数据目录 |
+| /data01/redis/conf | 配置文件目录  |
+
 ## 下载安装包和 Playbook 脚本
 
 在客户机上创建 playbook 脚本存放目录
@@ -25,7 +58,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://download.redis.io/r
 
 ## 配置安装脚本
 
-打开 `redis/main.yml` 脚本，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
+打开 `redis/main-install.yml` 脚本，您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `redis` 用户登录，并将 `10.1.207.180` 服务器设置为 master 节点
 
 ```yaml
 - hosts: 10.1.207.180
@@ -72,7 +105,7 @@ redis_sentinel_parallel_syncs: 2
 
 您可以在 `redis/config/redis.conf.j2` 和 `redis/config/sentinel.conf.j2` 文件中找到更多的默认配置
 
-## 开始安装
+## 安装集群
 
 启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
 
@@ -96,34 +129,21 @@ bash-5.0#
 执行安装脚本
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/redis/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/redis/main-install.yml /ansible-playbook/redis/main-start-redis.yml /ansible-playbook/redis/main-start-sentinel.yml
 ```
 
-至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 redis 节点。
-
-因为采用源代码编译安装，所以您可以使用以下脚本删除不在使用的安装包
+如果你看到如下信息，说明安装完成
 
 ```shell
-bash-5.0# ansible all -m shell -a "rm -rf /opt/redis/redis-6.2.6 /opt/redis/redis-6.2.6.tar.gz"
+TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "msg": "Install Succeed!"
+}
 ```
 
-## 启动 & 停止
+**提示：** 此脚本在我的环境下执行耗时大约 3 分钟
 
-### 启动集群
-
-哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个角色，启动顺序如下
-
-启动 Redis 节点
-
-```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-server /opt/redis/conf/redis.conf'
-```
-
-启动 Sentinel 节点
-
-```shell
-bash-5.0# ansible all -m shell -a '/opt/redis/bin/redis-sentinel /opt/redis/conf/sentinel.conf'
-```
+## 验证集群
 
 查看目标服务器 redis 进程信息，可以看到每个节点的redis和哨兵进程都已经启动
 
@@ -220,16 +240,58 @@ repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on 
 bash-5.0#
 ```
 
-### 停止集群
+## 常用运维命令
 
-停止 Sentinel 节点
+**提示：** 哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个节点
 
-```shell
-bash-5.0# ansible all -m shell -a 'kill $(cat /opt/redis/logs/sentinel.pid && echo)'
-```
-
-停止 Redis 节点
+启动 Redis
 
 ```shell
-bash-5.0# ansible all -m shell -a 'kill $(cat /opt/redis/logs/redis.pid && echo)'
+bash-5.0# ansible all -m shell -a '~/redis.sh start'
 ```
+
+停止 Redis
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis.sh stop'
+```
+
+重启 Redis
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis.sh restart'
+```
+
+启动 Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh start'
+```
+
+停止 Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh stop'
+```
+
+重启 Sentinel
+
+```shell
+bash-5.0# ansible all -m shell -a '~/sentinel.sh restart'
+```
+
+## Q & A
+
+#### 如何彻底删除 Redis 主从哨兵集群
+
+A: `~/redis_uninstall.sh` 脚本将 **kill Redis 和 Sentinel，删除程序文件和所有数据文件**
+
+```shell
+bash-5.0# ansible all -m shell -a '~/redis_uninstall.sh'
+10.1.207.180 | CHANGED | rc=0 >>
+
+
+10.1.207.182 | CHANGED | rc=0 >>
+
+
+10.1.207.181 | CHANGED | rc=0 >>

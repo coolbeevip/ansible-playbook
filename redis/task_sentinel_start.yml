@@ -1,0 +1,6 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
+- name: Start Sentinel
+  shell: $HOME/sentinel.sh start
+  check_mode: no

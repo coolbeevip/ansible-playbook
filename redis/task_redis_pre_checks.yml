@@ -1,0 +1,12 @@
+- name: include vars
+  include_vars: "vars_redis.yml"
+
+- name: check the files in the installation directory
+  find:
+    paths: "{{ redis_bin_dir }}"
+    file_type: directory
+  register: redis_files
+  check_mode: no
+- fail:
+     msg: 'Redis has been installed, please uninstall and then reinstall'
+  when: redis_files.matched > 0

@@ -6,6 +6,7 @@
   vars:
     im_master: true
   tasks:
+    - include_tasks: task_redis_pre_checks.yml
     - include_tasks: task_redis_os.yml
     - include_tasks: task_redis_upload.yml
     - include_tasks: task_redis_install.yml
@@ -18,6 +19,7 @@
   become_method: su
   vars:
   tasks:
+    - include_tasks: task_redis_pre_checks.yml
     - include_tasks: task_redis_os.yml
     - include_tasks: task_redis_upload.yml
     - include_tasks: task_redis_install.yml
@@ -30,6 +32,7 @@
   become_method: su
   vars:
   tasks:
+    - include_tasks: task_redis_pre_checks.yml
     - include_tasks: task_redis_os.yml
     - include_tasks: task_redis_upload.yml
     - include_tasks: task_redis_install.yml
