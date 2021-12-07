@@ -37,3 +37,12 @@
     - "{{ redis_bin_dir }}"
   become: yes
   check_mode: no
+
+# 设置  PATH
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH={{ redis_bin_dir }}:$PATH"
+    state: present
+  check_mode: no
