@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo 'Kill Elasticsearch process'
+if [ -e {{ es_log_dir }}/elasticsearch.pid ]
+then
+  kill -9 $(cat {{ es_log_dir }}/elasticsearch.pid && echo)
+else
+  if [[ $(ps aux | grep '{{ es_home_dir }}/{{ es_tar_unzip_dir }}' | wc -l) != 0 ]]; then
+    kill -9 $(ps aux | grep '[b]in/elasticsearch' | awk '{print $2}')
+  fi
+fi
+
+echo 'Delete Elasticsearch data'
+rm -rf {{ es_log_dir }}
+rm -rf {{ es_data_dir }}
+rm -rf {{ es_heap_dump_path }}
+rm -rf {{ es_temp_dir }}
+
+echo 'Delete Elasticsearch programs'
+rm -rf {{ es_home_dir }}/{{ es_tar_unzip_dir}}
+
+echo 'Delete elasticsearch_uninstall.sh'
+rm -rf $HOME/elasticsearch_uninstall.sh

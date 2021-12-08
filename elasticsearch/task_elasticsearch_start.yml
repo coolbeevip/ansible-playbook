@@ -1,0 +1,6 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
+
+- name: Start Elasticsearch
+  shell: $HOME/elasticsearch.sh start
+  check_mode: no

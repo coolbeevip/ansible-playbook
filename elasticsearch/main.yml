@@ -3,30 +3,30 @@
   become: no
   become_user: root
   become_method: su
-  vars:
-    es_node_name: "node-180"
   tasks:
+    - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_start.yml
 
 - hosts: 10.1.207.181
   user: elasticsearch
   become: no
   become_user: root
   become_method: su
-  vars:
-    es_node_name: "node-181"
   tasks:
+    - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_start.yml
 
 - hosts: 10.1.207.182
   user: elasticsearch
   become: no
   become_user: root
   become_method: su
-  vars:
-    es_node_name: "node-182"
   tasks:
+    - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_start.yml

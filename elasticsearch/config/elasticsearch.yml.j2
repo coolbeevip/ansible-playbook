@@ -2,7 +2,7 @@
 cluster.name: {{ es_cluster_name }}
 
 # ------------------------------------ Node ------------------------------------
-node.name: {{ es_node_name }}
+node.name: {{ node_names[inventory_hostname].es_node_name }}
 
 # Add custom attributes to the node:
 #node.attr.rack: r1

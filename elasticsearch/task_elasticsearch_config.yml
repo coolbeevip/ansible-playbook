@@ -1,35 +1,19 @@
 - name: include vars
   include_vars: "vars_elasticsearch.yml"
 
-# 初始化目录
-- name: create others directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ es_user }}"
-    group: "{{ es_group }}"
-    mode: "2750"
-  with_items:
-    - "{{ es_log_dir }}"
-    - "{{ es_data_dir }}"
-    - "{{ es_heap_dump_path }}"
-    - "{{ es_temp_dir }}"
-  become: yes
-  check_mode: no
-
 # 上传配置文件
 - name: copy configuration file
   template:
     src: "/ansible-playbook/elasticsearch/config/elasticsearch.yml.j2"
-    dest: "{{ es_home }}/config/elasticsearch.yml"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/elasticsearch.yml"
   check_mode: no
 - name: copy jvm file
   template:
     src: "/ansible-playbook/elasticsearch/config/jvm.options.j2"
-    dest: "{{ es_home }}/config/jvm.options"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/jvm.options"
   check_mode: no
 - name: copy gc options
   template:
     src: "/ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2"
-    dest: "{{ es_home }}/config/jvm.options.d/gc.options"
+    dest: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/jvm.options.d/gc.options"
   check_mode: no

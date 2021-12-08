@@ -1,8 +1,15 @@
 - name: include vars
   include_vars: "vars_kafka.yml"
 
+# Install linux package
+- name: install packages
+  yum:
+    name:
+      - nc
+    state: present
+  check_mode: no
+
 # File Descriptors
-# Configuring Linux limits
 - name: Add or modify hard nofile limits
   pam_limits:
     domain: '{{ kafka_user }}'

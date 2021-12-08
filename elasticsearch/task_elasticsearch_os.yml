@@ -1,0 +1,104 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
+
+# 禁用系统交换空间
+- name: check disable all swap files
+  shell: /sbin/swapon -s
+  register: check_result
+  check_mode: no
+  become: yes
+- name: disable all swap files
+  shell: |
+    swapoff -a
+    sed -i "s/^.*swap/#&/g" /etc/fstab
+  when: check_result.stdout != ""
+  check_mode: no
+  become: yes
+
+# 设置交换优先级和虚拟内存
+- name: check configure vm
+  shell: /sbin/sysctl vm.swappiness | awk '{print $3}'
+  register: check_result
+  check_mode: no
+- name: configure vm
+  shell: echo {{ item }} >> /etc/sysctl.config && sysctl -p
+  with_items:
+    - vm.swappiness=1
+    - vm.max_map_count=262144
+  when: check_result.stdout == "" or check_result.stdout != "1"
+  check_mode: no
+  become: yes
+
+# 设置 Linux PAM limits
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: hard
+    limit_item: nofile
+    value: '{{ limits_hard_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: soft
+    limit_item: nofile
+    value: '{{ limits_soft_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: hard
+    limit_item: nproc
+    value: '{{ limits_hard_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: soft
+    limit_item: nproc
+    value: '{{ limits_soft_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard stack limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: hard
+    limit_item: stack
+    value: '{{ limits_hard_stack }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft stack limits
+  pam_limits:
+    domain: '{{ es_user }}'
+    limit_type: soft
+    limit_item: stack
+    value: '{{ limits_soft_stack }}'
+  check_mode: no
+  become: yes
+
+# 初始化目录
+- name: create elasticsearch home
+  file:
+    path: "{{ es_home_dir }}"
+    state: directory
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+  become: yes
+  check_mode: no
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ es_log_dir }}"
+    - "{{ es_data_dir }}"
+    - "{{ es_heap_dump_path }}"
+    - "{{ es_temp_dir }}"
+  become: yes
+  check_mode: no

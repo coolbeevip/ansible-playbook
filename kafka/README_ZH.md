@@ -215,7 +215,34 @@ ok: [10.1.207.180] => {
 
 #### 验证 Kafka 集群
 
+Test the Zookeeper server state.
+测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何响应
+
+```shell
+$ echo ruok | nc 10.1.207.180 9002;echo
+```
+
+Show list of active brokers IDs on the cluster.
+
+```shell
+zookeeper-shell.sh 10.1.207.180:9002 ls /brokers/ids
+```
+
+Returns the details of the broker with the given ID
+
+```shell
+zookeeper-shell.sh 10.1.207.180:9002 get /brokers/ids/<id>
+```
+
+Outputs a list of variables that could be used for monitoring the health of the cluster.
+
+```shell
+$ echo mntr | nc 10.1.207.180 9002
+```
+
 ## 常用运维命令
+
+#### Kafka
 
 启动 Kafka
 
@@ -248,6 +275,8 @@ Kafka is Running as PID: 7940
 7941
 ```
 
+#### Zookeeper
+
 启动 Zookeeper
 
 ```shell
@@ -272,6 +301,42 @@ Zookeeper is Running as PID: 2742
 
 10.1.207.181 | CHANGED | rc=0 >>
 Zookeeper is Running as PID: 3124
+```
+
+Display configuration.
+
+```shell
+$ echo conf | nc 10.1.207.180 9002
+```
+
+List connection details to this server.
+
+```shell
+$ echo cons | nc 10.1.207.180 9002
+```
+
+Display outstanding sessions and ephemeral nodes.
+
+```shell
+$ echo dump | nc 10.1.207.180 9002
+```
+
+Display environment settings.
+
+```shell
+$ echo envi | nc 10.1.207.180 9002
+```
+
+Display the total size of snapshot and log files in bytes.
+
+```shell
+$ echo dirs | nc 10.1.207.180 9002
+```
+
+Check if server is running in read-only mode.
+
+```shell
+$ echo isro | nc 10.1.207.180 9002; echo
 ```
 
 ## Q & A
@@ -299,6 +364,18 @@ bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
 
 **内存：** Kafka 严重依赖文件系统和内存，建议使用不低于 32GB 内存的机器（64GB最好）。
 
+**磁盘：** 不要与应用程序日志或者其他操作系统文件系统共享 Kafka 数据盘，以确保最小的延迟。最优策略为每个节点使用 RAID5  或者 RAID10 挂载数据目录，每个逻辑盘不超过 8 块（对于大多数用例，建议将 RAID 10 作为最佳选项。它提供了改进的读写性能、数据保护和快速重建时间）。
+
+你也可以挂载多块磁盘来最大化吞吐量，并且设置参数 `num.io.thread` 与挂盘数一致，估算算法如下：
+
+每个节点挂盘数 <= CPU逻辑核数 / 2
+
+**网络：**
+
+快速可靠的网络是分布式系统中必不可少的性能组件。低延迟确保节点可以轻松通信，而高带宽有助于分片移动和恢复。现代数据中心网络（1 GbE、10 GbE）足以满足绝大多数集群的需求。建议使用[iperf](https://coolbeevip.github.io/posts/linux/linux-commands-network/)先测试一下。
+
+**文件系统：** 建议在 XFS 或 ext4 上运行 Kafka
+
 **JVM：** 不需要设置超过 6 GB 的堆大小。这将导致 32 GB 机器上的文件系统缓存高达 28-30 GB，您需要足够的内存来缓冲活动的读取器和写入器。你可以用一下公示估算：
 
 * 每秒吞度量 = 每条消息字节数 * 每秒消息数；
@@ -308,27 +385,3 @@ bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
 * 缓冲大小 = 需要缓冲的时间 * 每秒吞度量 / (Topic 分区数 * 副本数)；
 
 例如：需要缓冲 30 秒，每秒吞吐率 10MB，Topic 5 个分区，3 个副本，那么需要缓冲区为 180MB
-
-**磁盘：**
-
-建议挂载多块磁盘用来存储数据，每个节点挂盘数 <= CPU逻辑核数 / 2，并且设置参数 `num.io.thread` 与挂盘数一致。最优策略为每个节点使用raid5或者raid10挂载数据目录，每个raid5或者raid10的逻辑盘不超过8块。
-
-您应该使用多个驱动器来最大化吞吐量。 不要与应用程序日志或其他操作系统文件系统活动共享用于 Kafka 数据的相同驱动器，以确保良好的延迟。 您可以将这些驱动器组合成一个单独的卷作为独立磁盘冗余阵列 (RAID)，也可以将每个驱动器格式化并安装为自己的目录。 由于 Kafka 具有复制功能，因此也可以在应用程序级别提供 RAID 提供的冗余。 这种选择有几个权衡。
-
-如果您配置多个数据目录，则代理会在当前存储的分区数最少的路径中放置一个新分区。每个分区将完全位于其中一个数据目录中。如果分区之间的数据没有很好的平衡，这可能会导致磁盘之间的负载不平衡。
-
-RAID 可能在平衡磁盘之间的负载方面做得更好（尽管它似乎并不总是如此），因为它在较低级别平衡负载。
-
-对于大多数用例，建议将 RAID 10 作为最佳“夜间睡眠”选项。它提供了改进的读写性能、数据保护（容忍磁盘故障的能力）和快速重建时间。
-
-RAID 的主要缺点是它减少了可用磁盘空间。另一个缺点是磁盘出现故障时重建阵列的 I/O 成本。重建成本一般适用于 RAID，不同版本之间存在细微差别。
-
-最后，您应该避免使用网络附加存储 (NAS)。 NAS 通常更慢，显示更大的延迟，平均延迟偏差更大，并且是单点故障。
-
-* 网络
-
-快速可靠的网络是分布式系统中必不可少的性能组件。低延迟确保节点可以轻松通信，而高带宽有助于分片移动和恢复。现代数据中心网络（1 GbE、10 GbE）足以满足绝大多数集群的需求。
-
-* 文件系统
-
-您应该在 XFS 或 ext4 上运行 Kafka

@@ -1,0 +1,39 @@
+#!/bin/bash
+unset JAVA_HOME
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i $(cat {{ es_log_dir }}/elasticsearch.pid) | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Elasticsearch is already running"
+  else
+    echo "Starting Elasticsearch"
+    nohup {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -p {{ es_log_dir }}/elasticsearch.pid -d >/dev/null 2>&1 &
+  fi
+;;
+
+stop)
+  echo "Shutting down Elasticsearch"
+  if [ -e {{ es_log_dir }}/elasticsearch.pid ]
+  then
+    kill -9 $(cat {{ es_log_dir }}/elasticsearch.pid && echo)
+  else
+    if [[ $(ps aux | grep '[b]in/elasticsearch' | wc -l) != 0 ]]; then
+      kill -9 $(ps aux | grep '[b]in/elasticsearch' | awk '{print $2}')
+    fi
+  fi
+;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+;;
+
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  exit 1
+esac
+
+exit 0

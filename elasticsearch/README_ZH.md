@@ -2,6 +2,38 @@
 
 请先在目标服务器创建 `elasticsearch` 用户，密码 `123456`，脚本会在此用户下安装三节点集群，因为 7.X 版本后会自带 JDK，所以我们不需要提前安装 Java 环境。
 
+## 安装计划
+
+服务器规划
+
+| IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+
+**提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
+
+集群节点规划
+
+| IP地址 | Elasticsearch |
+| ---- | ---- |
+| 10.1.207.180 | ✓ |
+| 10.1.207.181 | ✓ |
+| 10.1.207.182 | ✓ |
+
+节点安装路径
+
+| 路径 | 描述 |
+| ---- | ---- |
+| /opt/elasticsearch | 程序安装路径 |
+| ~/elasticsearch_uninstall.sh | 集群卸载脚本 |
+| ~/elasticsearch.sh | 集群启停脚本 |
+| /data01/elasticsearch/logs | 日志文件 |
+| /data01/elasticsearch/data | 数据文件 |
+| /data01/elasticsearch/dump | DUMP 文件 |
+| /data01/elasticsearch/temp | 临时文件 |
+
 ## 下载安装包和 Playbook 脚本
 
 在你的笔记本上创建 playbook 脚本存放目录
@@ -23,17 +55,9 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz --no-check-certificate
 ```
 
-## 配置脚本
+## 配置安装脚本
 
 您需要根据实际情况修改如下配置文件，例如 IP 地址，端口号等
-
-#### vars_elasticsearch.yml
-
-这个文件中定义了安装路径、数据路径、安装包文件名、端口、内存等变量信息，你可以根据实际情况修改这些变量，这些变量在并部署时会替换到以下文件中。
-
-* ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
-* ansible-playbook/elasticsearch/config/jvm.options.j2
-* ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
 
 #### main.yml
 
@@ -43,21 +67,85 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.c
 - hosts: 10.1.207.180
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-180"
-
 - hosts: 10.1.207.181
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-181"
-
 - hosts: 10.1.207.182
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-182"
 ```
+
+#### vars_elasticsearch.yml
+
+这个文件中定义了安装路径、数据路径、安装包文件名、端口、内存等变量信息，你可以根据实际情况修改这些变量，这些变量在并部署时会替换到以下文件中。
+
+操作系统 Limits
+
+```shell
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '278528'
+limits_soft_nofile: '278528'
+limits_hard_stack: 'unlimited'
+limits_soft_stack: 'unlimited'
+```
+
+安装用的用户名、用户组
+
+```shell
+es_user: "elasticsearch"
+es_group: "elasticsearch"
+```
+
+安装介质名称以及解压后的目录名
+
+```shell
+es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.13.3"
+```
+
+安装路径
+
+```shell
+es_home_dir: "/opt/elasticsearch"
+es_log_dir: "/data01/elasticsearch/logs"
+es_data_dir: "/data01/elasticsearch/data"
+es_heap_dump_path: "/data01/elasticsearch/dump"
+es_temp_dir: "/data01/elasticsearch/temp"
+```
+
+服务配置
+
+```shell
+# 网路信息
+es_network_host: "0.0.0.0"
+es_http_port: 39200
+es_transport_port: 39010
+# 集群名称
+es_cluster_name: "my-elasticsearch"
+# 自动创建索引
+es_action_auto_create_index: "true"
+# 内存配置
+es_heap_size: 8g
+es_bootstrap_memory_lock: false
+```
+
+集群名称配置
+
+```shell
+# 集群节点名称（注意这不是主机名)
+node_names:
+  10.1.207.180:
+    es_node_name: node-180
+  10.1.207.181:
+    es_node_name: node-181
+  10.1.207.182:
+    es_node_name: node-182
+```
+
+* ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
+* ansible-playbook/elasticsearch/config/jvm.options.j2
+* ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
 
 ## 开始安装
 
@@ -79,7 +167,7 @@ docker run --name ansible --rm -it \
   /bin/bash
 ```
 
-执行安装脚本
+#### 安装 Elasticsearch 集群
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
@@ -93,15 +181,21 @@ bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz"
 ```
 
-## 启动 & 停止
+#### 验证 Elasticsearch 集群
 
-### 启动集群
+查看目标服务器上进程是否存在
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/elasticsearch/elasticsearch-7.13.3/bin/es.sh start'
-```
+bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'
+10.1.207.182 | CHANGED | rc=0 >>
+2
 
-### 检查状态
+10.1.207.180 | CHANGED | rc=0 >>
+2
+
+10.1.207.181 | CHANGED | rc=0 >>
+2
+```
 
 查看目标服 elasticsearch 服务，可以看到每个节点服务都已经启动
 
@@ -200,8 +294,43 @@ ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role   m
 100   376  100   376    0     0   9153      0 --:--:-- --:--:-- --:--:--  9400
 ```
 
-### 停止集群
+## 常用运维命令
+
+启动集群
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/elasticsearch/elasticsearch-7.13.3/bin/es.sh stop'
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh start'
+```
+
+停止集群
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh stop'
+```
+
+## Q & A
+
+#### 如何彻底删除 Elasticsearch 集群
+
+A: `~/elasticsearch_uninstall.sh` 脚本将 **kill Elasticsearch 进程，删除程序文件和所有数据文件**
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch_uninstall.sh'
+10.1.207.182 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
+
+10.1.207.180 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
+
+10.1.207.181 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
 ```

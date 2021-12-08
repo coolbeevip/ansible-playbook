@@ -29,6 +29,13 @@
     state: present
   with_items: "{{ hosts.keys() | list }}"
   check_mode: no
+- name: Configure Zookeeper 4lw.commands.whitelist
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^4lw.commands.whitelist=.*"
+    line: "4lw.commands.whitelist=*"
+    state: present
+  check_mode: no
 
 # Configure Kafka server.properties
 - name: Configure Kafka broker.id
