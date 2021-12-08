@@ -3,6 +3,37 @@
 Please create a `elasticsearch` user and defautl password is `123456` on the linux server before starting. This playbook script install three node clusters.
 Since the 7.x version will use the bundled JDK, there is no need to install the Java in advance.
 
+## Planning Your Installation
+
+Planning for server
+
+| IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| 10.1.207.180 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+
+**TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
+
+Planning for nodes
+
+| IP | Elasticsearch |
+| ---- | ---- |
+| 10.1.207.180 | ✓ |
+| 10.1.207.181 | ✓ |
+| 10.1.207.182 | ✓ |
+
+Planning for installation directory
+
+| PATH | DESCRIPTION |
+| /opt/elasticsearch | programs |
+| ~/elasticsearch_uninstall.sh | uninstall script |
+| ~/elasticsearch.sh | elasticsearch start & stop shell |
+| /data01/elasticsearch/logs | log directory |
+| /data01/elasticsearch/data | data directory |
+| /data01/elasticsearch/dump | dump directory |
+| /data01/elasticsearch/temp | temporary directory |
+
 ## Download Elasticsearch Tar & Ansible Playbook scripts
 
 Create a directory for Ansible Playbook scripts
@@ -26,39 +57,92 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.c
 
 ## Configuration
 
-The following parameters need to be configured in the actual environment
-
-#### vars_elasticsearch.yml
-
-This file defines variable information such as installation path, data path, installation package file name, port, memory, etc. You can modify these variables according to the actual environment. These variables will be replaced in the following files when they are deployed.
-
-* ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
-* ansible-playbook/elasticsearch/config/jvm.options.j2
-* ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
+> You can edit the following configuration files to modify the default parameters
 
 #### main.yml
 
-This file mainly defines the address of the target server, the login user name, and the name of each Elasticsearch node
+This file mainly defines the address of the target server, the login user name
 
 ```yaml
 - hosts: 10.1.207.180
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-180"
-
 - hosts: 10.1.207.181
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-181"
-
 - hosts: 10.1.207.182
   user: elasticsearch
   ...
-  vars:
-    es_node_name: "node-182"
 ```
+
+#### vars_elasticsearch.yml
+
+This file defines variable information such as installation path, data path, installation package file name, port, memory, etc. You can modify these variables according to the actual environment. These variables will be replaced in the following files when they are deployed.
+
+Linux  Limits
+
+```shell
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '278528'
+limits_soft_nofile: '278528'
+limits_hard_stack: 'unlimited'
+limits_soft_stack: 'unlimited'
+```
+
+Linux user & group
+
+```shell
+es_user: "elasticsearch"
+es_group: "elasticsearch"
+```
+
+Tarball and unzipped directory name
+
+```shell
+es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.13.3"
+```
+
+Installation path
+
+```shell
+es_home_dir: "/opt/elasticsearch"
+es_log_dir: "/data01/elasticsearch/logs"
+es_data_dir: "/data01/elasticsearch/data"
+es_heap_dump_path: "/data01/elasticsearch/dump"
+es_temp_dir: "/data01/elasticsearch/temp"
+```
+
+Elasticsearch configuration
+
+```shell
+# 网路信息
+es_network_host: "0.0.0.0"
+es_http_port: 39200
+es_transport_port: 39010
+# 集群名称
+es_cluster_name: "my-elasticsearch"
+# 自动创建索引
+es_action_auto_create_index: "true"
+# 内存配置
+es_heap_size: 8g
+es_bootstrap_memory_lock: false
+```
+
+Elasticsearch node name
+
+```shell
+node_names:
+  10.1.207.180:
+    es_node_name: node-180
+  10.1.207.181:
+    es_node_name: node-181
+  10.1.207.182:
+    es_node_name: node-182
+```
+
+**TIPS：** For more default configuration, please refer to the following file
 
 ## Installation
 
@@ -80,31 +164,39 @@ docker run --name ansible --rm -it \
   /bin/bash
 ```
 
-Run Ansible playbook scripts to install
+#### Install Elasticsearch Cluster
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
-At this point, the installation is complete, and you can see the Elasticsearch node that has been configured in each target server.
+**TIPS:** Because the Redis installation package (about 327MB) will be uploaded to all servers when the script is executed for the first time. The first installation on my local machine takes < 5 minutes.
 
-You can use the following script to delete the temporary files generated during the installation
+**TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Elasticsearch has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/elasticsearch_uninstall.sh'` uninstalls.
+
+**TIPS:** You can use the following script to delete the temporary files generated during the installation
 
 ```shell
 bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz"
 ```
 
-## Start & Stop
+#### Verify Elasticsearch Cluster
 
-### Start Elasticsearch Cluster
+Lookup Elasticsearch process
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/elasticsearch/elasticsearch-7.13.3/bin/es.sh start'
+bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'
+10.1.207.182 | CHANGED | rc=0 >>
+2
+
+10.1.207.180 | CHANGED | rc=0 >>
+2
+
+10.1.207.181 | CHANGED | rc=0 >>
+2
 ```
 
-### Check Elasticsearch Service Info
-
-Use API to view service status
+View Elasticsearch service
 
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
@@ -172,7 +264,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
 100   522  100   522    0     0   3139      0 --:--:-- --:--:-- --:--:--  3163
 ```
 
-Check Cluster Status
+View Elasticsearch cluster status
 
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/_cat/nodes?v'
@@ -201,8 +293,43 @@ ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role   m
 100   376  100   376    0     0   9153      0 --:--:-- --:--:-- --:--:--  9400
 ```
 
-### Stop Elasticsearch Cluster
+## Common Maintenance Commands
+
+Start Elasticsearch
 
 ```shell
-bash-5.0# ansible all -m shell -a 'sh /opt/elasticsearch/elasticsearch-7.13.3/bin/es.sh stop'
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh start'
+```
+
+Stop Elasticsearch
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh stop'
+```
+
+## Q & A
+
+#### How to force uninstall
+
+A: The `~/elasticsearch_uninstall.sh` script will **kill -9 Elasticsearch processes and delete programs and all data**
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch_uninstall.sh'
+10.1.207.182 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
+
+10.1.207.180 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
+
+10.1.207.181 | CHANGED | rc=0 >>
+Kill Elasticsearch process
+Delete Elasticsearch data
+Delete Elasticsearch programs
+Delete elasticsearch_uninstall.sh
 ```

@@ -25,8 +25,6 @@ Planning for nodes
 Planning for installation directory
 
 | PATH | DESCRIPTION |
-| ---- | ---- |
-| ---- | ---- |
 | /opt/redis | source package |
 | ~/redis_uninstall.sh | uninstall script |
 | ~/redis.sh | Redis start & stop script |
@@ -166,7 +164,7 @@ ok: [10.1.207.180] => {
 }
 ```
 
-## Verify Redis Master-Slave & Sentinel
+#### Verify Redis Master-Slave & Sentinel
 
 Check the Redis process information of each target server, you can see that the Redis and Sentinel processes of each node have been started
 
@@ -315,7 +313,7 @@ bash-5.0# ansible all -m shell -a '~/sentinel.sh restart'
 
 #### How to force uninstall
 
-A: The `~/redis_uninstall.sh`  script will **kill -9 all Redis and Sentinel processes and delete programs and all data**
+A: The `~/redis_uninstall.sh` script will **kill -9 all Redis and Sentinel processes and delete programs and all data**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/redis_uninstall.sh'

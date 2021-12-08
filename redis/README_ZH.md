@@ -138,7 +138,7 @@ docker run --name ansible --rm -it \
 bash-5.0#  
 ```
 
-## 安装集群
+#### 安装集群
 
 这个脚本将自动化完成如下操作：
 
@@ -165,7 +165,7 @@ ok: [10.1.207.180] => {
 
 **提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `Redis has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/redis_uninstall.sh'` 命令卸载之前的安装。
 
-## 验证集群
+#### 验证集群
 
 查看每个目标服务器 redis 进程信息，可以看到每个节点 redis 和 sentinel 进程都已经启动
 

@@ -1,0 +1,12 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
+
+- name: check the files in the installation directory
+  find:
+    paths: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}"
+    file_type: directory
+  register: relasticsearch_files
+  check_mode: no
+- fail:
+     msg: 'Elasticsearch has been installed, please uninstall and then reinstall'
+  when: elasticsearch_files.matched > 0

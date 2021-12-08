@@ -4,6 +4,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_elasticsearch_pre_checks.yml
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
@@ -15,6 +16,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_elasticsearch_pre_checks.yml
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
@@ -26,6 +28,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_elasticsearch_pre_checks.yml
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml

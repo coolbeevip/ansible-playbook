@@ -143,6 +143,8 @@ node_names:
     es_node_name: node-182
 ```
 
+**提示：** 其他更多默认配置，请参考如下文件
+
 * ansible-playbook/elasticsearch/config/elasticsearch.yml.j2
 * ansible-playbook/elasticsearch/config/jvm.options.j2
 * ansible-playbook/elasticsearch/config/jvm.options.d/gc.options.j2
@@ -173,9 +175,20 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
-至此，已经安装完毕，您可以在每个目标服务的安装目录下看到已经配置完毕的 elasticsearch 节点。
+如果你看到如下信息，说明安装完成
 
-您可以使用以下脚本删除不在使用的安装包
+```shell
+TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
+ok: [10.1.207.180] => {
+    "msg": "Install Succeed!"
+}
+```
+
+**提示:** 因为第一次执行脚本时，会上传 Elasticsearch 压缩包（约 327MB）到所有服务器。在我本地环境首次安装大概耗时 5 分钟
+
+**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `Elasticsearch has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/elasticsearch_uninstall.sh'` 命令卸载之前的安装。
+
+**提示:** 您可以使用以下脚本删除不在使用的安装包
 
 ```shell
 bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz"

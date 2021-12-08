@@ -4,3 +4,8 @@
 - name: Start Elasticsearch
   shell: $HOME/elasticsearch.sh start
   check_mode: no
+
+- name: Install Succeed
+  debug:
+    msg: Install Succeed!
+  check_mode: no
