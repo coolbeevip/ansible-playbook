@@ -11,6 +11,7 @@
       - libxslt
     state: present
   check_mode: no
+  become: yes
 
 # Configuring Linux limits
 - name: Add or modify hard nofile limits

@@ -8,6 +8,7 @@
       - xz
     state: present
   check_mode: no
+  become: yes
 
 # configuring Linux limits
 - name: Add or modify hard nofile limits
