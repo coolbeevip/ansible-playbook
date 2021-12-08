@@ -18,8 +18,9 @@ redis_group: "redis"                  # 操作系统组名
 redis_password: "redis"               # redis 密码
 redis_network_host: "0.0.0.0"         # 服务绑定 IP 地址
 redis_port: 7000                      # Redis 服务端口
-redis_maxmemory: 1GB                  # 最大内存,请和业务方确认
+redis_maxmemory: 3GB                  # 最大内存,请和业务方确认
 redis_maxclients: 1000                # 客户端最大连接数
+redis_maxmemory_policy: "allkeys-lru" # 驱逐策略
 redis_io_threads_do_reads: "yes"      # 开启多线程支持
 redis_io_threads: 4                   # 线程数，线程数一定要小于机器核数并且不要大于 8
 redis_master_ip: 10.1.207.180         # 主节点 IP 地址

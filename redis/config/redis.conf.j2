@@ -21,6 +21,8 @@ maxclients {{ redis_maxclients }}
 appendonly no
 appendfsync everysec
 
+maxmemory-policy {{ redis_maxmemory_policy }}
+
 {% if redis_master_ip != inventory_hostname %}
 slaveof {{ redis_master_ip }} {{ redis_port }}
 {% endif %}

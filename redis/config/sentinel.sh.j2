@@ -2,14 +2,17 @@
 
 case "$1" in
 start)
-  pid=`ps ax | grep -i $(cat {{ redis_log_dir }}/sentinel.pid) | grep -v grep | awk '{print $1}'`
-  if [ -n "$pid" ]
+  if [ -e {{ redis_log_dir }}/sentinel.pid ]
   then
-    echo "Sentinel is already running"
-  else
-    echo "Starting Sentinel"
-    {{ redis_bin_dir }}/redis-sentinel {{ redis_conf_dir }}/sentinel.conf
+    pid=`ps ax | grep -i $(cat {{ redis_log_dir }}/sentinel.pid) | grep -v grep | awk '{print $1}'`
+    if [ -n "$pid" ]
+    then
+      echo "Sentinel is already running"
+      exit 1
+    fi
   fi
+  echo "Starting Sentinel"
+  {{ redis_bin_dir }}/redis-sentinel {{ redis_conf_dir }}/sentinel.conf
 ;;
 
 stop)

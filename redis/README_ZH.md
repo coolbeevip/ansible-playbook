@@ -270,6 +270,34 @@ bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel g
 10.1.207.180
 ```
 
+执行基准测试，对每个命令执行 10000 次操作，数据大小为 65536 bytes(64KB)，使用随机十万分之一KEY。这个命令在我的环境执行需要 1 分钟
+
+```shell
+bash-5.0# ansible all -m shell -a 'redis-benchmark -h 10.1.207.180 -p 7000 -a redis -r 10000 -n 10000 -t get,set,hset,lpush,lpop -q -d 65536'
+10.1.207.181 | CHANGED | rc=0 >>
+SET: 300.51 requests per second, p50=135.551 msec
+GET: 785.85 requests per second, p50=42.847 msec
+LPUSH: 216.22 requests per second, p50=154.495 msec
+LPOP: 953.29 requests per second, p50=36.191 msec
+HSET: 835.77 requests per second, p50=48.127 msec
+
+10.1.207.180 | CHANGED | rc=0 >>
+SET: 300.77 requests per second, p50=138.111 msec
+GET: 888.42 requests per second, p50=38.559 msec
+LPUSH: 216.29 requests per second, p50=156.799 msec
+LPOP: 988.04 requests per second, p50=33.919 msec
+HSET: 780.34 requests per second, p50=51.551 msec
+
+10.1.207.182 | CHANGED | rc=0 >>
+SET: 290.66 requests per second, p50=137.087 msec
+GET: 841.89 requests per second, p50=38.463 msec
+LPUSH: 210.99 requests per second, p50=157.311 msec
+LPOP: 967.12 requests per second, p50=35.103 msec
+HSET: 902.04 requests per second, p50=45.375 msec
+```
+
+**提示：** 例如 `GET: 841.89 requests per second, p50=38.463 msec` 表示每秒完成 841 次请求，每秒吞吐大约为53MB（841*64KB），这基本匹配我的网络带宽
+
 ## 常用运维命令
 
 **提示：** 哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个节点

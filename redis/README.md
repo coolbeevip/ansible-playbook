@@ -269,6 +269,34 @@ bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel g
 10.1.207.180
 ```
 
+Benchmark test, each command executes 10,000 operations, the data size is 65536 bytes (64KB), and a random 1/10000 KEY is used. This command takes 1 minute to execute in my local machine
+
+```shell
+bash-5.0# ansible all -m shell -a 'redis-benchmark -h 10.1.207.180 -p 7000 -a redis -r 10000 -n 10000 -t get,set,hset,lpush,lpop -q -d 65536'
+10.1.207.181 | CHANGED | rc=0 >>
+SET: 300.51 requests per second, p50=135.551 msec
+GET: 785.85 requests per second, p50=42.847 msec
+LPUSH: 216.22 requests per second, p50=154.495 msec
+LPOP: 953.29 requests per second, p50=36.191 msec
+HSET: 835.77 requests per second, p50=48.127 msec
+
+10.1.207.180 | CHANGED | rc=0 >>
+SET: 300.77 requests per second, p50=138.111 msec
+GET: 888.42 requests per second, p50=38.559 msec
+LPUSH: 216.29 requests per second, p50=156.799 msec
+LPOP: 988.04 requests per second, p50=33.919 msec
+HSET: 780.34 requests per second, p50=51.551 msec
+
+10.1.207.182 | CHANGED | rc=0 >>
+SET: 290.66 requests per second, p50=137.087 msec
+GET: 841.89 requests per second, p50=38.463 msec
+LPUSH: 210.99 requests per second, p50=157.311 msec
+LPOP: 967.12 requests per second, p50=35.103 msec
+HSET: 902.04 requests per second, p50=45.375 msec
+```
+
+**提示：** For example, `GET: 841.89 requests per second, p50=38.463 msec` means 841 requests per second are completed, and the throughput per second is about 53MB (841*64KB), which basically matches my network bandwidth
+
 ## Common Maintenance Commands
 
 **TIPS：** Need to start each node in the order of `Master->Slave->Sentinel`

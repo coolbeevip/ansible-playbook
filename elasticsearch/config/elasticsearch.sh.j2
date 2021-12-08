@@ -3,14 +3,17 @@ unset JAVA_HOME
 
 case "$1" in
 start)
-  pid=`ps ax | grep -i $(cat {{ es_log_dir }}/elasticsearch.pid) | grep -v grep | awk '{print $1}'`
-  if [ -n "$pid" ]
+  if [ -e {{ es_log_dir }}/elasticsearch.pid ]
   then
-    echo "Elasticsearch is already running"
-  else
-    echo "Starting Elasticsearch"
-    {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -d -p {{ es_log_dir }}/elasticsearch.pid
+    pid=`ps ax | grep -i $(cat {{ es_log_dir }}/elasticsearch.pid) | grep -v grep | awk '{print $1}'`
+    if [ -n "$pid" ]
+    then
+      echo "Elasticsearch is already running"
+      exit 1
+    fi
   fi
+  echo "Starting Elasticsearch"
+  {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -d -p {{ es_log_dir }}/elasticsearch.pid
 ;;
 
 stop)
