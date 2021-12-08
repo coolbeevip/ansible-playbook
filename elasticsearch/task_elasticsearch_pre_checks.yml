@@ -5,7 +5,7 @@
   find:
     paths: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}"
     file_type: directory
-  register: relasticsearch_files
+  register: elasticsearch_files
   check_mode: no
 - fail:
      msg: 'Elasticsearch has been installed, please uninstall and then reinstall'
