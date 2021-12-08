@@ -1,4 +1,4 @@
-- hosts: 10.1.207.180
+- hosts: 10.1.207.177
   user: kafka
   become: no
   become_user: root
@@ -8,8 +8,9 @@
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
     - include_tasks: task_kafka_config.yml
+    - include_tasks: task_kafka_start.yml
 
-- hosts: 10.1.207.181
+- hosts: 10.1.207.178
   user: kafka
   become: no
   become_user: root
@@ -19,8 +20,9 @@
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
     - include_tasks: task_kafka_config.yml
+    - include_tasks: task_kafka_start.yml
 
-- hosts: 10.1.207.182
+- hosts: 10.1.207.183
   user: kafka
   become: no
   become_user: root
@@ -30,3 +32,4 @@
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
     - include_tasks: task_kafka_config.yml
+    - include_tasks: task_kafka_start.yml

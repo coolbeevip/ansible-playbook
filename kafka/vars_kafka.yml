@@ -32,15 +32,15 @@ zookeeper_datalog_dir: "/data01/kafka/zookeeper_datalog"
 
 # Node configuration
 hosts:
-  10.1.207.180:
-    zookeeper_id: 180
-    kafka_broker_id: 180
-  10.1.207.181:
-    zookeeper_id: 181
-    kafka_broker_id: 181
-  10.1.207.182:
-    zookeeper_id: 182
-    kafka_broker_id: 182
+  10.1.207.177:
+    zookeeper_id: 177
+    kafka_broker_id: 177
+  10.1.207.178:
+    zookeeper_id: 178
+    kafka_broker_id: 178
+  10.1.207.183:
+    zookeeper_id: 183
+    kafka_broker_id: 183
 
 # Zookeeper configuration
 zookeeper_client_port: 2181 # the port at which the clients will connect
@@ -64,9 +64,9 @@ kafka_server_log_retention_hours: 168 # 数据保留时长（小时），建议�
 kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建议和业务侧评估单条数据的大小。数据大于 1MB 时建议发送端开启压缩模式，不建议发送大于 5MB 的数据
 
 # kafka JVM options
-kafka_heap_opts: "--Xms6g  --Xmx6g" # 最大不建议超过 6g
+kafka_heap_opts: "-Xms6g -Xmx6g" # 最大不建议超过 6g
 kafka_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
 
 # zookeeper JVM options
-zookeeper_heap_opts: "--Xms1g  --Xmx1g" # 通常 1g 够用了
+zookeeper_heap_opts: "-Xms1g -Xmx1g" # 通常 1g 够用了
 zookeeper_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"

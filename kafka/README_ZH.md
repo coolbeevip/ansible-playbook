@@ -208,24 +208,45 @@ bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
 
 ```shell
 TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
-ok: [10.1.207.180] => {
+ok: [10.1.207.183] => {
     "msg": "Install Succeed!"
 }
 ```
 
 #### 验证 Kafka 集群
 
-Test the Zookeeper server state.
+查看 Zookeeper PID
+
+```shell
+bash-5.0# ansible all -m shell -a '~/zookeeper.sh status'
+10.1.207.183 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 9477
+
+10.1.207.177 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 31545
+
+10.1.207.178 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 23435
+```
+
 测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何响应
 
 ```shell
-$ echo ruok | nc 10.1.207.180 9002;echo
+bash-5.0# ansible all -m shell -a 'echo ruok | nc {{ inventory_hostname }} 2181; echo'
+10.1.207.177 | CHANGED | rc=0 >>
+imok
+
+10.1.207.178 | CHANGED | rc=0 >>
+imok
+
+10.1.207.183 | CHANGED | rc=0 >>
+imok
 ```
 
 Show list of active brokers IDs on the cluster.
 
 ```shell
-zookeeper-shell.sh 10.1.207.180:9002 ls /brokers/ids
+bash-5.0# ansible all -m shell -a 'zookeeper-shell.sh 10.1.207.180:2181 ls /brokers/ids'
 ```
 
 Returns the details of the broker with the given ID
@@ -281,26 +302,42 @@ Kafka is Running as PID: 7940
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh start'
+10.1.207.178 | CHANGED | rc=0 >>
+Starting zookeeper
+
+10.1.207.177 | CHANGED | rc=0 >>
+Starting zookeeper
+
+10.1.207.183 | CHANGED | rc=0 >>
+Starting zookeeper
 ```
 
 停止 Zookeeper
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh stop'
+10.1.207.177 | CHANGED | rc=0 >>
+Shutting down zookeeper
+
+10.1.207.178 | CHANGED | rc=0 >>
+Shutting down zookeeper
+
+10.1.207.183 | CHANGED | rc=0 >>
+Shutting down zookeeper
 ```
 
 查看 Zookeeper 状态
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh status'
-10.1.207.180 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 16996
+10.1.207.183 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 9477
 
-10.1.207.182 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 2742
+10.1.207.177 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 31545
 
-10.1.207.181 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 3124
+10.1.207.178 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 23435
 ```
 
 Display configuration.

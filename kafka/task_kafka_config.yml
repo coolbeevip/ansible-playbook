@@ -7,6 +7,27 @@
   check_mode: no
 
 # Configure zookeeper.properties
+- name: Configure Zookeeper initLimit
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^initLimit=.*"
+    line: "initLimit={{ zookeeper_init_limit }}"
+    state: present
+  check_mode: no
+- name: Configure Zookeeper tickTime
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^tickTime=.*"
+    line: "tickTime={{ zookeeper_tick_time }}"
+    state: present
+  check_mode: no
+- name: Configure Zookeeper syncLimit
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^syncLimit=.*"
+    line: "syncLimit={{ zookeeper_sync_limit }}"
+    state: present
+  check_mode: no
 - name: Configure Zookeeper dataDir
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
@@ -134,8 +155,3 @@
   check_mode: no
 
 # Create a Topic for Test
-
-- name: Install Succeed
-  debug:
-    msg: Install Succeed!
-  check_mode: no

@@ -1,0 +1,15 @@
+- name: include vars
+  include_vars: "vars_kafka.yml"
+
+- name: Start Zookeeper
+  shell: $HOME/zookeeper.sh start
+  check_mode: no
+
+- name: Start Kafka
+  shell: $HOME/kafka.sh start
+  check_mode: no
+
+- name: Install Succeed
+  debug:
+    msg: Install Succeed!
+  check_mode: no

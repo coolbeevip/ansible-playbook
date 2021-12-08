@@ -2,12 +2,16 @@
   include_vars: "vars_kafka.yml"
 
 # Install linux package
-- name: install packages
+- name: Yum install packages
   yum:
     name:
-      - nc
+      - nc # 测试 zookeeper 工具
+      - rsync
+      - wget
+      - yum-utils
     state: present
   check_mode: no
+  become: yes
 
 # File Descriptors
 - name: Add or modify hard nofile limits
@@ -48,17 +52,39 @@
   shell: "/sbin/sysctl -w vm.max_map_count={{ kernel_max_map_count }}"
   check_mode: no
   become: yes
-- name: configure vm
+
+# Configure sysctl configuration
+- name: Check /etc/sysctl.config exists
+  stat: path=/etc/sysctl.config
+  register: check_etc_sysctl_file
+  check_mode: no
+  become: yes
+- name: Configure sysctl max_map_count
   lineinfile:
     dest: /etc/sysctl.config
     regexp: '^vm.max_map_count=.*'
     line: "vm.max_map_count={{ kernel_max_map_count }}"
     state: present
+  when: check_etc_sysctl_file.stat.exists
+  check_mode: no
+  become: yes
+- name: Check /etc/sysctl.conf exists
+  stat: path=/etc/sysctl.conf
+  register: check_etc_sysctl_file
+  check_mode: no
+  become: yes
+- name: Configure sysctl max_map_count
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^vm.max_map_count=.*'
+    line: "vm.max_map_count={{ kernel_max_map_count }}"
+    state: present
+  when: check_etc_sysctl_file.stat.exists
   check_mode: no
   become: yes
 
 # 初始化程序目录
-- name: create kafka home
+- name: Create kafka home
   file:
     path: "{{ kafka_home_dir }}"
     state: directory
@@ -69,7 +95,7 @@
   check_mode: no
 
 # 初始化数据目录
-- name: create others directories
+- name: Create others directories
   file:
     path: "{{ item }}"
     state: directory
@@ -82,3 +108,12 @@
     - "{{ kafka_log_dirs }}"
   check_mode: no
   become: yes
+
+# 设置  PATH
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin:$PATH"
+    state: present
+  check_mode: no
