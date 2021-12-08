@@ -196,7 +196,7 @@ bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.
 
 #### 验证 Elasticsearch 集群
 
-查看目标服务器上进程是否存在
+查看目标服务器上进程, 你可以看到每个服务上有两个进程
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'

@@ -182,7 +182,7 @@ bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.
 
 #### Verify Elasticsearch Cluster
 
-Lookup Elasticsearch process
+Lookup Elasticsearch process, you can see that there are two processes on each server.
 
 ```shell
 bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'
