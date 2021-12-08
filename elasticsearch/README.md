@@ -170,7 +170,7 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
-**TIPS:** Because the Redis installation package (about 327MB) will be uploaded to all servers when the script is executed for the first time. The first installation on my local machine takes < 5 minutes.
+**TIPS:** Because the Elasticsearch installation package will be uploaded to all servers (about 327MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 5 minutes(upload package taske about 2 minutes, others take about 3 minutes.)
 
 **TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Elasticsearch has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/elasticsearch_uninstall.sh'` uninstalls.
 
