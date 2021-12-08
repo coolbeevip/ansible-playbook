@@ -6,6 +6,9 @@
   yum:
     name:
       - xz
+      - rsync
+      - wget
+      - yum-utils
     state: present
   check_mode: no
   become: yes

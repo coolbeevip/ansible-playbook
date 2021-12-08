@@ -9,6 +9,9 @@
     name:
       - glibc
       - libxslt
+      - rsync
+      - wget
+      - yum-utils      
     state: present
   check_mode: no
   become: yes

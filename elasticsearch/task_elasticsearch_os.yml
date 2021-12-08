@@ -1,6 +1,17 @@
 - name: include vars
   include_vars: "vars_elasticsearch.yml"
 
+# Install linux package
+- name: install packages
+  yum:
+    name:
+      - rsync
+      - wget
+      - yum-utils
+    state: present
+  check_mode: no
+  become: yes
+
 # 禁用系统交换空间
 - name: check disable all swap files
   shell: /sbin/swapon -s
