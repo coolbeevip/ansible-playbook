@@ -9,7 +9,7 @@ start)
     echo "Elasticsearch is already running"
   else
     echo "Starting Elasticsearch"
-    nohup {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -p {{ es_log_dir }}/elasticsearch.pid -d >/dev/null 2>&1 &
+    {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -d -p {{ es_log_dir }}/elasticsearch.pid
   fi
 ;;
 
