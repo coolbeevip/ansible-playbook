@@ -108,12 +108,3 @@
     - "{{ kafka_log_dirs }}"
   check_mode: no
   become: yes
-
-# 设置  PATH
-- name: configuring environment PATH
-  lineinfile:
-    dest: ~/.bashrc
-    regexp: '^export PATH=.*'
-    line: "export PATH={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin:$PATH"
-    state: present
-  check_mode: no

@@ -78,9 +78,9 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^export PATH=.*'
-    line: "export PATH=${JAVA_HOME}/bin:$PATH"
+    line: "export PATH={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin:${JAVA_HOME}/bin:$PATH"
     state: present
-  check_mode: no  
+  check_mode: no
 
 # 上传卸载脚本 kafka_uninstall.sh
 - name: copy kafka_uninstall.sh

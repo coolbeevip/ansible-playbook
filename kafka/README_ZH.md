@@ -229,6 +229,26 @@ Zookeeper is Running as PID: 31545
 Zookeeper is Running as PID: 23435
 ```
 
+查看 Kafka PID
+
+```shell
+bash-5.0# ansible all -m shell -a '~/kafka.sh status'
+10.1.207.177 | CHANGED | rc=0 >>
+Kafka is Running as PID: 7569
+23666
+23667
+
+10.1.207.183 | CHANGED | rc=0 >>
+Kafka is Running as PID: 15901
+15902
+31275
+
+10.1.207.178 | CHANGED | rc=0 >>
+Kafka is Running as PID: 26639
+27381
+27410
+```
+
 测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何响应
 
 ```shell
@@ -243,22 +263,66 @@ imok
 imok
 ```
 
-Show list of active brokers IDs on the cluster.
-
-```shell
-bash-5.0# ansible all -m shell -a 'zookeeper-shell.sh 10.1.207.180:2181 ls /brokers/ids'
-```
-
-Returns the details of the broker with the given ID
-
-```shell
-zookeeper-shell.sh 10.1.207.180:9002 get /brokers/ids/<id>
-```
-
 Outputs a list of variables that could be used for monitoring the health of the cluster.
 
 ```shell
-$ echo mntr | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo mntr | nc {{ inventory_hostname }} 2181'
+10.1.207.177 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	leader
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	130
+zk_max_file_descriptor_count	100000
+zk_followers	2
+zk_synced_followers	2
+zk_pending_syncs	0
+zk_last_proposal_size	-1
+zk_max_proposal_size	-1
+zk_min_proposal_size	-1
+
+10.1.207.178 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	follower
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	128
+zk_max_file_descriptor_count	100000
+
+10.1.207.183 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	follower
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	128
+zk_max_file_descriptor_count	100000
 ```
 
 ## 常用运维命令
@@ -275,6 +339,17 @@ bash-5.0# ansible all -m shell -a '~/kafka.sh start'
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh stop'
+10.1.207.177 | CHANGED | rc=0 >>
+Shutting down kafka
+No kafka server to stop
+
+10.1.207.183 | CHANGED | rc=0 >>
+Shutting down kafka
+No kafka server to stop
+
+10.1.207.178 | CHANGED | rc=0 >>
+Shutting down kafka
+No kafka server to stop
 ```
 
 查看 Kafka 状态
