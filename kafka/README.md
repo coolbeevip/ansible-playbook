@@ -299,6 +299,14 @@ Kafka is Running as PID: 20962
 Kafka is Running as PID: 25640
 ```
 
+Create Topic
+
+```shell
+bash-5.0# ansible 10.1.207.177 -m shell -a 'kafka-topics.sh --create --topic testtopic --replication-factor 2 --partitions 6 --bootstrap-server 10.1.207.177:9003,10.1.207.178:9003,10.1.207.183:9003'
+10.1.207.177 | CHANGED | rc=0 >>
+Created topic testtopic.
+```
+
 #### Zookeeper
 
 Start Zookeeper
