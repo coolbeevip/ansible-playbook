@@ -7,6 +7,6 @@
     file_type: directory
   register: kafka_files
   check_mode: no
-# - fail:
-#      msg: 'Kafka has been installed, please uninstall and then reinstall'
-#   when: kafka_files.matched > 0
+- fail:
+     msg: 'Kafka has been installed, please uninstall and then reinstall'
+  when: kafka_files.matched > 0

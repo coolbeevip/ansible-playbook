@@ -733,12 +733,16 @@ A: `~/kafka_uninstall.sh` 脚本将 **kill -9 MySQL server 和 MySQL router，�
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
 10.1.207.177 | CHANGED | rc=0 >>
-
-
-10.1.207.183 | CHANGED | rc=0 >>
-
+Delete Kafka unzip directory
+Delete Kafka Data directory
 
 10.1.207.178 | CHANGED | rc=0 >>
+Delete Kafka unzip directory
+Delete Kafka Data directory
+
+10.1.207.183 | CHANGED | rc=0 >>
+Delete Kafka unzip directory
+Delete Kafka Data directory
 ```
 
 #### 生产环境
