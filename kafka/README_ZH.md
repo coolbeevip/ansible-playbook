@@ -235,18 +235,12 @@ Zookeeper is Running as PID: 23435
 bash-5.0# ansible all -m shell -a '~/kafka.sh status'
 10.1.207.177 | CHANGED | rc=0 >>
 Kafka is Running as PID: 7569
-23666
-23667
 
 10.1.207.183 | CHANGED | rc=0 >>
 Kafka is Running as PID: 15901
-15902
-31275
 
 10.1.207.178 | CHANGED | rc=0 >>
 Kafka is Running as PID: 26639
-27381
-27410
 ```
 
 测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何响应
@@ -333,42 +327,42 @@ zk_max_file_descriptor_count	100000
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh start'
+10.1.207.177 | CHANGED | rc=0 >>
+Starting kafka
+
+10.1.207.183 | CHANGED | rc=0 >>
+Starting kafka
+
+10.1.207.178 | CHANGED | rc=0 >>
+Starting kafka
 ```
 
 停止 Kafka
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh stop'
-10.1.207.177 | CHANGED | rc=0 >>
-Shutting down kafka
-No kafka server to stop
-
 10.1.207.183 | CHANGED | rc=0 >>
 Shutting down kafka
-No kafka server to stop
 
 10.1.207.178 | CHANGED | rc=0 >>
 Shutting down kafka
-No kafka server to stop
+
+10.1.207.177 | CHANGED | rc=0 >>
+Shutting down kafka
 ```
 
 查看 Kafka 状态
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka.sh status'
-10.1.207.182 | CHANGED | rc=0 >>
-Kafka is Running as PID: 4140
-32752
-32753
+10.1.207.177 | CHANGED | rc=0 >>
+Kafka is Running as PID: 19440
 
-10.1.207.181 | CHANGED | rc=0 >>
-Kafka is Running as PID: 6949
-24057
-24058
+10.1.207.183 | CHANGED | rc=0 >>
+Kafka is Running as PID: 20962
 
-10.1.207.180 | CHANGED | rc=0 >>
-Kafka is Running as PID: 7940
-7941
+10.1.207.178 | CHANGED | rc=0 >>
+Kafka is Running as PID: 25640
 ```
 
 #### Zookeeper
@@ -391,13 +385,13 @@ Starting zookeeper
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh stop'
-10.1.207.177 | CHANGED | rc=0 >>
-Shutting down zookeeper
-
 10.1.207.178 | CHANGED | rc=0 >>
 Shutting down zookeeper
 
 10.1.207.183 | CHANGED | rc=0 >>
+Shutting down zookeeper
+
+10.1.207.177 | CHANGED | rc=0 >>
 Shutting down zookeeper
 ```
 
@@ -405,50 +399,240 @@ Shutting down zookeeper
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/zookeeper.sh status'
-10.1.207.183 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 9477
-
 10.1.207.177 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 31545
+Zookeeper is Running as PID: 25589
+
+10.1.207.183 | CHANGED | rc=0 >>
+Zookeeper is Running as PID: 958
 
 10.1.207.178 | CHANGED | rc=0 >>
-Zookeeper is Running as PID: 23435
+Zookeeper is Running as PID: 26663
 ```
 
+显示 Zookeeper 配置
 Display configuration.
 
 ```shell
-$ echo conf | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo conf | nc {{ inventory_hostname }} 2181'
+10.1.207.183 | CHANGED | rc=0 >>
+clientPort=2181
+secureClientPort=-1
+dataDir=/data01/kafka/zookeeper_data/version-2
+dataDirSize=67108880
+dataLogDir=/data01/kafka/zookeeper_datalog/version-2
+dataLogSize=5295
+tickTime=2000
+maxClientCnxns=0
+minSessionTimeout=4000
+maxSessionTimeout=40000
+serverId=183
+initLimit=10
+syncLimit=5
+electionAlg=3
+electionPort=3888
+quorumPort=2888
+peerType=0
+membership:
+server.177=10.1.207.177:2888:3888:participant
+server.178=10.1.207.178:2888:3888:participant
+server.183=10.1.207.183:2888:3888:participant
+version=0
+
+10.1.207.177 | CHANGED | rc=0 >>
+clientPort=2181
+secureClientPort=-1
+dataDir=/data01/kafka/zookeeper_data/version-2
+dataDirSize=67108880
+dataLogDir=/data01/kafka/zookeeper_datalog/version-2
+dataLogSize=1715
+tickTime=2000
+maxClientCnxns=0
+minSessionTimeout=4000
+maxSessionTimeout=40000
+serverId=177
+initLimit=10
+syncLimit=5
+electionAlg=3
+electionPort=3888
+quorumPort=2888
+peerType=0
+membership:
+server.177=10.1.207.177:2888:3888:participant
+server.178=10.1.207.178:2888:3888:participant
+server.183=10.1.207.183:2888:3888:participant
+version=0
+
+10.1.207.178 | CHANGED | rc=0 >>
+clientPort=2181
+secureClientPort=-1
+dataDir=/data01/kafka/zookeeper_data/version-2
+dataDirSize=67108880
+dataLogDir=/data01/kafka/zookeeper_datalog/version-2
+dataLogSize=2857
+tickTime=2000
+maxClientCnxns=0
+minSessionTimeout=4000
+maxSessionTimeout=40000
+serverId=178
+initLimit=10
+syncLimit=5
+electionAlg=3
+electionPort=3888
+quorumPort=2888
+peerType=0
+membership:
+server.177=10.1.207.177:2888:3888:participant
+server.178=10.1.207.178:2888:3888:participant
+server.183=10.1.207.183:2888:3888:participant
+version=0
 ```
 
 List connection details to this server.
 
 ```shell
-$ echo cons | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo cons | nc {{ inventory_hostname }} 2181'
+10.1.207.177 | CHANGED | rc=0 >>
+ /10.1.207.177:29094[0](queued=0,recved=1,sent=0)
+
+10.1.207.178 | CHANGED | rc=0 >>
+ /10.1.207.178:37550[0](queued=0,recved=1,sent=0)
+
+10.1.207.183 | CHANGED | rc=0 >>
+ /10.1.207.183:43808[0](queued=0,recved=1,sent=0)
 ```
 
 Display outstanding sessions and ephemeral nodes.
 
 ```shell
-$ echo dump | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo dump | nc {{ inventory_hostname }} 2181'
+10.1.207.178 | CHANGED | rc=0 >>
+SessionTracker dump:
+Global Sessions(0):
+ephemeral nodes dump:
+Sessions with Ephemerals (0):
+Connections dump:
+Connections Sets (1)/(1):
+1 expire at Thu Dec 09 10:27:03 CST 2021:
+	ip: /10.1.207.178:37608 sessionId: 0x0
+
+10.1.207.177 | CHANGED | rc=0 >>
+SessionTracker dump:
+Global Sessions(0):
+ephemeral nodes dump:
+Sessions with Ephemerals (0):
+Connections dump:
+Connections Sets (1)/(1):
+1 expire at Thu Dec 09 10:25:25 CST 2021:
+	ip: /10.1.207.177:29470 sessionId: 0x0
+
+10.1.207.183 | CHANGED | rc=0 >>
+SessionTracker dump:
+Session Sets (0)/(0):
+ephemeral nodes dump:
+Sessions with Ephemerals (0):
+Connections dump:
+Connections Sets (1)/(1):
+1 expire at Thu Dec 09 10:26:55 CST 2021:
+	ip: /10.1.207.183:43966 sessionId: 0x0
 ```
 
 Display environment settings.
 
 ```shell
-$ echo envi | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo envi | nc {{ inventory_hostname }} 2181'
+10.1.207.178 | CHANGED | rc=0 >>
+Environment:
+zookeeper.version=3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+host.name=oss-irms-178
+java.version=1.8.0_202
+java.vendor=Oracle Corporation
+java.home=/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre
+java.class.path=.:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/dt.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/tools.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre/lib::/opt/kafka/kafka_2.12-2.6.3/bin/../libs/activation-1.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/aopalliance-repackaged-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/argparse4j-0.7.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/audience-annotations-0.5.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-cli-1.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-lang3-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-api-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-basic-auth-extension-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-file-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-json-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-client-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-runtime-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-transforms-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-api-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-locator-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-utils-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-core-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-databind-2.10.5.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-dataformat-csv-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-datatype-jdk8-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-base-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-json-provider-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-jaxb-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-paranamer-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-scala_2.12-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.activation-api-1.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.annotation-api-1.3.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.inject-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.validation-api-2.0.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.ws.rs-api-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.xml.bind-api-2.3.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.25.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.26.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.servlet-api-3.1.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.ws.rs-api-2.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jaxb-api-2.3.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-client-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-common-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-core-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-hk2-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-media-jaxb-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-server-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-client-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-continuation-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-http-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-io-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-security-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-server-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlet-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlets-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-ajax-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jopt-simple-5.0.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3-sources.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-clients-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-log4j-appender-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-examples-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-scala_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-test-utils-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-tools-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/log4j-1.2.17.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/lz4-java-1.7.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/maven-artifact-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/metrics-core-2.2.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-buffer-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-codec-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-handler-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-resolver-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-epoll-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-unix-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/osgi-resource-locator-1.0.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/paranamer-2.8.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/plexus-utils-3.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/reflections-0.9.12.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/rocksdbjni-5.18.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-collection-compat_2.12-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-java8-compat_2.12-0.9.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-library-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-logging_2.12-3.9.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-reflect-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-api-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/snappy-java-1.1.7.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-jute-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zstd-jni-1.4.4-7.jar
+java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+java.io.tmpdir=/tmp
+java.compiler=<NA>
+os.name=Linux
+os.arch=amd64
+os.version=3.10.0-957.el7.x86_64
+user.name=kafka
+user.home=/home/kafka
+user.dir=/home/kafka
+os.memory.free=1015MB
+os.memory.max=1024MB
+os.memory.total=1024MB
+
+10.1.207.177 | CHANGED | rc=0 >>
+Environment:
+zookeeper.version=3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+host.name=cluster-endpoint
+java.version=1.8.0_202
+java.vendor=Oracle Corporation
+java.home=/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre
+java.class.path=.:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/dt.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/tools.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre/lib::/opt/kafka/kafka_2.12-2.6.3/bin/../libs/activation-1.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/aopalliance-repackaged-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/argparse4j-0.7.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/audience-annotations-0.5.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-cli-1.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-lang3-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-api-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-basic-auth-extension-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-file-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-json-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-client-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-runtime-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-transforms-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-api-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-locator-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-utils-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-core-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-databind-2.10.5.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-dataformat-csv-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-datatype-jdk8-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-base-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-json-provider-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-jaxb-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-paranamer-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-scala_2.12-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.activation-api-1.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.annotation-api-1.3.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.inject-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.validation-api-2.0.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.ws.rs-api-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.xml.bind-api-2.3.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.25.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.26.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.servlet-api-3.1.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.ws.rs-api-2.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jaxb-api-2.3.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-client-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-common-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-core-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-hk2-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-media-jaxb-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-server-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-client-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-continuation-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-http-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-io-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-security-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-server-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlet-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlets-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-ajax-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jopt-simple-5.0.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3-sources.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-clients-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-log4j-appender-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-examples-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-scala_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-test-utils-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-tools-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/log4j-1.2.17.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/lz4-java-1.7.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/maven-artifact-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/metrics-core-2.2.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-buffer-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-codec-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-handler-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-resolver-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-epoll-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-unix-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/osgi-resource-locator-1.0.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/paranamer-2.8.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/plexus-utils-3.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/reflections-0.9.12.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/rocksdbjni-5.18.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-collection-compat_2.12-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-java8-compat_2.12-0.9.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-library-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-logging_2.12-3.9.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-reflect-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-api-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/snappy-java-1.1.7.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-jute-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zstd-jni-1.4.4-7.jar
+java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+java.io.tmpdir=/tmp
+java.compiler=<NA>
+os.name=Linux
+os.arch=amd64
+os.version=3.10.0-957.el7.x86_64
+user.name=kafka
+user.home=/home/kafka
+user.dir=/home/kafka
+os.memory.free=977MB
+os.memory.max=1024MB
+os.memory.total=1024MB
+
+10.1.207.183 | CHANGED | rc=0 >>
+Environment:
+zookeeper.version=3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+host.name=oss-irms-183
+java.version=1.8.0_202
+java.vendor=Oracle Corporation
+java.home=/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre
+java.class.path=.:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/dt.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/lib/tools.jar:/opt/kafka/kafka_2.12-2.6.3/jdk1.8.0_202/jre/lib::/opt/kafka/kafka_2.12-2.6.3/bin/../libs/activation-1.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/aopalliance-repackaged-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/argparse4j-0.7.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/audience-annotations-0.5.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-cli-1.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/commons-lang3-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-api-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-basic-auth-extension-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-file-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-json-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-mirror-client-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-runtime-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/connect-transforms-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-api-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-locator-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/hk2-utils-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-core-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-databind-2.10.5.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-dataformat-csv-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-datatype-jdk8-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-base-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-jaxrs-json-provider-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-jaxb-annotations-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-paranamer-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jackson-module-scala_2.12-2.10.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.activation-api-1.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.annotation-api-1.3.5.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.inject-2.6.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.validation-api-2.0.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.ws.rs-api-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jakarta.xml.bind-api-2.3.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.25.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javassist-3.26.0-GA.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.servlet-api-3.1.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/javax.ws.rs-api-2.1.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jaxb-api-2.3.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-client-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-common-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-container-servlet-core-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-hk2-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-media-jaxb-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jersey-server-2.31.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-client-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-continuation-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-http-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-io-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-security-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-server-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlet-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-servlets-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jetty-util-ajax-9.4.39.v20210325.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/jopt-simple-5.0.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka_2.12-2.6.3-sources.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-clients-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-log4j-appender-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-examples-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-scala_2.12-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-streams-test-utils-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/kafka-tools-2.6.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/log4j-1.2.17.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/lz4-java-1.7.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/maven-artifact-3.8.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/metrics-core-2.2.0.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-buffer-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-codec-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-handler-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-resolver-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-epoll-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/netty-transport-native-unix-common-4.1.59.Final.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/osgi-resource-locator-1.0.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/paranamer-2.8.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/plexus-utils-3.2.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/reflections-0.9.12.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/rocksdbjni-5.18.4.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-collection-compat_2.12-2.1.6.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-java8-compat_2.12-0.9.1.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-library-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-logging_2.12-3.9.2.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/scala-reflect-2.12.11.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-api-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/snappy-java-1.1.7.3.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zookeeper-jute-3.5.9.jar:/opt/kafka/kafka_2.12-2.6.3/bin/../libs/zstd-jni-1.4.4-7.jar
+java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+java.io.tmpdir=/tmp
+java.compiler=<NA>
+os.name=Linux
+os.arch=amd64
+os.version=3.10.0-957.el7.x86_64
+user.name=kafka
+user.home=/home/kafka
+user.dir=/home/kafka
+os.memory.free=1012MB
+os.memory.max=1024MB
+os.memory.total=1024MB
 ```
 
 Display the total size of snapshot and log files in bytes.
 
 ```shell
-$ echo dirs | nc 10.1.207.180 9002
+bash-5.0# ansible all -m shell -a 'echo dirs | nc {{ inventory_hostname }} 2181'
+10.1.207.177 | CHANGED | rc=0 >>
+datadir_size: 67108880
+logdir_size: 1715
+
+10.1.207.178 | CHANGED | rc=0 >>
+datadir_size: 67108880
+logdir_size: 2857
+
+10.1.207.183 | CHANGED | rc=0 >>
+datadir_size: 67108880
+logdir_size: 5295
 ```
 
 Check if server is running in read-only mode.
 
 ```shell
-$ echo isro | nc 10.1.207.180 9002; echo
+bash-5.0# ansible all -m shell -a 'echo isro | nc {{ inventory_hostname }} 2181'
+10.1.207.178 | CHANGED | rc=0 >>
+rw
+
+10.1.207.177 | CHANGED | rc=0 >>
+rw
+
+10.1.207.183 | CHANGED | rc=0 >>
+rw
 ```
 
 ## Q & A

@@ -14,13 +14,13 @@ PATH=$PATH:$DAEMON_PATH
 # See how we were called.
 case "$1" in
 start)
-  pid=`ps ax | grep -i 'kafka.Kafka' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[k]afka.Kafka {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
-  echo "Kafka is already running"
+    echo "Kafka is already running"
   else
-  echo "Starting $DAEMON_NAME"
-  $DAEMON_PATH/kafka-server-start.sh -daemon {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties
+    echo "Starting $DAEMON_NAME"
+    $DAEMON_PATH/kafka-server-start.sh -daemon {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties
   fi
   ;;
 
@@ -36,7 +36,7 @@ restart)
   ;;
 
 status)
-  pid=`ps ax | grep -i 'kafka.Kafka' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[k]afka.Kafka {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
     echo "Kafka is Running as PID: $pid"
@@ -48,6 +48,6 @@ status)
 *)
   echo "Usage: $0 {start|stop|restart|status}"
   exit 1
-
 esac
+
 exit 0

@@ -16,7 +16,7 @@ case "$1" in
 
 start)
   # Start daemon.
-  pid=`ps ax | grep -i 'org.apache.zookeeper' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.zookeeper' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
   echo "Zookeeper is already running";
@@ -37,7 +37,7 @@ stop)
   ;;
 
 status)
-  pid=`ps ax | grep -i 'org.apache.zookeeper' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.zookeeper' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
   echo "Zookeeper is Running as PID: $pid"

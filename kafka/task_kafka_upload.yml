@@ -105,3 +105,11 @@
     dest: "$HOME/kafka.sh"
     mode: u=rwx,g=rx,o=rx
   check_mode: no
+
+# 修复 Kafka 的停止脚本
+- name: copy kafka-server-stop.sh
+  template:
+    src: "/ansible-playbook/kafka/config/kafka-server-stop.sh.j2"
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-server-stop.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
