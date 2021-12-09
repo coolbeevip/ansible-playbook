@@ -1,12 +1,15 @@
 #!/bin/bash
 
-set -e
-
 source ~/.bash_profile
+
+echo 'Kill Zookeeper Process'
+$HOME/zookeeper.sh stop
+
+echo 'Kill Kafka Process'
+$HOME/kafka.sh stop
 
 echo 'Delete Kafka unzip directory'
 rm -rf {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}
-rm -rf {{ kafka_home_dir }}/{{ java_tar_unzip_dir }}
 
 echo 'Delete Kafka Data directory'
 rm -rf {{ zookeeper_data_dir }}
@@ -16,3 +19,6 @@ rm -rf {{ dir }}
 {% endfor%}
 
 rm -rf $HOME/kafka_uninstall.sh
+rm -rf $HOME/benchmark-test.sh
+rm -rf $HOME/kafka.sh
+rm -rf $HOME/zookeeper.sh
