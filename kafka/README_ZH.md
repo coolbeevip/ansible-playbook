@@ -257,6 +257,86 @@ imok
 imok
 ```
 
+在任一 Kafka 节点上执行基准测试命令 `benchmark-test.sh`。发送和接收 500 万条消息，每条消息 1KB，最终显示发送者和消费者的吞吐率信息
+
+```shell
+[kafka@oss-irms-177 bin]$ ~/benchmark-test.sh
+STEP1/4: Create topic benchmark-topic
+Created topic benchmark-topic.
+
+STEP2/4: Producer performance test
+41825 records sent, 8363.3 records/sec (7.98 MB/sec), 1178.2 ms avg latency, 2461.0 ms max latency.
+50000 records sent, 8488.964346 records/sec (8.10 MB/sec), 1291.81 ms avg latency, 2461.00 ms max latency, 1165 ms 50th, 2115 ms 95th, 2325 ms 99th, 2460 ms 99.9th.
+
+STEP3/4: Consumer performance test
+start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec, rebalance.time.ms, fetch.time.ms, fetch.MB.sec, fetch.nMsg.sec
+2021-12-09 16:05:17:113, 2021-12-09 16:05:21:696, 47.6837, 10.4045, 50000, 10909.8844, 1639037119044, -1639037114461, -0.0000, -0.0000
+
+STEP4/4: Delete topic benchmark-topic
+[kafka@oss-irms-177 bin]$ vi ~/benchmark-test.sh
+[kafka@oss-irms-177 bin]$ ~/benchmark-test.sh
+
+STEP1/4: Create topic benchmark-topic
+Created topic benchmark-topic.
+
+STEP2/4: Producer performance test
+154401 records sent, 30874.0 records/sec (29.44 MB/sec), 621.5 ms avg latency, 1805.0 ms max latency.
+80224 records sent, 16041.6 records/sec (15.30 MB/sec), 2028.6 ms avg latency, 3677.0 ms max latency.
+209827 records sent, 41957.0 records/sec (40.01 MB/sec), 906.9 ms avg latency, 3408.0 ms max latency.
+125145 records sent, 25029.0 records/sec (23.87 MB/sec), 845.3 ms avg latency, 4060.0 ms max latency.
+128368 records sent, 25658.2 records/sec (24.47 MB/sec), 1480.5 ms avg latency, 4892.0 ms max latency.
+63145 records sent, 12496.5 records/sec (11.92 MB/sec), 2219.6 ms avg latency, 5571.0 ms max latency.
+104873 records sent, 18930.1 records/sec (18.05 MB/sec), 1434.3 ms avg latency, 6640.0 ms max latency.
+109572 records sent, 21910.0 records/sec (20.90 MB/sec), 1982.4 ms avg latency, 5869.0 ms max latency.
+131271 records sent, 25739.4 records/sec (24.55 MB/sec), 831.3 ms avg latency, 4349.0 ms max latency.
+136261 records sent, 27246.8 records/sec (25.98 MB/sec), 1584.6 ms avg latency, 5031.0 ms max latency.
+85629 records sent, 16803.2 records/sec (16.02 MB/sec), 1628.3 ms avg latency, 5089.0 ms max latency.
+73866 records sent, 14612.5 records/sec (13.94 MB/sec), 1716.6 ms avg latency, 6803.0 ms max latency.
+105543 records sent, 21100.2 records/sec (20.12 MB/sec), 2119.1 ms avg latency, 7117.0 ms max latency.
+77355 records sent, 15471.0 records/sec (14.75 MB/sec), 1912.0 ms avg latency, 5498.0 ms max latency.
+101397 records sent, 19846.7 records/sec (18.93 MB/sec), 1793.0 ms avg latency, 6986.0 ms max latency.
+200199 records sent, 40031.8 records/sec (38.18 MB/sec), 1042.1 ms avg latency, 4969.0 ms max latency.
+97188 records sent, 18189.8 records/sec (17.35 MB/sec), 1126.6 ms avg latency, 4933.0 ms max latency.
+185294 records sent, 37058.8 records/sec (35.34 MB/sec), 1307.4 ms avg latency, 6376.0 ms max latency.
+249676 records sent, 49925.2 records/sec (47.61 MB/sec), 659.5 ms avg latency, 2987.0 ms max latency.
+385945 records sent, 77189.0 records/sec (73.61 MB/sec), 425.9 ms avg latency, 1282.0 ms max latency.
+205702 records sent, 41132.2 records/sec (39.23 MB/sec), 792.5 ms avg latency, 3450.0 ms max latency.
+174103 records sent, 34820.6 records/sec (33.21 MB/sec), 837.0 ms avg latency, 2014.0 ms max latency.
+95234 records sent, 19043.0 records/sec (18.16 MB/sec), 1596.3 ms avg latency, 4084.0 ms max latency.
+82637 records sent, 16524.1 records/sec (15.76 MB/sec), 1595.8 ms avg latency, 4584.0 ms max latency.
+127413 records sent, 25477.5 records/sec (24.30 MB/sec), 1753.8 ms avg latency, 4631.0 ms max latency.
+175331 records sent, 35066.2 records/sec (33.44 MB/sec), 998.8 ms avg latency, 3002.0 ms max latency.
+412244 records sent, 82448.8 records/sec (78.63 MB/sec), 382.2 ms avg latency, 1177.0 ms max latency.
+150998 records sent, 30139.3 records/sec (28.74 MB/sec), 986.8 ms avg latency, 3473.0 ms max latency.
+85045 records sent, 16737.8 records/sec (15.96 MB/sec), 1717.5 ms avg latency, 4346.0 ms max latency.
+81438 records sent, 15095.1 records/sec (14.40 MB/sec), 1898.2 ms avg latency, 5302.0 ms max latency.
+121741 records sent, 24348.2 records/sec (23.22 MB/sec), 1556.8 ms avg latency, 6129.0 ms max latency.
+117458 records sent, 23421.3 records/sec (22.34 MB/sec), 1278.0 ms avg latency, 3955.0 ms max latency.
+116391 records sent, 23273.5 records/sec (22.20 MB/sec), 1509.0 ms avg latency, 3597.0 ms max latency.
+88623 records sent, 17714.0 records/sec (16.89 MB/sec), 2034.1 ms avg latency, 4512.0 ms max latency.
+106804 records sent, 20946.1 records/sec (19.98 MB/sec), 1494.2 ms avg latency, 3443.0 ms max latency.
+5000000 records sent, 27473.131278 records/sec (26.20 MB/sec), 1176.38 ms avg latency, 7117.00 ms max latency, 521 ms 50th, 4694 ms 95th, 6050 ms 99th, 6916 ms 99.9th.
+
+STEP3/4: Consumer performance test
+start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec, rebalance.time.ms, fetch.time.ms, fetch.MB.sec, fetch.nMsg.sec
+2021-12-09 16:09:05:331, 2021-12-09 16:09:39:913, 4768.3716, 137.8859, 5000000, 144583.8876, 1639037347941, -1639037313359, -0.0000, -0.0031
+
+STEP4/4: Delete topic benchmark-topic
+```
+
+数据生产者测试结果：
+
+* 吞吐速率 26.20 MB/sec（27473.131278 records/sec (26.20 MB/sec)
+* 数据平均延迟时间 1176.38 ms（1176.38 ms avg latency）
+* 最大延迟时间 7117.00 ms（7117.00 ms max latency）
+
+数据消费者测试结果：
+
+* 共计消费 4768.3716 MB（data.consumed.in.MB ）
+* 每秒消费 137.8859 MB（MB.sec）
+* 共计消费 5000000 条（data.consumed.in.nMsg）
+* 每秒消费 144583.8876 条（nMsg.sec）
+
 ## 常用运维命令
 
 #### Kafka

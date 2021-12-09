@@ -2,14 +2,17 @@
 
 source ~/.bashrc
 
-BOOTSTRAP_SERVER=10.1.207.177:9003,10.1.207.178:9003,10.1.207.183:9003
+{% set bootstrap = [] %}
+{% for ip in groups.all %}{{ bootstrap.append(ip + ":" + kafka_server_port | string) }}{% endfor %}
+
+BOOTSTRAP_SERVER={{ bootstrap | join(',') }}
 BENCHMARK_TOPIC_NAME=benchmark-topic
 MESSAGE_NUM=5000000                   # 测试消息数量
 MESSAGE_SIZE=1000                     # 每条消息字节数
 CONSUMER_FETCH_SIZE=1048576           # 消费者每次拉取的字节数
+CONSUMER_TIMEOUT=600000               # 消费者拉取超时
 
-echo
-echo STEP1/4: Create topic $BENCHMARK_TOPIC_NAME'
+echo STEP1/4: Create topic $BENCHMARK_TOPIC_NAME
 kafka-topics.sh --create --topic $BENCHMARK_TOPIC_NAME --replication-factor 2 --partitions 6 --bootstrap-server $BOOTSTRAP_SERVER
 
 echo
@@ -18,7 +21,7 @@ kafka-producer-perf-test.sh --topic $BENCHMARK_TOPIC_NAME --num-records $MESSAGE
 
 echo
 echo STEP3/4: Consumer performance test
-kafka-consumer-perf-test.sh --broker-list $BOOTSTRAP_SERVER --topic benchmark-test --fetch-size $CONSUMER_FETCH_SIZE --messages $MESSAGE_NUM --timeout 60000
+kafka-consumer-perf-test.sh --broker-list $BOOTSTRAP_SERVER --topic $BENCHMARK_TOPIC_NAME --fetch-size $CONSUMER_FETCH_SIZE --messages $MESSAGE_NUM --timeout $CONSUMER_TIMEOUT
 
 echo
 echo STEP4/4: Delete topic $BENCHMARK_TOPIC_NAME
