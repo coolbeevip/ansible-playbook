@@ -129,14 +129,14 @@ kafka & Zookeeper 在每个服务器上的 ID
 # Node configuration
 hosts:
   10.1.207.177:
-    zookeeper_id: 180
-    kafka_broker_id: 180
+    zookeeper_id: 177
+    kafka_broker_id: 177
   10.1.207.178:
-    zookeeper_id: 181
-    kafka_broker_id: 181
+    zookeeper_id: 178
+    kafka_broker_id: 178
   10.1.207.183:
-    zookeeper_id: 182
-    kafka_broker_id: 182
+    zookeeper_id: 183
+    kafka_broker_id: 183
 ```    
 
 Zookeeper 服务配置
