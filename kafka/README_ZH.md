@@ -332,10 +332,10 @@ STEP4/4: Delete topic benchmark-topic
 
 数据消费者测试结果：
 
-* 共计消费 4768.3716 MB（data.consumed.in.MB ）
-* 每秒消费 137.8859 MB（MB.sec）
-* 共计消费 5000000 条（data.consumed.in.nMsg）
-* 每秒消费 144583.8876 条（nMsg.sec）
+* data.consumed.in.MB 4768.3716 显示消费的所有消息的大小
+* MB.sec 137.8859 显示每秒传输的数据量（以兆字节为单位）（吞吐量大小）
+* data.consumed.in.nMsg 5000000 显示此测试期间消费的消息总数
+* nMsg.sec 144583.8876 显示一秒内消费了多少消息（消息计数的吞吐量）
 
 ## 常用运维命令
 
