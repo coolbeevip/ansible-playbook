@@ -197,7 +197,7 @@ This script will automate the following operations
 bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
 ```
 
-**TIPS:** Because the Kafka & Java package will be uploaded to all servers (about 65MB+194MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 25 minutes(upload package taske about 5 minutes, others take about 20 minutes.)
+**TIPS:** Because the Kafka & Java package will be uploaded to all servers (about 260MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 6 minutes(upload package taske about 1 minutes, others take about 5 minutes.)
 
 **TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Kafka has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/kafka_uninstall.sh'` uninstalls.
 
