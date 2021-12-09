@@ -194,7 +194,6 @@ docker run --name ansible --rm -it \
 * 上传 Kafka & JDK 安装介质上传到每个服务器
 * 配置每个服务器上的 server.properties 和 zookeeper.properties
 * 启动 Zookeeper & Kafka 服务
-* 自动创建测试用 Topic 并简单测试
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml

@@ -190,7 +190,8 @@ This script will automate the following operations
 
 * Configure operating system parameters on all server
 * Upload the Kafka & Java packages to all server
-* ...
+* Configure kafka & zookeeper properties on all server
+* Start zookeeper & kafka on all server
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
@@ -328,10 +329,10 @@ Producer report:
 
 Consumer report:
 
-* consumed total 4768.3716 MB
-* 137.8859 MB/sec
-* consumed total number 5000000
-* 144583.8876 msg number/sec
+* data.consumed.in.MB 4768.3716 shows the size of all messages consumed
+* MB.sec 137.8859 shows how much data transferred in megabytes per second (Throughput on size)
+* data.consumed.in.nMsg 5000000 shows the count of the total messages consumed during this test
+* nMsg.sec 144583.8876 shows how many messages were consumed in a second (Throughput on the count of messages)
 
 ## Common Maintenance Commands
 
