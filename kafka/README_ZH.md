@@ -12,9 +12,9 @@
 
 | IP | SSH 端口 | SSH 用户 | SSH 密码 | ROOT 密码 | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.181 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.182 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.177 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.178 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.183 | 22022 | kafka | 123456 | root123 | CentOS Linux release 7.9.2009 |
 
 **提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
 
@@ -22,9 +22,9 @@
 
 | IP地址 | Kafka | Zookeeper | Java |
 | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | ✓ | ✓ | ✓ |
-| 10.1.207.181 | ✓ | ✓ | ✓ |
-| 10.1.207.182 | ✓ | ✓ | ✓ |
+| 10.1.207.177 | ✓ | ✓ | ✓ |
+| 10.1.207.178 | ✓ | ✓ | ✓ |
+| 10.1.207.183 | ✓ | ✓ | ✓ |
 
 节点安装路径
 
@@ -71,13 +71,13 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/ka
 安装 Kafka 集群的服务器 IP 地址，以及系统用户名
 
 ```yaml
-- hosts: 10.1.207.180
+- hosts: 10.1.207.177
   user: kafka
 
-- hosts: 10.1.207.181
+- hosts: 10.1.207.178
   user: kafka
 
-- hosts: 10.1.207.182
+- hosts: 10.1.207.183
   user: kafka
 ```
 
@@ -128,13 +128,13 @@ kafka & Zookeeper 在每个服务器上的 ID
 ```yaml
 # Node configuration
 hosts:
-  10.1.207.180:
+  10.1.207.177:
     zookeeper_id: 180
     kafka_broker_id: 180
-  10.1.207.181:
+  10.1.207.178:
     zookeeper_id: 181
     kafka_broker_id: 181
-  10.1.207.182:
+  10.1.207.183:
     zookeeper_id: 182
     kafka_broker_id: 182
 ```    
@@ -176,7 +176,7 @@ kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with
 
 ```shell
 docker run --name ansible --rm -it \
-  -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
+  -e ANSIBLE_SSH_HOSTS=10.1.207.177,10.1.207.178,10.1.207.183 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=kafka,kafka,kafka \
   -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
@@ -243,7 +243,7 @@ Kafka is Running as PID: 15901
 Kafka is Running as PID: 26639
 ```
 
-测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何响应
+检测 Zookeeper 成功时返回 **imok**
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo ruok | nc {{ inventory_hostname }} 2181; echo'
@@ -255,68 +255,6 @@ imok
 
 10.1.207.183 | CHANGED | rc=0 >>
 imok
-```
-
-Outputs a list of variables that could be used for monitoring the health of the cluster.
-
-```shell
-bash-5.0# ansible all -m shell -a 'echo mntr | nc {{ inventory_hostname }} 2181'
-10.1.207.177 | CHANGED | rc=0 >>
-zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
-zk_avg_latency	0
-zk_max_latency	0
-zk_min_latency	0
-zk_packets_received	2
-zk_packets_sent	1
-zk_num_alive_connections	1
-zk_outstanding_requests	0
-zk_server_state	leader
-zk_znode_count	5
-zk_watch_count	0
-zk_ephemerals_count	0
-zk_approximate_data_size	191
-zk_open_file_descriptor_count	130
-zk_max_file_descriptor_count	100000
-zk_followers	2
-zk_synced_followers	2
-zk_pending_syncs	0
-zk_last_proposal_size	-1
-zk_max_proposal_size	-1
-zk_min_proposal_size	-1
-
-10.1.207.178 | CHANGED | rc=0 >>
-zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
-zk_avg_latency	0
-zk_max_latency	0
-zk_min_latency	0
-zk_packets_received	2
-zk_packets_sent	1
-zk_num_alive_connections	1
-zk_outstanding_requests	0
-zk_server_state	follower
-zk_znode_count	5
-zk_watch_count	0
-zk_ephemerals_count	0
-zk_approximate_data_size	191
-zk_open_file_descriptor_count	128
-zk_max_file_descriptor_count	100000
-
-10.1.207.183 | CHANGED | rc=0 >>
-zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
-zk_avg_latency	0
-zk_max_latency	0
-zk_min_latency	0
-zk_packets_received	2
-zk_packets_sent	1
-zk_num_alive_connections	1
-zk_outstanding_requests	0
-zk_server_state	follower
-zk_znode_count	5
-zk_watch_count	0
-zk_ephemerals_count	0
-zk_approximate_data_size	191
-zk_open_file_descriptor_count	128
-zk_max_file_descriptor_count	100000
 ```
 
 ## 常用运维命令
@@ -409,8 +347,69 @@ Zookeeper is Running as PID: 958
 Zookeeper is Running as PID: 26663
 ```
 
+输出可用于监控 Zookeeper 集群运行状况的变量列表
+
+```shell
+bash-5.0# ansible all -m shell -a 'echo mntr | nc {{ inventory_hostname }} 2181'
+10.1.207.177 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	leader
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	130
+zk_max_file_descriptor_count	100000
+zk_followers	2
+zk_synced_followers	2
+zk_pending_syncs	0
+zk_last_proposal_size	-1
+zk_max_proposal_size	-1
+zk_min_proposal_size	-1
+
+10.1.207.178 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	follower
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	128
+zk_max_file_descriptor_count	100000
+
+10.1.207.183 | CHANGED | rc=0 >>
+zk_version	3.5.9-83df9301aa5c2a5d284a9940177808c01bc35cef, built on 01/06/2021 20:03 GMT
+zk_avg_latency	0
+zk_max_latency	0
+zk_min_latency	0
+zk_packets_received	2
+zk_packets_sent	1
+zk_num_alive_connections	1
+zk_outstanding_requests	0
+zk_server_state	follower
+zk_znode_count	5
+zk_watch_count	0
+zk_ephemerals_count	0
+zk_approximate_data_size	191
+zk_open_file_descriptor_count	128
+zk_max_file_descriptor_count	100000
+```
+
 显示 Zookeeper 配置
-Display configuration.
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo conf | nc {{ inventory_hostname }} 2181'
@@ -487,7 +486,7 @@ server.183=10.1.207.183:2888:3888:participant
 version=0
 ```
 
-List connection details to this server.
+列出与此服务器的连接详细信息。
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo cons | nc {{ inventory_hostname }} 2181'
@@ -501,7 +500,7 @@ bash-5.0# ansible all -m shell -a 'echo cons | nc {{ inventory_hostname }} 2181'
  /10.1.207.183:43808[0](queued=0,recved=1,sent=0)
 ```
 
-Display outstanding sessions and ephemeral nodes.
+显示未完成的会话和临时节点。
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo dump | nc {{ inventory_hostname }} 2181'
@@ -536,7 +535,7 @@ Connections Sets (1)/(1):
 	ip: /10.1.207.183:43966 sessionId: 0x0
 ```
 
-Display environment settings.
+显示环境设置。
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo envi | nc {{ inventory_hostname }} 2181'
@@ -604,7 +603,7 @@ os.memory.max=1024MB
 os.memory.total=1024MB
 ```
 
-Display the total size of snapshot and log files in bytes.
+以字节为单位显示快照和日志文件的总大小。
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo dirs | nc {{ inventory_hostname }} 2181'
@@ -621,7 +620,7 @@ datadir_size: 67108880
 logdir_size: 5295
 ```
 
-Check if server is running in read-only mode.
+检查服务器是否以只读模式运行。
 
 ```shell
 bash-5.0# ansible all -m shell -a 'echo isro | nc {{ inventory_hostname }} 2181'
@@ -645,13 +644,13 @@ A: `~/kafka_uninstall.sh` 脚本将 **kill -9 MySQL server 和 MySQL router，�
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
-10.1.207.180 | CHANGED | rc=0 >>
+10.1.207.177 | CHANGED | rc=0 >>
 
 
-10.1.207.182 | CHANGED | rc=0 >>
+10.1.207.183 | CHANGED | rc=0 >>
 
 
-10.1.207.181 | CHANGED | rc=0 >>
+10.1.207.178 | CHANGED | rc=0 >>
 ```
 
 #### 生产环境
