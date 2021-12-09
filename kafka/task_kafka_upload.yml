@@ -113,3 +113,11 @@
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-server-stop.sh"
     mode: u=rwx,g=rx,o=rx
   check_mode: no
+
+# 上传基准测试脚本
+- name: copy benchmark-test.sh
+  template:
+    src: "/ansible-playbook/kafka/config/benchmark-test.sh.j2"
+    dest: "$HOME/benchmark-test.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
