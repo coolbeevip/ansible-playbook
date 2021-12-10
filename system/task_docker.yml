@@ -1,3 +1,16 @@
+- name: install packages
+  yum:
+    name:
+      - rsync
+      - wget
+      - curl
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - git
+    state: present
+  check_mode: no
+
 - name: check upload java
   stat:
     path: /etc/yum.repos.d/docker-ce.repo

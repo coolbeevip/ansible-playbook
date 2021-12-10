@@ -1,0 +1,7 @@
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: install packages
+  yum:
+    name: "{{ os.package }}"
+    state: present

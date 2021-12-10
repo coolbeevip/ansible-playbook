@@ -1,0 +1,11 @@
+#
+
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: set /etc/sysctl.conf
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state }}"
+  loop: "{{ os.sysctl.entries }}"

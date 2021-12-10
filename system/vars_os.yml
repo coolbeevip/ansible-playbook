@@ -1,0 +1,17 @@
+---
+os:
+  package: [rsync,wget,curl,yum-utils,git]
+  ulimit:
+    domain: '*'
+    entries:
+      - { limit_name: 'nofile', limit_type: 'hard', limit_value: 278528 }
+      - { limit_name: 'nofile', limit_type: 'soft', limit_value: 278528 }
+      - { limit_name: 'nproc', limit_type: 'hard', limit_value: 278528 }
+      - { limit_name: 'nproc', limit_type: 'soft', limit_value: 278528 }
+      - { limit_name: 'stack', limit_type: 'hard', limit_value: 'unlimited' }
+      - { limit_name: 'stack', limit_type: 'soft', limit_value: 'unlimited' }
+  sysctl:
+    entries:
+      - { name: 'vm.swappiness', value: 1, state: present}
+      - { name: 'vm.max_map_count', value: 262144, state: present}
+      - { name: 'vm.overcommit_memory', value: 1, state: present}

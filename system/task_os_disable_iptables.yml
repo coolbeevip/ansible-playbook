@@ -1,0 +1,30 @@
+- name: include vars
+  include_vars: "vars_os.yml"
+
+# disable firewalld
+# - name: be sure firewalld is installed
+#   dnf: name=firewalld state=installed
+
+# - name: be sure firewalld is disabled
+#   systemd: name=firewalld enabled=no
+#
+# - name: be sure firewalld is stopped
+#   systemd: name=firewalld state=stopped
+#   ignore_errors: yes
+
+- name: check if service iptables exists
+  shell: systemctl status iptables
+  register: service_status
+  ignore_errors: yes
+
+- name: stop service iptables
+  service:
+    name: iptables
+    state: stopped
+  when: service_status.rc != 4 # 4 is iptables.service could not be found
+
+- name: disable service iptables should start on boot
+  service:
+    name: iptables
+    enabled: no
+  when: service_status.rc != 4 # 4 is iptables.service could not be found

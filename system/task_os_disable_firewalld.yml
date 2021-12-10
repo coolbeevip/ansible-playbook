@@ -1,0 +1,20 @@
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: check if service firewalld exists
+  shell: systemctl status firewalld
+  register: service_status
+  ignore_errors: yes
+
+- name: stop service firewalld
+  service:
+    name: firewalld
+    state: stopped
+  when: service_status.rc != 4 # 4 is firewalld.service could not be found
+
+
+- name: disable service firewalld should start on boot
+  service:
+    name: firewalld
+    enabled: no
+  when: service_status.rc != 4 # 4 is firewalld.service could not be found

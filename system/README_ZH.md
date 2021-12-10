@@ -1,5 +1,17 @@
 # 使用 Ansible Playbook 自动化配置 Linux 系统 | [English](README.md)
 
+```shell
+docker run --name ansible --rm -it \
+  -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
+  -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
+  -e ANSIBLE_SSH_USERS=root,root,root \
+  -e ANSIBLE_SSH_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -e ANSIBLE_SU_PASSS=xdjr0lxGu,xdjr0lxGu,xdjr0lxGu \
+  -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
+  coolbeevip/ansible:2.8.11-alpine \
+  /bin/bash  
+```
+
 ## 配置系统(main-os.yml)
 
 此脚本可批量完成以下配置
@@ -10,9 +22,7 @@
 * 设置交换优先级和虚拟内存 vm.swappiness vm.max_map_count
 * 设置 Linux PAM limits nofile nproc
 
-```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/system/main-os.yml
-```
+
 
 查看主要系统参数
 

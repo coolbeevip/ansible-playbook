@@ -1,0 +1,15 @@
+# ansible all -m shell -a 'ulimit -a'
+
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: configure ulimit settings
+  pam_limits:
+    domain: "{{ os.ulimit.domain }}"
+    limit_type: "{{ item.limit_type }}"
+    limit_item: "{{ item.limit_name }}"
+    value: "{{ item.limit_value }}"
+  loop: "{{ os.ulimit.entries }}"
+
+- name: reload settings from all system configuration files
+  shell: sysctl --system
