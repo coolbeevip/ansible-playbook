@@ -1,6 +1,6 @@
 ---
 os:
-  package: [rsync,wget,curl,yum-utils,git]
+  package: [rsync,wget,curl,yum-utils,git,ntp]
   ulimit:
     domain: '*'
     entries:
@@ -15,3 +15,9 @@ os:
       - { name: 'vm.swappiness', value: 1, state: present}
       - { name: 'vm.max_map_count', value: 262144, state: present}
       - { name: 'vm.overcommit_memory', value: 1, state: present}
+  ntpd:
+    servers:
+      - s2a.time.edu.cn
+      - s2b.time.edu.cn
+      - s2e.time.edu.cn
+      - 127.127.1.0

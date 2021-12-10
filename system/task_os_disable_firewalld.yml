@@ -12,7 +12,6 @@
     state: stopped
   when: service_status.rc != 4 # 4 is firewalld.service could not be found
 
-
 - name: disable service firewalld should start on boot
   service:
     name: firewalld

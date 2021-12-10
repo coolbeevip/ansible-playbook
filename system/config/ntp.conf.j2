@@ -1,0 +1,36 @@
+# /etc/ntp.conf
+
+driftfile /var/lib/ntp/ntp.drift
+
+# 启用统计信息
+statsdir /var/log/ntpstats/
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+# NTP 服务器地址
+{% for ntp_server in os.ntpd.servers %}
+server {{ ntp_server }} iburst
+{% endfor %}
+
+# 只监听指定的 IP 地址
+interface ignore wildcard
+interface listen {{ inventory_hostname }}
+interface listen 127.0.0.1
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
+# details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
+# might also be helpful.
+#
+# Note that "restrict" applies to both servers and clients, so a configuration
+# that might be intended to block requests from certain clients could also end
+# up blocking replies from your own upstream servers.
+
+# 默认情况下，与所有人交换时间，但不允许配置
+restrict -4 default kod notrap nomodify nopeer noquery
+restrict -6 default kod notrap nomodify nopeer noquery
+
+# 本地用户可以询问 ntp 服务器
+restrict 127.0.0.1
+restrict ::1

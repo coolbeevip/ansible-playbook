@@ -1,0 +1,30 @@
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: check if service ntpd exists
+  shell: systemctl status ntpd
+  register: service_status
+  ignore_errors: yes
+
+- name: upload ntp.conf
+  template:
+    src: "/ansible-playbook/system/config/ntp.conf.j2"
+    dest: "/etc/ntp.conf"
+
+- name: start service ntpd
+  service:
+    name: ntpd
+    state: started
+  when: service_status.rc == 3 # 3 mean ntpd.service inactive
+
+- name: disable service ntpd should start on boot
+  service:
+    name: ntpd
+    enabled: yes
+  when: service_status.rc == 3 # 3 mean ntpd.service inactive
+
+- name: restarted service ntpd
+  service:
+    name: ntpd
+    state: restarted
+  when: service_status.rc == 0 # 0 mean ntpd.service running
