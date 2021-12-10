@@ -1,6 +1,0 @@
-- hosts: all
-  become: yes
-  become_user: root
-  become_method: su
-  tasks:
-    - include_tasks: task_java.yml

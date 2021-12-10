@@ -1,12 +1,12 @@
 - name: include vars
   include_vars: "vars_os.yml"
 
-- name: check disable all swap files
-  shell: /sbin/swapon -s
-  register: check_result
+- name: remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
 
 - name: disable swap
-  shell: |
-    swapoff -a
-    sed -i "s/^.*swap/#&/g" /etc/fstab
-  when: check_result.stdout != ""
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
