@@ -1,6 +1,9 @@
 #!/bin/bash
 unset JAVA_HOME
 
+# Fix log4j2 0-day exploit https://github.com/elastic/elasticsearch/issues/81618
+export ES_JAVA_OPTS="$ES_JAVA_OPTS -Dlog4j2.formatMsgNoLookups=true"
+
 case "$1" in
 start)
   if [ -e {{ es_log_dir }}/elasticsearch.pid ]
