@@ -7,19 +7,19 @@
   register: openjdk_exists
 - name: upload oracle jdk
   synchronize:
-    src: /ansible-playbook/packages/jdk-8u202-linux-x64.tar.gz
-    dest: /opt/jdk-8u202-linux-x64.tar.gz
+    src: /ansible-playbook/packages/{{ java.oraclejdk.tar }}
+    dest: /opt/{{ java.oraclejdk.tar }}
   when: not openjdk_exists.stat.exists
+  become: yes
 
 - name: unzip oracle jdk tar package
   stat:
     path: /opt/jdk1.8.0_202
   register: openjdk_exists
 - name: unzip oracle jdk
-  shell: |
-    cd /opt
-    tar zxf {{ java.oraclejdk.tar }}
+  shell: tar zxf /opt/{{ java.oraclejdk.tar }} -C /opt
   when: not openjdk_exists.stat.exists
+  become: yes
 
 # # 配置环境
 # - name: check java profile config

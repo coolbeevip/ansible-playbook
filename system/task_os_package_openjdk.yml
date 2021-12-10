@@ -1,3 +1,6 @@
+# /usr/lib/jvm/java-1.8.0/bin/java -version
+# /usr/lib/jvm/java-11/bin/java -version
+
 - name: include vars
   include_vars: "vars_os.yml"
 

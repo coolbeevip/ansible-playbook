@@ -1,5 +1,27 @@
 # 使用 Ansible Playbook 自动化配置 Linux 系统 | [English](README.md)
 
+系统设置
+
+* task_os_install_package.yml
+* task_os_manage_ulimit.yml
+* task_os_manage_sysctl.yml
+* task_os_manage_ntp.yml
+* task_os_disable_swap.yml
+* task_os_disable_iptables.yml
+* task_os_disable_swap.yml
+
+基础软件安装
+
+* task_os_package_openjdk.yml
+* task_os_package_oraclejdk.yml
+* task_os_package_docker.yml
+
+参数配置
+
+* var_os.yml
+
+启动工具
+
 ```shell
 docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
@@ -10,6 +32,12 @@ docker run --name ansible --rm -it \
   -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \
   /bin/bash  
+```
+
+执行脚本
+
+```shell
+bash-5.0# ansible-playbook -C /ansible-playbook/system/main.yml
 ```
 
 ## 配置系统(main-os.yml)
@@ -57,7 +85,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 执行安装命令
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/system/main-java.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/system/main.yml
 ```
 
 检查 Java 版本

@@ -4,18 +4,21 @@ os:
     - rsync
     - wget
     - curl
-    - yum-utils
-    - git
     - ntp
   ulimit:
     domain: '*'
     entries:
-      - { limit_name: 'nofile', limit_type: 'hard', limit_value: 278528 }
+      - { limit_name: 'nofile', limit_type: 'hard', limit_value: 278528 }     # open files
       - { limit_name: 'nofile', limit_type: 'soft', limit_value: 278528 }
-      - { limit_name: 'nproc', limit_type: 'hard', limit_value: 278528 }
+      - { limit_name: 'nproc', limit_type: 'hard', limit_value: 278528 }      # processes/threads
       - { limit_name: 'nproc', limit_type: 'soft', limit_value: 278528 }
       - { limit_name: 'stack', limit_type: 'hard', limit_value: 'unlimited' }
       - { limit_name: 'stack', limit_type: 'soft', limit_value: 'unlimited' }
+      - { limit_name: 'memlock', limit_type: '-', limit_value: 'unlimited' }  # locked-in-memory size
+      - { limit_name: 'fsize', limit_type: '-', limit_value: 'unlimited' }    # file size
+      - { limit_name: 'cpu', limit_type: '-', limit_value: 'unlimited' }      # cpu time
+      - { limit_name: 'as', limit_type: '-', limit_value: 'unlimited' }       # virtual memory size
+
   sysctl:
     entries:
       - { name: 'vm.swappiness', value: 1, state: present}
@@ -32,5 +35,10 @@ java:
   openjdk:
     - java-1.8.0-openjdk.x86_64
     - java-1.8.0-openjdk-devel.x86_64
+    #- java-11-openjdk.x86_64
+    #- java-11-openjdk-devel.x86_64
   oraclejdk:
     tar: jdk-8u202-linux-x64.tar.gz
+
+docker:
+  version: 20.10.9

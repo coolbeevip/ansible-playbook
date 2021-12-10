@@ -1,5 +1,5 @@
 - name: install packages
-  yum:
+  package:
     name:
       - rsync
       - wget
@@ -9,20 +9,17 @@
       - lvm2
       - git
     state: present
-  check_mode: no
 
-- name: check upload java
+- name: check if docker-ce.repo exists
   stat:
     path: /etc/yum.repos.d/docker-ce.repo
-  register: check_result
-- name: add docker repo
+  register: yum_repo_exists
+- name: download docker-ce.repo
   shell: wget https://download.docker.com/linux/centos/docker-ce.repo -P /etc/yum.repos.d/
-  when: not check_result.stat.exists
-  check_mode: no
+  when: not yum_repo_exists.stat.exists
 
 - name: yum update
   shell: yum -y update && mkdir -p /etc/docker
-  check_mode: no
 
 - name: enable docker edge repo
   ini_file:
@@ -30,7 +27,6 @@
     section: 'docker-ce-edge'
     option: enabled
     value: 0
-  check_mode: no
 
 - name: enable docker test repo
   ini_file:
@@ -38,42 +34,34 @@
     section: 'docker-ce-test'
     option: enabled
     value: 0
-  check_mode: no
 
-- name: install docker
+- name: install docker-ce
   package:
     name: docker-ce
-    state: latest
-  check_mode: no
+    state: '{{ docker.version }}' #latest
 
 - name: upload docker daemon.json
-  synchronize:
-    src: /ansible-playbook/system/daemon.json
-    dest: /etc/docker/daemon.json
-  check_mode: no
+  template:
+    src: "/ansible-playbook/system/config/daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
 
 - name: start docker service
   service:
     name: docker
     state: started
     enabled: yes
-  check_mode: no
+- name: disable service docker should start on boot
+  service:
+    name: docker
+    enabled: yes
 
-- name: add user elasticsearch to docker group
-  user:
-    name: elasticsearch
-    groups: docker
-    append: yes
-  check_mode: no
-
-- name: check install docker compose
+- name: check if docker-compose exists
   stat:
     path: /usr/bin/docker-compose
-  register: check_result
-- name: install docker compose
+  register: docker_compose_exists
+- name: install docker-compose
   shell: |
     curl -L "https://get.daocloud.io/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-  when: not check_result.stat.exists
-  check_mode: no
+  when: not docker_compose_exists.stat.exists

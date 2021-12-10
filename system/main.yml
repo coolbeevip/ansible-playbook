@@ -4,13 +4,13 @@
   become_method: su
   check_mode: no
   tasks:
+    - include_tasks: task_os_install_package.yml # must require
     #- include_tasks: task_os_manage_ulimit.yml
-    - include_tasks: task_os_install_package.yml
     #- include_tasks: task_os_disable_firewalld.yml
     #- include_tasks: task_os_disable_iptables.yml
     #- include_tasks: task_os_manage_sysctl.yml
     #- include_tasks: task_os_disable_swap.yml
     #- include_tasks: task_os_manage_ntp.yml
-    - include_tasks: task_os_package_openjdk.yml
-    #- include_tasks: task_os_package_oraclejdk.yml
+    #- include_tasks: task_os_package_openjdk.yml
+    - include_tasks: task_os_package_oraclejdk.yml
     #- include_tasks: task_os_package_docker.yml
