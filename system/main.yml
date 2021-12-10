@@ -10,4 +10,7 @@
     #- include_tasks: task_os_disable_iptables.yml
     #- include_tasks: task_os_manage_sysctl.yml
     #- include_tasks: task_os_disable_swap.yml
-    - include_tasks: task_os_manage_ntp.yml
+    #- include_tasks: task_os_manage_ntp.yml
+    - include_tasks: task_os_package_openjdk.yml
+    #- include_tasks: task_os_package_oraclejdk.yml
+    #- include_tasks: task_os_package_docker.yml

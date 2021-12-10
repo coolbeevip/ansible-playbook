@@ -1,0 +1,37 @@
+- name: include vars
+  include_vars: "vars_os.yml"
+
+- name: check if oracle jdk exists
+  stat:
+    path: /opt/{{ java.oraclejdk.tar }}
+  register: openjdk_exists
+- name: upload oracle jdk
+  synchronize:
+    src: /ansible-playbook/packages/jdk-8u202-linux-x64.tar.gz
+    dest: /opt/jdk-8u202-linux-x64.tar.gz
+  when: not openjdk_exists.stat.exists
+
+- name: unzip oracle jdk tar package
+  stat:
+    path: /opt/jdk1.8.0_202
+  register: openjdk_exists
+- name: unzip oracle jdk
+  shell: |
+    cd /opt
+    tar zxf {{ java.oraclejdk.tar }}
+  when: not openjdk_exists.stat.exists
+
+# # 配置环境
+# - name: check java profile config
+#   shell: cat /etc/profile | grep JAVA_HOME=/opt/jdk1.8.0_202
+#   register: check_result
+#   check_mode: no
+# - name: java profile config
+#   shell: echo {{ item }} >> /etc/profile && source /etc/profile
+#   with_items:
+#     - export JAVA_HOME=/opt/jdk1.8.0_202
+#     - export JRE_HOME=/opt/jdk1.8.0_202/jre
+#     - export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:\$JRE_HOME/lib:\$CLASSPATH
+#     - export PATH=\$JAVA_HOME/bin:\$PATH
+#   when: check_result.stdout == ""
+#   check_mode: no

@@ -1,6 +1,12 @@
 ---
 os:
-  package: [rsync,wget,curl,yum-utils,git,ntp]
+  package:
+    - rsync
+    - wget
+    - curl
+    - yum-utils
+    - git
+    - ntp
   ulimit:
     domain: '*'
     entries:
@@ -21,3 +27,10 @@ os:
       - s2b.time.edu.cn
       - s2e.time.edu.cn
       - 127.127.1.0
+
+java:
+  openjdk:
+    - java-1.8.0-openjdk.x86_64
+    - java-1.8.0-openjdk-devel.x86_64
+  oraclejdk:
+    tar: jdk-8u202-linux-x64.tar.gz
