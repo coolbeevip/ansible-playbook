@@ -727,7 +727,7 @@ rw
 
 Q: 如何彻底删除使用自脚本安装的集群程序和数据
 
-A: `~/kafka_uninstall.sh` 脚本将 **kill -9 MySQL server 和 MySQL router，删除程序文件和所有数据文件**
+A: `~/kafka_uninstall.sh` 脚本将 **kill -9 Kafka 和 Zookeeper，删除程序文件和所有数据文件**
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/kafka_uninstall.sh'
