@@ -3,6 +3,9 @@
 export JAVA_HOME="{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/{{ java_tar_unzip_dir }}"
 export KAFKA_HEAP_OPTS="{{ zookeeper_heap_opts }}"
 export KAFKA_JVM_PERFORMANCE_OPTS="{{ zookeeper_jvm_performance_opts }}"
+{% if zookeeper_authentication.enabled %}
+export KAFKA_OPTS="-Djava.security.auth.login.config={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper-jaas.conf -DsessionRequireClientSASLAuth=true"
+{% endif %}
 
 DAEMON_PATH={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin
 DAEMON_NAME=zookeeper
@@ -19,10 +22,10 @@ start)
   pid=`ps ax | grep -i '[o]rg.apache.zookeeper' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
-  echo "Zookeeper is already running";
+    echo "Zookeeper is already running";
   else
-  echo "Starting $DAEMON_NAME";
-  $DAEMON_PATH/zookeeper-server-start.sh -daemon {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties
+    echo "Starting $DAEMON_NAME";
+    $DAEMON_PATH/zookeeper-server-start.sh -daemon {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties
   fi
   ;;
 
@@ -30,7 +33,8 @@ stop)
   echo "Shutting down $DAEMON_NAME";
   $DAEMON_PATH/zookeeper-server-stop.sh
   ;;
-  restart)
+
+restart)
   $0 stop
   sleep 2
   $0 start
@@ -40,9 +44,9 @@ status)
   pid=`ps ax | grep -i '[o]rg.apache.zookeeper' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
-  echo "Zookeeper is Running as PID: $pid"
+    echo "Zookeeper is Running as PID: $pid"
   else
-  echo "Zookeeper is not Running"
+    echo "Zookeeper is not Running"
   fi
   ;;
 

@@ -66,7 +66,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/ka
 
 > 您可以编辑以下配置文件，修改默认参数
 
-#### main.yml
+#### main-install.yml, main-zookeeper-start.yml, main-kafka-start.yml
 
 安装 Kafka 集群的服务器 IP 地址，以及系统用户名
 
@@ -164,6 +164,27 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 ```
 
+Zookeeper 安全认证（默认关闭）如果你要启用请设置 `zookeeper_authentication.enabled=true`
+
+```yaml
+# Zookeeper JAAS configuration
+zookeeper_authentication:
+  enabled: false
+  server_server: # zookeeper 集群之间验证
+    username: zookeeper
+    password: Zookeeper_123456
+  client_server: # 应用连接 zookeeper 时验证
+    username: kafka
+    password: Kafka_123456
+```
+
+**提示：** 开启 Zookeeper 认证后再访问 zookeeper 需要在环境变量中设置 `kafka-jaas.conf` 后再访问，例如：
+
+```shell
+export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/kafka_2.12-2.6.3/config/kafka-jaas.conf"
+zookeeper-shell.sh 10.1.207.177:2181
+```
+
 更多Kafka 配置参见[2.6.X](https://kafka.apache.org/26/documentation.html)
 
 ## 开始安装
@@ -196,7 +217,7 @@ docker run --name ansible --rm -it \
 * 启动 Zookeeper & Kafka 服务
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main-install.yml /ansible-playbook/kafka/main-zookeeper-start.yml /ansible-playbook/kafka/main-kafka-start.yml
 ```
 
 **提示:** 因为第一次执行脚本时，会上传 Kafka 和 JDK 安装包到所有服务器（约 260MB），所以执行时间较长（取决于你的客户端和服务器之间的网络速度）。 你也可以在执行以上脚本前手动将安装包上传到服务器的安装路径 /opt/kafka 下。在我本地环境首次安装大概耗时 6 分钟（上传安装包大概 1 分钟，安装集群大概 5 分钟）

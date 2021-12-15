@@ -1,0 +1,23 @@
+- hosts: 10.1.207.177
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_zookeeper_start.yml
+
+- hosts: 10.1.207.178
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_zookeeper_start.yml
+
+- hosts: 10.1.207.183
+  user: kafka
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_zookeeper_start.yml

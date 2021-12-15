@@ -51,22 +51,34 @@ zookeeper_tick_time: 2000 # keeps a heartbeat of zookeeper in milliseconds
 zookeeper_init_limit: 10  # time for initial synchronization
 zookeeper_sync_limit: 5   # how many ticks can pass before timeout
 
+four_letter_word_whitelist: ruok,mntr,conf,cons,dump,envi,dirs,isro
+
+# Zookeeper JAAS configuration
+zookeeper_authentication:
+  enabled: true
+  server_server: # zookeeper 集群之间验证
+    username: zookeeper
+    password: Zookeeper_123456
+  client_server: # 客户端连接 zookeeper 时验证
+    username: kafka
+    password: Kafka_123456
+
+# zookeeper JVM options
+zookeeper_heap_opts: "-Xms1g -Xmx1g" # 通常 1g 够用了
+zookeeper_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+
 # Kafka configuration
 kafka_server_port: 9003
 kafka_server_num_partitions: 8 # default number of partitions
 kafka_server_offsets_topic_replication_factor: 3 # The replication factor for the group metadata internal topics "__consumer_offsets"
 kafka_server_transaction_state_log_replication_factor: 3 # The replication factor for the group metadata internal topics "__transaction_state"
 kafka_server_transaction_state_log_min_isr: 2
-kafka_server_default_replication_factor: 3 # default replica count based on the number of brokers
+kafka_server_default_replication_factor: 2 # default replica count based on the number of brokers
 kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 kafka_server_log_retention_hours: 168 # 数据保留时长（小时），建议业务侧评估好数据量的大小，调整合适的保留时间。一般情况下，建议使用7天即可。
 kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建议和业务侧评估单条数据的大小。数据大于 1MB 时建议发送端开启压缩模式，不建议发送大于 5MB 的数据
 
 # kafka JVM options
-kafka_heap_opts: "-Xms6g -Xmx6g" # 最大不建议超过 6g
+kafka_heap_opts: "-Xms2g -Xmx2g" # 最大不建议超过 6g
 kafka_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
-
-# zookeeper JVM options
-zookeeper_heap_opts: "-Xms1g -Xmx1g" # 通常 1g 够用了
-zookeeper_jvm_performance_opts: "-XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"

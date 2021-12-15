@@ -54,9 +54,91 @@
   lineinfile:
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
     regexp: "^4lw.commands.whitelist=.*"
-    line: "4lw.commands.whitelist=*"
+    line: "4lw.commands.whitelist={{ four_letter_word_whitelist }}"
     state: present
   check_mode: no
+
+# Zookeeper authentication client-server
+- name: Configure Zookeeper authentication
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^authProvider.1=.*"
+    line: "authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper sessionRequireClientSASLAuth
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^sessionRequireClientSASLAuth=.*"
+    line: "sessionRequireClientSASLAuth=true"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+
+# Zookeeper authentication server-server
+- name: Configure Zookeeper quorum.auth.enableSasl
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.auth.enableSasl=.*"
+    line: "quorum.auth.enableSasl=true"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper quorum.auth.learnerRequireSasl
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.auth.learnerRequireSasl=.*"
+    line: "quorum.auth.learnerRequireSasl=true"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper quorum.auth.serverRequireSasl
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.auth.serverRequireSasl=.*"
+    line: "quorum.auth.serverRequireSasl=true"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper quorum.auth.learner.loginContext
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.auth.learner.loginContext=.*"
+    line: "quorum.auth.learner.loginContext=QuorumLearner"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper quorum.auth.server.loginContext
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.auth.server.loginContext=.*"
+    line: "quorum.auth.server.loginContext=QuorumServer"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+- name: Configure Zookeeper quorum.cnxn.threads.size
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "^quorum.cnxn.threads.size=.*"
+    line: "quorum.cnxn.threads.size=6"
+    state: present
+  check_mode: no
+  when: zookeeper_authentication.enabled
+
+# Zookeeper remove authentication
+- name: Configure Zookeeper remove authentication
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper.properties"
+    regexp: "{{ item }}"
+    state: absent
+  check_mode: no
+  loop:
+    - ^requireClientAuthScheme=.*
+    - ^authProvider.*
+    - ^quorum.auth.*
+    - ^quorum.cnxn.threads.size=.*
+  when: not zookeeper_authentication.enabled
 
 # Configure Kafka server.properties
 - name: Configure Kafka broker.id

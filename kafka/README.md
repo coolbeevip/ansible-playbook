@@ -66,7 +66,7 @@ Download JDK tar ball `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansibl
 
 > You can edit the following configuration files to modify the default parameters
 
-#### main.yml
+#### main-install.yml, main-zookeeper-start.yml, main-kafka-start.yml
 
 ```yaml
 - hosts: 10.1.207.177
@@ -194,7 +194,7 @@ This script will automate the following operations
 * Start zookeeper & kafka on all server
 
 ```shell
-bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main.yml
+bash-5.0# ansible-playbook -C /ansible-playbook/kafka/main-install.yml /ansible-playbook/kafka/main-zookeeper-start.yml /ansible-playbook/kafka/main-kafka-start.yml
 ```
 
 **TIPS:** Because the Kafka & Java package will be uploaded to all servers (about 260MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 6 minutes(upload package taske about 1 minutes, others take about 5 minutes.)
