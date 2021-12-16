@@ -18,9 +18,9 @@ Planning for server
 
 | IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.181 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.182 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.180 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
 
 **TIPS：** reference [Create User in Batch Automation](https://github.com/coolbeevip/ansible-playbook#create-user--group)
 
@@ -241,7 +241,7 @@ docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=mysql,mysql,mysql \
-  -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
+  -e ANSIBLE_SSH_PASSS=mysql123,mysql123,mysql123 \
   -e ANSIBLE_SU_PASSS=root123,root123,root123 \
   -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \

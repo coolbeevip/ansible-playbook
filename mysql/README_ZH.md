@@ -18,9 +18,9 @@ MySQL InnoDB 集群有以下服务组成
 
 | IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.181 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.182 | 22022 | mysql | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.180 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | mysql | mysql123 | root123 | CentOS Linux release 7.9.2009 |
 
 **提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
 
@@ -231,7 +231,7 @@ mysql_router_max_connect_errors: 300
 
 启动 ansible 容器工具连接目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂载到容器中。
 
-**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `mysql` 和密码 `123456`
+**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `mysql` 和密码 `mysql123`
 
 **提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
 
@@ -240,7 +240,7 @@ docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=mysql,mysql,mysql \
-  -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
+  -e ANSIBLE_SSH_PASSS=mysql123,mysql123,mysql123 \
   -e ANSIBLE_SU_PASSS=root123,root123,root123 \
   -v /Users/zhanglei/mydocker/volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \
