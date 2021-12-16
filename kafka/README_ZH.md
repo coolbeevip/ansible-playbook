@@ -164,11 +164,11 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 ```
 
-Zookeeper 安全认证（默认关闭）如果你要启用请设置 `zookeeper_authentication.enabled=true`
+Zookeeper 安全认证（默认关闭）如果你要启用请设置 `zookeeper_jaas.enabled=true`
 
 ```yaml
 # Zookeeper JAAS configuration
-zookeeper_authentication:
+zookeeper_jaas:
   enabled: false
   server_server: # zookeeper 集群之间验证
     username: zookeeper

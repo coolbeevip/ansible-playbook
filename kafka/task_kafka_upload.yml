@@ -104,7 +104,7 @@
     src: "/ansible-playbook/kafka/config/zookeeper-jaas.conf.j2"
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/zookeeper-jaas.conf"
   check_mode: no
-  when: zookeeper_authentication.enabled
+  when: zookeeper_jaas.enabled
 
 # 上传 Kafka 启停脚本 kafka.sh
 - name: copy kafka.sh
@@ -130,13 +130,13 @@
     mode: u=rwx,g=rx,o=rx
   check_mode: no
 
-# 上传 Zookeeper 认证配置
-- name: copy kafka-server-jaas.conf
+# 上传 Kafka Server-Server & Zookeeper Client 认证配置
+- name: copy kafka-jaas.conf
   template:
     src: "/ansible-playbook/kafka/config/kafka-jaas.conf.j2"
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/kafka-jaas.conf"
   check_mode: no
-  when: zookeeper_authentication.enabled
+  when: zookeeper_jaas.enabled
 
 # 上传基准测试脚本
 - name: copy benchmark-test.sh

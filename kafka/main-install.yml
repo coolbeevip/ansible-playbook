@@ -7,6 +7,7 @@
     - include_tasks: task_kafka_pre_checks.yml
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
+    - include_tasks: task_zookeeper_config.yml
     - include_tasks: task_kafka_config.yml
 
 - hosts: 10.1.207.178
@@ -18,6 +19,7 @@
     - include_tasks: task_kafka_pre_checks.yml
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
+    - include_tasks: task_zookeeper_config.yml
     - include_tasks: task_kafka_config.yml
 
 - hosts: 10.1.207.183
@@ -29,4 +31,5 @@
     - include_tasks: task_kafka_pre_checks.yml
     - include_tasks: task_kafka_os.yml
     - include_tasks: task_kafka_upload.yml
+    - include_tasks: task_zookeeper_config.yml
     - include_tasks: task_kafka_config.yml

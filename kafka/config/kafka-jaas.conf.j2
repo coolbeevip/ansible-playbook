@@ -1,5 +1,21 @@
+KafkaServer {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="{{ kafka_jaas.server_server.username }}"
+   password="{{ kafka_jaas.server_server.password }}"
+   user_{{ kafka_jaas.server_server.username }}="{{ kafka_jaas.server_server.password }}"
+   user_{{ kafka_jaas.client_server.username }}="{{ kafka_jaas.client_server.password }}";
+};
+
+KafkaClient {
+  org.apache.kafka.common.security.plain.PlainLoginModule required
+  username="{{ kafka_jaas.server_server.username }}"
+  password="{{ kafka_jaas.server_server.password }}"
+  user_{{ kafka_jaas.server_server.username }}="{{ kafka_jaas.server_server.password }}"
+  user_{{ kafka_jaas.client_server.username }}="{{ kafka_jaas.client_server.password }}";
+};
+
 Client {
    org.apache.zookeeper.server.auth.DigestLoginModule required
-   username="{{ zookeeper_authentication.client_server.username }}"
-   password="{{ zookeeper_authentication.client_server.password }}";
+   username="{{ zookeeper_jaas.client_server.username }}"
+   password="{{ zookeeper_jaas.client_server.password }}";
 };

@@ -3,7 +3,7 @@
 export JAVA_HOME="{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/{{ java_tar_unzip_dir }}"
 export KAFKA_HEAP_OPTS="{{ kafka_heap_opts }}"
 export KAFKA_JVM_PERFORMANCE_OPTS="{{ kafka_jvm_performance_opts }}"
-{% if zookeeper_authentication.enabled %}
+{% if zookeeper_jaas.enabled %}
 export KAFKA_OPTS="-Djava.security.auth.login.config={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/kafka-jaas.conf"
 {% endif %}
 DAEMON_PATH={{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin

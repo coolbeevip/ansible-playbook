@@ -54,14 +54,14 @@ zookeeper_sync_limit: 5   # how many ticks can pass before timeout
 four_letter_word_whitelist: ruok,mntr,conf,cons,dump,envi,dirs,isro
 
 # Zookeeper JAAS configuration
-zookeeper_authentication:
-  enabled: true
+zookeeper_jaas:
+  enabled: false
   server_server: # zookeeper 集群之间验证
-    username: zookeeper
-    password: Zookeeper_123456
+    username: admin
+    password: admin123456
   client_server: # 客户端连接 zookeeper 时验证
     username: kafka
-    password: Kafka_123456
+    password: kafka123456
 
 # zookeeper JVM options
 zookeeper_heap_opts: "-Xms1g -Xmx1g" # 通常 1g 够用了
@@ -78,6 +78,16 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 kafka_server_log_retention_hours: 168 # 数据保留时长（小时），建议业务侧评估好数据量的大小，调整合适的保留时间。一般情况下，建议使用7天即可。
 kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建议和业务侧评估单条数据的大小。数据大于 1MB 时建议发送端开启压缩模式，不建议发送大于 5MB 的数据
+
+# Kafka JAAS configuration
+kafka_jaas:
+  enabled: false
+  server_server: # kafka 集群之间验证
+    username: kafka
+    password: kafka123456
+  client_server: # 客户端连接 kafka 时验证
+    username: app
+    password: app123456
 
 # kafka JVM options
 kafka_heap_opts: "-Xms2g -Xmx2g" # 最大不建议超过 6g
