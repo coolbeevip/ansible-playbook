@@ -5,6 +5,7 @@
 * 此脚本中的配置基于 Kafka 2.6.3 版本
 * 使用 Kafka 发布包中自带的 Zookeeper 组件（通常这没有问题，除非你要将 Zookeeper 安装在单独的服务器上）
 * 在 Kafka 安装目录下独立安装 JDK，目前只支持 Java 8 和 Java 11。
+* 支持 Zookeeper，Kafka 基础访问授权 SASL_PLAINTEXT
 
 ## 安装计划
 
@@ -31,9 +32,12 @@
 | 路径 | 描述 |
 | ---- | ---- |
 | /opt/kafka | Kafka, Zookeeper, Java 软件安装路径 |
-| ~/zookeeper.sh | Zookeeper 启动，停止，状态命令脚本|
-| ~/kafka.sh | Kafka 启动，停止，状态命令脚本|
-| ~/kafka_uninstall.sh | Kafka 集群卸载脚本|
+| ~/zookeeper.sh | Zookeeper 启动，停止，状态命令脚本 |
+| ~/kafka.sh | Kafka 启动，停止，状态命令脚本 |
+| ~/kafka_uninstall.sh | Kafka 集群卸载脚本 |
+| /opt/kafka/kafka_2.12-2.6.3/config/zookeeper-jaas.conf | Zookeeper 访问认证配置，zookeeper_jaas.enabled=true 时有效 |
+| /opt/kafka/kafka_2.12-2.6.3/config/kaafka-jaas.conf | Kafka 访问认证配置，kafka_jaas.enabled=true 时有效 |
+| /opt/kafka/kafka_2.12-2.6.3/config/kafka-sasl-admin.properties | Kafka 管理员认证配置，kafka_jaas.enabled=true 时有效 |
 | /data01/kafka/kafka_data | Kafka 数据目录 |
 | /data01/kafka/kafka_log | Kafka 日志目录 |
 | /data01/kafka/zookeeper_data | Zookeeper 数据目录 |
@@ -151,6 +155,20 @@ zookeeper_init_limit: 10  # time for initial synchronization
 zookeeper_sync_limit: 5   # how many ticks can pass before timeout
 ```
 
+Zookeeper 访问授权，默认关闭
+
+```yaml
+# Zookeeper JAAS configuration
+zookeeper_jaas:
+  enabled: true
+  server_server: # zookeeper 集群之间验证
+    username: admin
+    password: admin123456
+  client_server: # 客户端连接 zookeeper 时验证
+    username: admin
+    password: admin123456
+```
+
 Kafka 服务配置
 
 ```yaml
@@ -164,18 +182,18 @@ kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
 ```
 
-Zookeeper 安全认证（默认关闭）如果你要启用请设置 `zookeeper_jaas.enabled=true`
+Kafka 访问授权，默认关闭
 
 ```yaml
-# Zookeeper JAAS configuration
-zookeeper_jaas:
+# Kafka JAAS configuration
+kafka_jaas:
   enabled: false
-  server_server: # zookeeper 集群之间验证
-    username: zookeeper
-    password: Zookeeper_123456
-  client_server: # 应用连接 zookeeper 时验证
-    username: kafka
-    password: Kafka_123456
+  server_server: # kafka 集群之间验证
+    username: admin
+    password: admin123456
+  client_server: # 客户端连接 kafka 时验证
+    username: admin
+    password: admin123456
 ```
 
 **提示：** 开启 Zookeeper 认证后再访问 zookeeper 需要在环境变量中设置 `kafka-jaas.conf` 后再访问，例如：

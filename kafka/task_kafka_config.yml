@@ -109,6 +109,27 @@
     line: "bootstrap.servers={{ bootstrap_servers }}"
     state: present
   check_mode: no
+- name: Configure Kafka producer security.protocol
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/producer.properties"
+    regexp: '^security.protocol=.*'
+    line: "security.protocol=SASL_PLAINTEXT"
+    state: present
+  check_mode: no
+- name: Configure Kafka producer sasl.mechanism
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/producer.properties"
+    regexp: '^sasl.mechanism=.*'
+    line: "sasl.mechanism=PLAIN"
+    state: present
+  check_mode: no
+- name: Configure Kafka producer sasl.jaas.config
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/producer.properties"
+    regexp: '^sasl.jaas.config=.*'
+    line: "sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='{{ kafka_jaas.client_server.username }}' password='{{ kafka_jaas.client_server.password }}';"
+    state: present
+  check_mode: no
 
 # Kafka consumer.properties
 - name: Configure Kafka consumer bootstrap.servers
@@ -116,6 +137,27 @@
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties"
     regexp: '^bootstrap.servers=.*'
     line: "bootstrap.servers={{ bootstrap_servers }}"
+    state: present
+  check_mode: no
+- name: Configure Kafka consumer security.protocol
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties"
+    regexp: '^security.protocol=.*'
+    line: "security.protocol=SASL_PLAINTEXT"
+    state: present
+  check_mode: no
+- name: Configure Kafka consumer sasl.mechanism
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties"
+    regexp: '^sasl.mechanism=.*'
+    line: "sasl.mechanism=PLAIN"
+    state: present
+  check_mode: no
+- name: Configure Kafka consumer sasl.jaas.config
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties"
+    regexp: '^sasl.jaas.config=.*'
+    line: "sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='{{ kafka_jaas.client_server.username }}' password='{{ kafka_jaas.client_server.password }}';"
     state: present
   check_mode: no
 
@@ -126,6 +168,14 @@
     dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
     regexp: '^listeners=.*'
     line: "listeners=SASL_PLAINTEXT://{{ inventory_hostname }}:{{ kafka_server_port }}"
+    state: present
+  check_mode: no
+  when: kafka_jaas.enabled
+- name: Configure Kafka advertised.listeners
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^advertised.listeners=.*'
+    line: "advertised.listeners=SASL_PLAINTEXT://{{ inventory_hostname }}:{{ kafka_server_port }}"
     state: present
   check_mode: no
   when: kafka_jaas.enabled
@@ -161,6 +211,14 @@
     state: present
   check_mode: no
   when: kafka_jaas.enabled
+- name: Configure Kafka super.users
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/server.properties"
+    regexp: '^super.users=.*'
+    line: "super.users=User:{{ kafka_jaas.server_server.username }}"
+    state: present
+  check_mode: no
+  when: kafka_jaas.enabled
 
 # Kafka remove authentication
 - name: Configure Kafka remove authentication
@@ -176,4 +234,29 @@
     - ^sasl.enabled.mechanisms=.*
   when: not kafka_jaas.enabled
 
+# Kafka remove authentication consumer.properties
+- name: Configure Kafka remove consumer properties
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties"
+    regexp: "{{ item }}"
+    state: absent
+  check_mode: no
+  loop:
+    - ^security.protocol=.*
+    - ^sasl.mechanism=.*
+    - ^sasl.jaas.config=.*
+  when: not kafka_jaas.enabled
+
+# Kafka remove authentication consumer.properties
+- name: Configure Kafka remove producer properties
+  lineinfile:
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/producer.properties"
+    regexp: "{{ item }}"
+    state: absent
+  check_mode: no
+  loop:
+    - ^security.protocol=.*
+    - ^sasl.mechanism=.*
+    - ^sasl.jaas.config=.*
+  when: not kafka_jaas.enabled
 # Create a Topic for Test

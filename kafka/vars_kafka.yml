@@ -60,8 +60,8 @@ zookeeper_jaas:
     username: admin
     password: admin123456
   client_server: # 客户端连接 zookeeper 时验证
-    username: kafka
-    password: kafka123456
+    username: admin
+    password: admin123456
 
 # zookeeper JVM options
 zookeeper_heap_opts: "-Xms1g -Xmx1g" # 通常 1g 够用了
@@ -83,11 +83,11 @@ kafka_server_max_request_size: 1048576 # 单条数据大小，默认 1MB，建�
 kafka_jaas:
   enabled: false
   server_server: # kafka 集群之间验证
-    username: kafka
-    password: kafka123456
+    username: admin
+    password: admin123456
   client_server: # 客户端连接 kafka 时验证
-    username: app
-    password: app123456
+    username: admin
+    password: admin123456
 
 # kafka JVM options
 kafka_heap_opts: "-Xms2g -Xmx2g" # 最大不建议超过 6g

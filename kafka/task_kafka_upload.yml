@@ -138,6 +138,13 @@
   check_mode: no
   when: zookeeper_jaas.enabled
 
+- name: copy kafka-sasl-user.properties.j2
+  template:
+    src: "/ansible-playbook/kafka/config/kafka-sasl-admin.properties.j2"
+    dest: "{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/kafka-sasl-admin.properties"
+  check_mode: no
+  when: zookeeper_jaas.enabled
+
 # 上传基准测试脚本
 - name: copy benchmark-test.sh
   template:

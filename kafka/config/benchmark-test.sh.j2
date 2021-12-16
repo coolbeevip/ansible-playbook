@@ -13,16 +13,16 @@ CONSUMER_FETCH_SIZE=1048576           # 消费者每次拉取的字节数
 CONSUMER_TIMEOUT=600000               # 消费者拉取超时
 
 echo STEP1/4: Create topic $BENCHMARK_TOPIC_NAME
-{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-topics.sh --create --topic $BENCHMARK_TOPIC_NAME --replication-factor 2 --partitions 6 --bootstrap-server $BOOTSTRAP_SERVER
+{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-topics.sh --create --topic $BENCHMARK_TOPIC_NAME --replication-factor 2 --partitions 6 --bootstrap-server $BOOTSTRAP_SERVER {% if kafka_jaas.enabled %}--command-config {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/kafka-sasl-admin.properties{% endif %}
 
 echo
 echo STEP2/4: Producer performance test
-{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-producer-perf-test.sh --topic $BENCHMARK_TOPIC_NAME --num-records $MESSAGE_NUM --throughput -1 --record-size $MESSAGE_SIZE --producer-props bootstrap.servers=$BOOTSTRAP_SERVER acks=1
+{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-producer-perf-test.sh --topic $BENCHMARK_TOPIC_NAME --num-records $MESSAGE_NUM --throughput -1 --record-size $MESSAGE_SIZE --producer-props bootstrap.servers=$BOOTSTRAP_SERVER {% if kafka_jaas.enabled %}--producer.config {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/producer.properties{% endif %} acks=1
 
 echo
 echo STEP3/4: Consumer performance test
-{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-consumer-perf-test.sh --broker-list $BOOTSTRAP_SERVER --topic $BENCHMARK_TOPIC_NAME --fetch-size $CONSUMER_FETCH_SIZE --messages $MESSAGE_NUM --timeout $CONSUMER_TIMEOUT
+{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-consumer-perf-test.sh --broker-list $BOOTSTRAP_SERVER --topic $BENCHMARK_TOPIC_NAME --fetch-size $CONSUMER_FETCH_SIZE --messages $MESSAGE_NUM --timeout $CONSUMER_TIMEOUT {% if kafka_jaas.enabled %}--consumer.config {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/consumer.properties{% endif %}
 
 echo
 echo STEP4/4: Delete topic $BENCHMARK_TOPIC_NAME
-{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-topics.sh --delete --topic $BENCHMARK_TOPIC_NAME --bootstrap-server $BOOTSTRAP_SERVER
+{{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/bin/kafka-topics.sh --delete --topic $BENCHMARK_TOPIC_NAME --bootstrap-server $BOOTSTRAP_SERVER {% if kafka_jaas.enabled %}--command-config {{ kafka_home_dir }}/{{ kafka_tar_unzip_dir }}/config/kafka-sasl-admin.properties{% endif %}

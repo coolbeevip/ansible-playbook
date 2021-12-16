@@ -5,6 +5,7 @@
 * The configuration parameters in this script are based on Kafka 2.6.3 version
 * Use use the bundled Zookeeper with the Kafka release package (usually this is no problem, unless you want to install Zookeeper on other servers)
 * Install the dedicated JDK in the Kafka installation directory, Java 8 and Java 11 are supported.
+* Zookeeper，Kafka authentication SASL_PLAINTEXT supported.
 
 ## Planning Your Installation
 
@@ -34,6 +35,9 @@ Planning for installation directory
 | ~/zookeeper.sh | Zookeeper start & stop & status script|
 | ~/kafka.sh | Kafka start & stop & status script|
 | ~/kafka_uninstall.sh | Kafka Cluster Uninstall script|
+| /opt/kafka/kafka_2.12-2.6.3/config/zookeeper-jaas.conf | Zookeeper jaas configuration, only zookeeper_jaas.enabled=true |
+| /opt/kafka/kafka_2.12-2.6.3/config/kaafka-jaas.conf | Kafka jaas configuration, only kafka_jaas.enabled=true |
+| /opt/kafka/kafka_2.12-2.6.3/config/kafka-sasl-admin.properties | Kafka admin client jaas configuration，only kafka_jaas.enabled=true |
 | /data01/kafka/kafka_data |  Kafka Data |
 | /data01/kafka/kafka_log |  Kafka Logs |
 | /data01/kafka/zookeeper_data |  Zookeeper Data |
@@ -149,6 +153,20 @@ zookeeper_init_limit: 10  # time for initial synchronization
 zookeeper_sync_limit: 5   # how many ticks can pass before timeout
 ```
 
+Zookeeper authentication(default disabled)
+
+```yaml
+# Zookeeper JAAS configuration
+zookeeper_jaas:
+  enabled: true
+  server_server: # zookeeper 集群之间验证
+    username: admin
+    password: admin123456
+  client_server: # 客户端连接 zookeeper 时验证
+    username: admin
+    password: admin123456
+```
+
 Kafka server properties
 
 ```yaml
@@ -160,6 +178,20 @@ kafka_server_transaction_state_log_min_isr: 2
 kafka_server_default_replication_factor: 3 # default replica count based on the number of brokers
 kafka_server_min_insync_replicas: 2 # to protect yourself against broker failure
 kafka_server_zookeeper_connection_timeout_ms: 6000 # timeout for connecting with zookeeper
+```
+
+Kafka authentication(default disabled)
+
+```yaml
+# Kafka JAAS configuration
+kafka_jaas:
+  enabled: false
+  server_server: # kafka 集群之间验证
+    username: admin
+    password: admin123456
+  client_server: # 客户端连接 kafka 时验证
+    username: admin
+    password: admin123456
 ```
 
 Kafka more details[2.6.X](https://kafka.apache.org/26/documentation.html)
