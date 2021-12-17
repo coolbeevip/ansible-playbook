@@ -1,6 +1,6 @@
 # Ansible Playbook 自动化安装 Elasticsearch 集群 | [English](README.md)
 
-请先在目标服务器创建 `elasticsearch` 用户，密码 `123456`，脚本会在此用户下安装三节点集群，因为 7.X 版本后会自带 JDK，所以我们不需要提前安装 Java 环境。
+脚本会安装三节点集群，因为 7.X 版本后会自带 JDK，所以我们不需要提前安装 Java 环境。
 
 ## 安装计划
 
@@ -8,9 +8,9 @@
 
 | IP地址 | SSH 端口 | SSH 用户名 | SSH 密码 | ROOT 密码 | OS |
 | ---- | ---- | ---- | ---- | ---- | ---- |
-| 10.1.207.180 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.181 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
-| 10.1.207.182 | 22022 | elasticsearch | 123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.180 | 22022 | elasticsearch | es123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.181 | 22022 | elasticsearch | es123456 | root123 | CentOS Linux release 7.9.2009 |
+| 10.1.207.182 | 22022 | elasticsearch | es123456 | root123 | CentOS Linux release 7.9.2009 |
 
 **提示：** 可以参考[批量自动化创建用户](https://github.com/coolbeevip/ansible-playbook/blob/main/README_ZH.md#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84)
 
@@ -153,7 +153,7 @@ es_hosts:
 
 启动 Ansible 工具连接到目标服务器，并将 `~/my-docker-volume/ansible-playbook` 目录挂在到容器中。
 
-**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `elasticsearch` 和密码 `123456`
+**提示：** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS 配置成您之前在目标服务器上创建的用户名 `elasticsearch` 和密码 `es123456`
 
 **提示：** ANSIBLE_SU_PASSS 为 root 用户的密码
 
@@ -162,7 +162,7 @@ docker run --name ansible --rm -it \
   -e ANSIBLE_SSH_HOSTS=10.1.207.180,10.1.207.181,10.1.207.182 \
   -e ANSIBLE_SSH_PORTS=22022,22022,22022 \
   -e ANSIBLE_SSH_USERS=elasticsearch,elasticsearch,elasticsearch \
-  -e ANSIBLE_SSH_PASSS=123456,123456,123456 \
+  -e ANSIBLE_SSH_PASSS=es123456,es123456,es123456 \
   -e ANSIBLE_SU_PASSS=root123,root123,root123 \
   -v ~/my-docker-volume/ansible-playbook:/ansible-playbook \
   coolbeevip/ansible:2.8.11-alpine \
