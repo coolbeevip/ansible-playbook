@@ -16,7 +16,7 @@
 
 集群节点规划
 
-| IP地址 | Elasticsearch |
+| IP | Elasticsearch |
 | ---- | ---- |
 | 10.1.207.180 | ✓ |
 | 10.1.207.181 | ✓ |
@@ -52,7 +52,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 下载 elasticsearch 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz --no-check-certificate
+wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.1-linux-x86_64.tar.gz --no-check-certificate
 ```
 
 ## 配置安装脚本
@@ -100,8 +100,8 @@ es_group: "elasticsearch"
 安装介质名称以及解压后的目录名
 
 ```shell
-es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
-es_tar_unzip_dir: "elasticsearch-7.13.3"
+es_tar: "elasticsearch-7.16.1-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.16.1"
 ```
 
 安装路径
@@ -134,7 +134,7 @@ es_bootstrap_memory_lock: false
 
 ```shell
 # 集群节点名称（注意这不是主机名)
-node_names:
+es_hosts:
   10.1.207.180:
     es_node_name: node-180
   10.1.207.181:
@@ -175,13 +175,13 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
-如果你看到如下信息，说明安装完成
+如果你看到如下信息，说明安装完成(必须 failed=0)
 
 ```shell
-TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
-ok: [10.1.207.180] => {
-    "msg": "Install Succeed!"
-}
+PLAY RECAP *****************************************************************************************************************************************************************************************************************************************************
+10.1.207.180               : ok=43   changed=15   unreachable=0    failed=0    skipped=5    rescued=0    ignored=0
+10.1.207.181               : ok=37   changed=9    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
+10.1.207.182               : ok=37   changed=9    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0s
 ```
 
 **提示:** 因为第一次执行脚本时，会上传 Elasticsearch 安装包到所有服务器（约 327MB），所以执行时间较长（取决于你的客户端和服务器之间的网络速度）。 你也可以在执行以上脚本前手动将安装包上传到服务器的安装路径 `/opt/elasticsearch` 下。在我本地环境首次安装大概耗时 5 分钟（上传安装包大概 2 分钟，安装集群大概 3 分钟）
@@ -191,23 +191,25 @@ ok: [10.1.207.180] => {
 **提示:** 您可以使用以下脚本删除不在使用的安装包
 
 ```shell
-bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz"
+bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.16.1-linux-x86_64.tar.gz"
 ```
 
 #### 验证 Elasticsearch 集群
 
-查看目标服务器上进程, 你可以看到每个服务上有两个进程
+查看进程ID
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'
-10.1.207.182 | CHANGED | rc=0 >>
-2
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh status'
+10.1.207.181 | CHANGED | rc=0 >>
+Elasticsearch is Running as PID: 19219
+19281
 
 10.1.207.180 | CHANGED | rc=0 >>
-2
+Elasticsearch is Running as PID: 17353
+17386
 
-10.1.207.181 | CHANGED | rc=0 >>
-2
+10.1.207.182 | CHANGED | rc=0 >>
+Elasticsearch is Running as PID: 30660
 ```
 
 查看目标服 elasticsearch 服务，可以看到每个节点服务都已经启动
@@ -220,7 +222,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -241,7 +243,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -262,7 +264,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -309,16 +311,22 @@ ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role   m
 
 ## 常用运维命令
 
-启动集群
+启动服务
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/elasticsearch.sh start'
 ```
 
-停止集群
+停止服务
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/elasticsearch.sh stop'
+```
+
+查看服务进程ID
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh status'
 ```
 
 ## Q & A

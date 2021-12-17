@@ -12,8 +12,8 @@ es_user: "elasticsearch"
 es_group: "elasticsearch"
 
 # 安装介质名称以及解压后的目录名
-es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
-es_tar_unzip_dir: "elasticsearch-7.13.3"
+es_tar: "elasticsearch-7.16.1-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.16.1"
 
 # 安装路径
 es_home_dir: "/opt/elasticsearch"
@@ -31,18 +31,17 @@ es_cluster_name: "my-elasticsearch"
 # 自动创建索引
 es_action_auto_create_index: "true"
 # 内存配置
-es_heap_size: 2g
+es_heap_size: 4g
 es_bootstrap_memory_lock: false
 
 # 集群节点名称（注意这不是主机名)
-node_names:
+es_hosts:
   10.1.207.180:
     es_node_name: node-180
   10.1.207.181:
     es_node_name: node-181
   10.1.207.182:
     es_node_name: node-182
-
 
 # # XPack Security
 # es_xpack_security_enabled: false

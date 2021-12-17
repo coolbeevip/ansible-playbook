@@ -2,7 +2,7 @@
 cluster.name: {{ es_cluster_name }}
 
 # ------------------------------------ Node ------------------------------------
-node.name: {{ node_names[inventory_hostname].es_node_name }}
+node.name: {{ es_hosts[inventory_hostname].es_node_name }}
 
 # Add custom attributes to the node:
 #node.attr.rack: r1
@@ -29,7 +29,8 @@ http.port: {{ es_http_port }}
 
 # --------------------------------- Discovery ----------------------------------
 transport.port: {{ es_transport_port }}
-discovery.seed_hosts: ["10.1.207.180:{{ es_transport_port }}", "10.1.207.181:{{ es_transport_port }}","10.1.207.182:{{ es_transport_port }}"]
+#discovery.seed_hosts: ["10.1.207.180:{{ es_transport_port }}", "10.1.207.181:{{ es_transport_port }}","10.1.207.182:{{ es_transport_port }}"]
+discovery.seed_hosts: [{{ discovery_seed_hosts }}]
 
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 cluster.initial_master_nodes: ["node-180", "node-181", "node-182"]
@@ -42,7 +43,10 @@ cluster.initial_master_nodes: ["node-180", "node-181", "node-182"]
 # Require explicit names when deleting indices:
 #action.destructive_requires_name: true
 
-# ---------------------------------- Security -----------------------------------
+# ---------------------------------- XPack Monitoring -----------------------------------
+xpack.monitoring.collection.enabled: true
+
+# ---------------------------------- XPack Security -----------------------------------
 {% if es_xpack_security_enabled is defined %}
   #xpack.security.enabled: {{ es_xpack_security_enabled }}
   #{% if es_enable_transport_ssl and es_enable_auto_ssl_configuration %}

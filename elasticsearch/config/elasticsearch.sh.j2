@@ -16,7 +16,7 @@ start)
     fi
   fi
   echo "Starting Elasticsearch"
-  {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -d -p {{ es_log_dir }}/elasticsearch.pid
+  nohup {{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch -d -p {{ es_log_dir }}/elasticsearch.pid >/dev/null 2>&1
 ;;
 
 stop)
@@ -37,9 +37,20 @@ restart)
   $0 start
 ;;
 
+status)
+  pid=`ps ax | grep -i '[/]opt/elasticsearch' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Elasticsearch is Running as PID: $pid"
+  else
+    echo "Elasticsearch is not Running"
+  fi
+  ;;
+
 *)
-  echo "Usage: $0 {start|stop|restart}"
+  echo "Usage: $0 {start|stop|restart|status}"
   exit 1
+
 esac
 
 exit 0

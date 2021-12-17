@@ -52,7 +52,7 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 Download Elasticsearch tar to directory `~/my-docker-volume/ansible-playbook/packages`
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz --no-check-certificate
+wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.1-linux-x86_64.tar.gz --no-check-certificate
 ```
 
 ## Configuration
@@ -100,8 +100,8 @@ es_group: "elasticsearch"
 Tarball and unzipped directory name
 
 ```shell
-es_tar: "elasticsearch-7.13.3-linux-x86_64.tar.gz"
-es_tar_unzip_dir: "elasticsearch-7.13.3"
+es_tar: "elasticsearch-7.16.1-linux-x86_64.tar.gz"
+es_tar_unzip_dir: "elasticsearch-7.16.1"
 ```
 
 Installation path
@@ -133,7 +133,7 @@ es_bootstrap_memory_lock: false
 Elasticsearch node name
 
 ```shell
-node_names:
+es_hosts:
   10.1.207.180:
     es_node_name: node-180
   10.1.207.181:
@@ -170,6 +170,15 @@ docker run --name ansible --rm -it \
 bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 ```
 
+If you see the following message, the installation is completed(must failed=0)
+
+```shell
+PLAY RECAP *****************************************************************************************************************************************************************************************************************************************************
+10.1.207.180               : ok=43   changed=15   unreachable=0    failed=0    skipped=5    rescued=0    ignored=0
+10.1.207.181               : ok=37   changed=9    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
+10.1.207.182               : ok=37   changed=9    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
+```
+
 **TIPS:** Because the Elasticsearch installation package will be uploaded to all servers (about 327MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 5 minutes(upload package taske about 2 minutes, others take about 3 minutes.)
 
 **TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Elasticsearch has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/elasticsearch_uninstall.sh'` uninstalls.
@@ -177,23 +186,25 @@ bash-5.0# ansible-playbook -C /ansible-playbook/elasticsearch/main.yml
 **TIPS:** You can use the following script to delete the temporary files generated during the installation
 
 ```shell
-bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.13.3-linux-x86_64.tar.gz"
+bash-5.0# ansible all -m shell -a "rm -rf /opt/elasticsearch/elasticsearch-7.16.1-linux-x86_64.tar.gz"
 ```
 
 #### Verify Elasticsearch Cluster
 
-Lookup Elasticsearch process, you can see that there are two processes on each server.
+Lookup Elasticsearch PID
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps aux | grep [/]opt/elasticsearch | wc -l'
-10.1.207.182 | CHANGED | rc=0 >>
-2
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh status'
+10.1.207.181 | CHANGED | rc=0 >>
+Elasticsearch is Running as PID: 19219
+19281
 
 10.1.207.180 | CHANGED | rc=0 >>
-2
+Elasticsearch is Running as PID: 17353
+17386
 
-10.1.207.181 | CHANGED | rc=0 >>
-2
+10.1.207.182 | CHANGED | rc=0 >>
+Elasticsearch is Running as PID: 30660
 ```
 
 View Elasticsearch service
@@ -206,7 +217,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -227,7 +238,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -248,7 +259,7 @@ bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
   "cluster_name" : "nc-elasticsearch",
   "cluster_uuid" : "_na_",
   "version" : {
-    "number" : "7.13.3",
+    "number" : "7.16.1",
     "build_flavor" : "default",
     "build_type" : "tar",
     "build_hash" : "5d21bea28db1e89ecc1f66311ebdec9dc3aa7d64",
@@ -305,6 +316,12 @@ Stop Elasticsearch
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/elasticsearch.sh stop'
+```
+
+Elasticsearch PID
+
+```shell
+bash-5.0# ansible all -m shell -a '~/elasticsearch.sh status'
 ```
 
 ## Q & A

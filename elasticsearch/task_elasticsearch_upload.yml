@@ -1,7 +1,11 @@
 - name: include vars
   include_vars: "vars_elasticsearch.yml"
 
-# 上传安装包
+- set_fact:
+    discovery_seed_hosts: |
+      {% set res = [] %}{% for key in es_hosts.keys() %}{{ res.append(key + ":" + es_transport_port | string ) }}{% endfor %}{{ res | join(',') }}
+
+# 上传 ES 安装包
 - name: check upload elasticsearch
   stat:
     path: "{{ es_home_dir }}/{{ es_tar }}"
@@ -14,7 +18,7 @@
   check_mode: no
   when: not check_result.stat.exists
 
-# 解压缩安装包
+# 解压缩 ES 安装包
 - name: check unzip elasticsearch
   stat:
     path: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}"
