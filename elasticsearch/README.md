@@ -142,6 +142,19 @@ es_hosts:
     es_node_name: node-182
 ```
 
+XPack Security
+
+```yaml
+es_xpack_security_enabled: false
+ex_xpack_security_users:
+  - username: myadmin
+    password: myadmin123
+    roles: [superuser]
+  - username: mykibana
+    password: mykibana123
+    roles: [kibana_admin]
+```  
+
 **TIPS：** For more default configuration, please refer to the following file
 
 ## Installation
@@ -208,6 +221,8 @@ Elasticsearch is Running as PID: 30660
 ```
 
 View Elasticsearch service
+
+**TIPS:** Add authentication parameters `--user myadmin:myadmin123` for RESTful API when enabled XPack Security, for example: `ansible all -m shell -a 'curl --user myadmin:myadmin123 http://0.0.0.0:39200/?pretty'`
 
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'

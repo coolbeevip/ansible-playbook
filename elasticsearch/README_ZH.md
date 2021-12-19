@@ -81,7 +81,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.c
 
 操作系统 Limits
 
-```shell
+```yaml
 limits_hard_nproc: '65535'
 limits_soft_nproc: '65535'
 limits_hard_nofile: '278528'
@@ -92,21 +92,21 @@ limits_soft_stack: 'unlimited'
 
 安装用的用户名、用户组
 
-```shell
+```yaml
 es_user: "elasticsearch"
 es_group: "elasticsearch"
 ```
 
 安装介质名称以及解压后的目录名
 
-```shell
+```yaml
 es_tar: "elasticsearch-7.16.1-linux-x86_64.tar.gz"
 es_tar_unzip_dir: "elasticsearch-7.16.1"
 ```
 
 安装路径
 
-```shell
+```yaml
 es_home_dir: "/opt/elasticsearch"
 es_log_dir: "/data01/elasticsearch/logs"
 es_data_dir: "/data01/elasticsearch/data"
@@ -116,7 +116,7 @@ es_temp_dir: "/data01/elasticsearch/temp"
 
 服务配置
 
-```shell
+```yaml
 # 网路信息
 es_network_host: "0.0.0.0"
 es_http_port: 39200
@@ -132,7 +132,7 @@ es_bootstrap_memory_lock: false
 
 集群名称配置
 
-```shell
+```yaml
 # 集群节点名称（注意这不是主机名)
 es_hosts:
   10.1.207.180:
@@ -142,6 +142,20 @@ es_hosts:
   10.1.207.182:
     es_node_name: node-182
 ```
+
+XPack 访问认证
+
+```yaml
+# XPack Security
+es_xpack_security_enabled: false
+ex_xpack_security_users:
+  - username: myadmin
+    password: myadmin123
+    roles: [superuser]
+  - username: mykibana
+    password: mykibana123
+    roles: [kibana_admin]
+```    
 
 **提示：** 其他更多默认配置，请参考如下文件
 
@@ -213,6 +227,8 @@ Elasticsearch is Running as PID: 30660
 ```
 
 查看目标服 elasticsearch 服务，可以看到每个节点服务都已经启动
+
+**提示：** 如果你启用了 xpack 安全，那么在调用以下 API 时请增加 `--user myadmin:myadmin123` 参数，例如: `ansible all -m shell -a 'curl --user myadmin:myadmin123 http://0.0.0.0:39200/?pretty'`
 
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
@@ -354,4 +370,40 @@ Kill Elasticsearch process
 Delete Elasticsearch data
 Delete Elasticsearch programs
 Delete elasticsearch_uninstall.sh
+```
+
+#### Elasticsearch Roles
+
+```
+kibana_dashboard_only_user,
+apm_system,
+watcher_admin,
+viewer,
+logstash_system,
+rollup_user,
+kibana_user,
+beats_admin,
+remote_monitoring_agent,
+rollup_admin,
+data_frame_transforms_admin,
+snapshot_user,
+monitoring_user,
+enrich_user,
+kibana_admin,
+logstash_admin,
+editor,
+machine_learning_user,
+data_frame_transforms_user,
+machine_learning_admin,
+watcher_user,
+apm_user,
+beats_system,
+reporting_user,
+transform_user,
+kibana_system,
+transform_admin,
+transport_client,
+remote_monitoring_collector,
+superuser,
+ingest_admin
 ```

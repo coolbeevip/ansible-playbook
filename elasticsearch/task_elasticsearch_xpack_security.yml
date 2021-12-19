@@ -1,0 +1,8 @@
+- name: include vars
+  include_vars: "vars_elasticsearch.yml"
+
+- name: Add Users
+  shell: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/bin/elasticsearch-users useradd {{ item.username }} -p {{ item.password }} {% for role in item.roles %} -r {{ role }}{% endfor %}"
+  loop: "{{ ex_xpack_security_users }}"
+  when: es_xpack_security_enabled | bool
+  check_mode: no

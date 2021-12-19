@@ -8,6 +8,7 @@
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_xpack_security.yml
     - include_tasks: task_elasticsearch_start.yml
 
 - hosts: 10.1.207.181
@@ -20,6 +21,7 @@
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_xpack_security.yml
     - include_tasks: task_elasticsearch_start.yml
 
 - hosts: 10.1.207.182
@@ -32,4 +34,5 @@
     - include_tasks: task_elasticsearch_os.yml
     - include_tasks: task_elasticsearch_upload.yml
     - include_tasks: task_elasticsearch_config.yml
+    - include_tasks: task_elasticsearch_xpack_security.yml
     - include_tasks: task_elasticsearch_start.yml

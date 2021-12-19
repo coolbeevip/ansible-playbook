@@ -43,27 +43,12 @@ es_hosts:
   10.1.207.182:
     es_node_name: node-182
 
-# # XPack Security
-# es_xpack_security_enabled: false
-# xpack_security_transport_ssl_enabled: true
-# es_api_basic_auth_username: elastic
-# es_api_basic_auth_password: 123456
-#
-# # SSL/TLS parameters
-# es_enable_auto_ssl_configuration: true
-# es_enable_http_ssl: false
-# es_enable_transport_ssl: true
-# es_ssl_upload: true
-# es_ssl_keystore: ""
-# es_ssl_keystore_password: ""
-# es_ssl_truststore: ""
-# es_ssl_truststore_password: ""
-# es_ssl_key: ""
-# es_ssl_key_password: ""
-# es_ssl_certificate: ""
-# es_ssl_certificate_authority: ""
-# es_ssl_certificate_path: "{{ es_home_dir }}/{{ es_tar_unzip_dir }}/config/certs"
-# es_ssl_verification_mode: "certificate"
-# es_validate_certs: "yes"
-# es_delete_unmanaged_file: true
-# es_delete_unmanaged_native: true
+# XPack Security
+es_xpack_security_enabled: false
+ex_xpack_security_users:
+  - username: myadmin
+    password: myadmin123
+    roles: [superuser]
+  - username: mykibana
+    password: mykibana123
+    roles: [kibana_admin]
