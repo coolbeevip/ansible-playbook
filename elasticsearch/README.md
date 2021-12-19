@@ -222,7 +222,7 @@ Elasticsearch is Running as PID: 30660
 
 View Elasticsearch service
 
-**TIPS:** Add authentication parameters `--user myadmin:myadmin123` for RESTful API when enabled XPack Security, for example: `ansible all -m shell -a 'curl --user myadmin:myadmin123 http://0.0.0.0:39200/?pretty'`
+**TIPS:** Add authentication parameters `--user myadmin:myadmin123` for RESTful API when enabled XPack Security, for example: `ansible all -m shell -a 'curl --user myadmin:myadmin123 http://0.0.0.0:39200/?pretty'`. sets the passwords for the built-in users[elasticsearch-setup-passwords](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/setup-passwords.html)
 
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'

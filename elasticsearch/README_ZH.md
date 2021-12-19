@@ -230,6 +230,9 @@ Elasticsearch is Running as PID: 30660
 
 **提示：** 如果你启用了 xpack 安全，那么在调用以下 API 时请增加 `--user myadmin:myadmin123` 参数，例如: `ansible all -m shell -a 'curl --user myadmin:myadmin123 http://0.0.0.0:39200/?pretty'`
 
+**提示：** 设置内置用户密码参见[elasticsearch-setup-passwordsedit
+](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/setup-passwords.html)
+
 ```shell
 bash-5.0# ansible all -m shell -a 'curl http://0.0.0.0:39200/?pretty'
 10.1.207.182 | CHANGED | rc=0 >>
