@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo 'Delete Ignite programs'
+rm -rf {{ ignite_home_dir }}/{{ ignite.tar_unzip_dir }}
+
+echo 'Delete Ignite datas'
+rm -rf {{ ignite_log_dir }}
+rm -rf {{ ignite_data_dir }}
+
+
+echo 'Delete ignite_uninstall.sh'
+rm -rf $HOME/ignite_uninstall.sh

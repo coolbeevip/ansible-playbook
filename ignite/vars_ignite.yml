@@ -1,0 +1,14 @@
+---
+# 用户
+ignite_user: "ignite"
+ignite_group: "ignite"
+
+# Ignite install directory
+ignite_home_dir: "/opt/ignite"
+ignite_data_dir: "/data01/ignite/data"
+ignite_log_dir: "/data01/ignite/logs"
+
+# Ignite
+ignite:
+  tar: "apache-ignite-2.11.1-bin.zip"
+  tar_unzip_dir: "apache-ignite-2.11.1"

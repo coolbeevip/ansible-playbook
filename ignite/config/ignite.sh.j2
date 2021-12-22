@@ -1,0 +1,40 @@
+#!/bin/bash
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i '[i]gnite' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Ignite is already running"
+  else
+    echo "Starting Ignite"
+    {{ ignite_home_dir }}/{{ tar_unzip_dir }}s/bin/kibana
+  fi
+  ;;
+
+stop)
+  echo "Shutting down Ignite"
+  ;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+  ;;
+
+status)
+  pid=`ps ax | grep -i '[i]gnite' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Ignite is Running as PID: $pid"
+  else
+    echo "Ignite is not Running"
+  fi
+  ;;
+
+*)
+  echo "Usage: $0 {start|stop|restart|status}"
+  exit 1
+esac
+
+exit 0

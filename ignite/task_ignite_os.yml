@@ -1,0 +1,34 @@
+- name: include vars
+  include_vars: "vars_ignite.yml"
+
+- name: install packages
+  yum:
+    name:
+      - unzip
+    state: present
+  check_mode: no
+  become: yes
+
+# 初始化程序目录
+- name: Create ignite home
+  file:
+    path: "{{ ignite_home_dir }}"
+    state: directory
+    owner: "{{ ignite_user }}"
+    group: "{{ ignite_group }}"
+    mode: "2750"
+  become: yes
+  check_mode: no
+
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ignite_user }}"
+    group: "{{ ignite_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ ignite_data_dir }}"
+    - "{{ ignite_log_dir }}"
+  become: yes
+  check_mode: no
