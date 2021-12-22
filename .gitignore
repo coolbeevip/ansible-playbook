@@ -2,4 +2,5 @@
 *.xz
 *.rpm
 *.tgz
+*.zip
 .DS_Store
