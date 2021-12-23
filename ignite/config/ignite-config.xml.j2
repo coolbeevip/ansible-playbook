@@ -27,19 +27,26 @@
         </property>
 {% endif %}
         <property name="discoverySpi">
+{% if ignite.config.discoverySpi.tcp.enabled %}
             <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+                <property name="localPort" value="{{ ignite.config.discoverySpi.localPort }}"/>
+                <property name="localPortRange" value="{{ ignite.config.discoverySpi.localPortRange }}"/>
                 <property name="ipFinder">
+{% if ignite.config.discoverySpi.tcp.ipfinder == 'multicast' %}
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
-                        <property name="addresses">
-                            <list>
-{% for address in ignite.config.discoverySpi.tcpDiscoverySpi.addresses %}
-                                <value>{{ address }}</value>
+                      <property name="multicastGroup" value="{{ ignite.config.discoverySpi.tcp.multicast.multicastGroup }}"/>
+                      <property name="addresses">
+                        <list>
+{% for address in ignite.config.discoverySpi.tcp.addresses %}
+                          <value>{{ address }}:{{ ignite.config.discoverySpi.localPort }}</value>
 {% endfor %}
-                            </list>
-                        </property>
+                        </list>
+                      </property>
                     </bean>
+{% endif %}
                 </property>
             </bean>
+{% endif %}
         </property>
     </bean>
 </beans>

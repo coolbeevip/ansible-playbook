@@ -11,7 +11,6 @@ ignite:
     home: "/opt/ignite"
     config: "/data01/ignite/config"
     work: "/data01/ignite/work"
-    log: "/data01/ignite/logs"
   modules:
     - ignite-kafka
     - ignite-slf4j
@@ -22,10 +21,18 @@ ignite:
   jvm_opts: "-J-Xmx4G -J-XX:+UseG1GC -J-XX:MaxDirectMemorySize=60M"
   config:
     clientMode: "false"
-    peerClassLoadingEnabled: "true"
+    peerClassLoadingEnabled: "false" # 生产环境建议禁用
     quiet_mode: "false"
     includeEventTypes: false
     discoverySpi:
-      tcpDiscoverySpi:
+      localPort: 48500
+      localPortRange: 20
+      tcp:
+        enabled: true
+        ipfinder: multicast
+        multicast:
+          multicastGroup: 228.10.10.157
         addresses:
-          - 0.0.0.0:47500..47509
+          - 10.1.207.180
+          - 10.1.207.181
+          - 10.1.207.182

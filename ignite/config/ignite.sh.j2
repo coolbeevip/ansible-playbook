@@ -9,9 +9,9 @@ start)
   else
     echo "Starting Ignite"
     $IGNITE_HOME/bin/ignite.sh {{ ignite.jvm_opts }} \
+      -J-Djava.net.preferIPv4Stack=true \
       -J-DIGNITE_QUIET={{ ignite.config.quiet_mode }} \
       -J-DIGNITE_TO_STRING_INCLUDE_SENSITIVE=false \
-      -J-DIGNITE_LOG_DIR={{ ignite.directory.log }} \
       -J-DIGNITE_WORK_DIR={{ ignite.directory.work }} \
       {{ ignite.directory.config }}/ignite-config.xml
   fi
