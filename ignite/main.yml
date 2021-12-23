@@ -6,6 +6,7 @@
   tasks:
     - include_tasks: task_ignite_os.yml
     - include_tasks: task_ignite_upload.yml
+    - include_tasks: task_ignite_start.yml
 
 - hosts: 10.1.207.181
   user: ignite
@@ -15,6 +16,7 @@
   tasks:
     - include_tasks: task_ignite_os.yml
     - include_tasks: task_ignite_upload.yml
+    - include_tasks: task_ignite_start.yml
 
 - hosts: 10.1.207.182
   user: ignite
@@ -24,3 +26,4 @@
   tasks:
     - include_tasks: task_ignite_os.yml
     - include_tasks: task_ignite_upload.yml
+    - include_tasks: task_ignite_start.yml

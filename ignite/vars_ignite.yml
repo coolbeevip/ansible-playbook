@@ -21,9 +21,15 @@ ignite:
   jvm_opts: "-J-Xmx4G -J-XX:+UseG1GC -J-XX:MaxDirectMemorySize=60M"
   config:
     clientMode: "false"
-    peerClassLoadingEnabled: "false" # 生产环境建议禁用
+    peerClassLoadingEnabled: "false" # 生产环境建议设置为 false
     quiet_mode: "false"
     includeEventTypes: false
+    connector:
+      port: 11211 # TCP 连接端口
+    sqlConnector:
+      port: 10800 # JDBC 连接端口
+    communication:
+      port: 47101
     discoverySpi:
       localPort: 48500
       localPortRange: 20

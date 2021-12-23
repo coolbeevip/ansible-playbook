@@ -11,6 +11,21 @@
         <property name="workDirectory" value="{{ ignite.directory.work }}"/>
         <property name="clientMode" value="{{ ignite.config.clientMode }}"/>
         <property name="peerClassLoadingEnabled" value="{{ ignite.config.peerClassLoadingEnabled }}"/>
+        <property name="communicationSpi">
+          <bean class="org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi">
+            <property name="localPort" value="{{ ignite.config.communication.port }}"/>
+          </bean>
+        </property>
+        <property name="connectorConfiguration">
+          <bean class="org.apache.ignite.configuration.ConnectorConfiguration">
+            <property name="port" value="{{ ignite.config.connector.port }}"/>
+          </bean>
+        </property>
+        <property name="sqlConnectorConfiguration">
+          <bean class="org.apache.ignite.configuration.SqlConnectorConfiguration">
+            <property name="port" value="{{ ignite.config.sqlConnector.port }}"/>
+          </bean>
+        </property>
 {% if ignite.config.includeEventTypes %}
         <property name="includeEventTypes">
             <list>

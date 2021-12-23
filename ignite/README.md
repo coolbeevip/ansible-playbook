@@ -131,18 +131,93 @@ Elasticsearch is Running as PID: 30660
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/ignite.sh start'
+10.1.207.181 | CHANGED | rc=0 >>
+Starting Ignite
+
+10.1.207.182 | CHANGED | rc=0 >>
+Starting Ignite
+
+10.1.207.180 | CHANGED | rc=0 >>
+Starting Ignite
 ```
 
 停止服务
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/ignite.sh stop'
+10.1.207.181 | CHANGED | rc=0 >>
+Shutting down Ignite
+
+10.1.207.182 | CHANGED | rc=0 >>
+Shutting down Ignite
+
+10.1.207.180 | CHANGED | rc=0 >>
+Shutting down Ignite
 ```
 
 查看服务进程ID
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/ignite.sh status'
+10.1.207.182 | CHANGED | rc=0 >>
+Ignite is Running as PID: 5314
+
+10.1.207.181 | CHANGED | rc=0 >>
+Ignite is Running as PID: 19374
+
+10.1.207.180 | CHANGED | rc=0 >>
+Ignite is Running as PID: 32625
+```
+
+获取集群状态
+
+```shell
+$ control.sh --host 10.1.207.181 --port 11211 --state
+Control utility [ver. 2.11.1#20211220-sha1:eae1147d]
+2021 Copyright(C) Apache Software Foundation
+User: ignite
+Time: 2021-12-23T15:52:26.892
+Command [STATE] started
+Arguments: --host 10.1.207.181 --port 11211 --state
+--------------------------------------------------------------------------------
+Cluster  ID: 194216a5-f73b-4689-9347-1c4679204d7c
+Cluster tag: dazzling_ellis
+--------------------------------------------------------------------------------
+Cluster is active
+Command [STATE] finished with code: 0
+Control utility has completed execution at: 2021-12-23T15:52:28.609
+Execution time: 1717 msstate
+```
+
+获取基线中注册的节点
+
+```shell
+$ control.sh --host 10.1.207.181 --port 11211 --baseline
+Control utility [ver. 2.11.1#20211220-sha1:eae1147d]
+2021 Copyright(C) Apache Software Foundation
+User: ignite
+Time: 2021-12-23T15:54:55.829
+Command [BASELINE] started
+Arguments: --host 10.1.207.181 --port 11211 --baseline
+--------------------------------------------------------------------------------
+Cluster state: active
+Current topology version: 3
+Baseline auto adjustment enabled: softTimeout=0
+Baseline auto-adjust are not scheduled
+
+Current topology version: 3 (Coordinator: ConsistentId=10.1.207.182,127.0.0.1,172.17.0.1,172.18.0.1:48500, Address=172.17.0.1, Order=1)
+
+Baseline nodes:
+    ConsistentId=10.1.207.180,127.0.0.1,172.17.0.1,172.18.0.1,172.19.0.1:48500, Address=172.17.0.1, State=ONLINE, Order=2
+    ConsistentId=10.1.207.181,127.0.0.1,172.17.0.1,172.18.0.1,172.19.0.1,172.19.0.1,172.20.0.1:48500, Address=172.17.0.1, State=ONLINE, Order=3
+    ConsistentId=10.1.207.182,127.0.0.1,172.17.0.1,172.18.0.1:48500, Address=172.17.0.1, State=ONLINE, Order=1
+--------------------------------------------------------------------------------
+Number of baseline nodes: 3
+
+Other nodes not found.
+Command [BASELINE] finished with code: 0
+Control utility has completed execution at: 2021-12-23T15:54:57.291
+Execution time: 1462 ms
 ```
 
 ## Q & A

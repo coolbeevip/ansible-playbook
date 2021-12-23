@@ -8,12 +8,12 @@ start)
     echo "Ignite is already running"
   else
     echo "Starting Ignite"
-    $IGNITE_HOME/bin/ignite.sh {{ ignite.jvm_opts }} \
+    nohup $IGNITE_HOME/bin/ignite.sh {{ ignite.jvm_opts }} \
       -J-Djava.net.preferIPv4Stack=true \
       -J-DIGNITE_QUIET={{ ignite.config.quiet_mode }} \
       -J-DIGNITE_TO_STRING_INCLUDE_SENSITIVE=false \
       -J-DIGNITE_WORK_DIR={{ ignite.directory.work }} \
-      {{ ignite.directory.config }}/ignite-config.xml
+      {{ ignite.directory.config }}/ignite-config.xml < /dev/null > ~/ignite.out 2>&1 &
   fi
   ;;
 

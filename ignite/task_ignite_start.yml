@@ -1,0 +1,6 @@
+- name: include vars
+  include_vars: "vars_ignite.yml"
+
+- name: Start Ignite
+  shell: $HOME/ignite.sh start
+  check_mode: no
