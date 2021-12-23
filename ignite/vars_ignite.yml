@@ -3,12 +3,29 @@
 ignite_user: "ignite"
 ignite_group: "ignite"
 
-# Ignite install directory
-ignite_home_dir: "/opt/ignite"
-ignite_data_dir: "/data01/ignite/data"
-ignite_log_dir: "/data01/ignite/logs"
-
 # Ignite
 ignite:
   tar: "apache-ignite-2.11.1-bin.zip"
-  tar_unzip_dir: "apache-ignite-2.11.1"
+  tar_unzip_dir: "apache-ignite-2.11.1-bin"
+  directory:
+    home: "/opt/ignite"
+    config: "/data01/ignite/config"
+    work: "/data01/ignite/work"
+    log: "/data01/ignite/logs"
+  modules:
+    - ignite-kafka
+    - ignite-slf4j
+    - ignite-ml
+    - ignite-rest-http
+    - ignite-schedule
+    - ignite-visor-console
+  jvm_opts: "-J-Xmx4G -J-XX:+UseG1GC -J-XX:MaxDirectMemorySize=60M"
+  config:
+    clientMode: "false"
+    peerClassLoadingEnabled: "true"
+    quiet_mode: "false"
+    includeEventTypes: false
+    discoverySpi:
+      tcpDiscoverySpi:
+        addresses:
+          - 0.0.0.0:47500..47509

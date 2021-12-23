@@ -12,7 +12,7 @@
 # 初始化程序目录
 - name: Create ignite home
   file:
-    path: "{{ ignite_home_dir }}"
+    path: "{{ ignite.directory.home }}"
     state: directory
     owner: "{{ ignite_user }}"
     group: "{{ ignite_group }}"
@@ -28,7 +28,24 @@
     group: "{{ ignite_group }}"
     mode: "2750"
   with_items:
-    - "{{ ignite_data_dir }}"
-    - "{{ ignite_log_dir }}"
+    - "{{ ignite.directory.config }}"
+    - "{{ ignite.directory.work }}"
+    - "{{ ignite.directory.log }}"
   become: yes
+  check_mode: no
+
+- name: configuring environment IGNITE_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: "^export IGNITE_HOME=.*$"
+    line: "export IGNITE_HOME={{ ignite.directory.home }}/{{ ignite.tar_unzip_dir }}"
+    state: present
+  check_mode: no
+
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: "^export PATH=.*"
+    line: "export PATH=$IGNITE_HOME/bin:$PATH"
+    state: present
   check_mode: no

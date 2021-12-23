@@ -5,33 +5,41 @@
 # 上传 ignite 安装包
 - name: check upload ignite
   stat:
-    path: "{{ ignite_home_dir }}/{{ ignite.tar }}"
+    path: "{{ ignite.directory.home }}/{{ ignite.tar }}"
   register: check_result
   check_mode: no
 - name: upload ignite
   synchronize:
     src: /ansible-playbook/packages/{{ ignite.tar }}
-    dest: "{{ ignite_home_dir }}/{{ ignite.tar }}"
+    dest: "{{ ignite.directory.home }}/{{ ignite.tar }}"
   check_mode: no
   when: not check_result.stat.exists
 
 # 解压缩 ignite 安装包
 - name: check unzip ignite
   stat:
-    path: "{{ ignite_home_dir }}/{{ ignite.tar_unzip_dir }}"
+    path: "{{ ignite.directory.home }}/{{ ignite.tar_unzip_dir }}"
   register: check_result
   check_mode: no
 - name: unzip ignite
   shell: |
-    cd "{{ ignite_home_dir }}"
-    tar zxf {{ ignite.tar }}
+    cd "{{ ignite.directory.home }}"
+    unzip {{ ignite.tar }}
   check_mode: no
   when: not check_result.stat.exists
+
+# 上传配置文件
+- name: upload ignite-config.xml
+  template:
+    src: "/ansible-playbook/ignite/config/ignite-config.xml.j2"
+    dest: "{{ ignite.directory.config }}/ignite-config.xml"
+    mode: 0755
+  check_mode: no
 
 # 上传启动文件
 - name: upload ignite.sh
   template:
-    src: "/ansible-playbook/kibana/config/ignite.sh.j2"
+    src: "/ansible-playbook/ignite/config/ignite.sh.j2"
     dest: "$HOME/ignite.sh"
     mode: 0755
   check_mode: no
@@ -39,7 +47,7 @@
 # 上传卸载文件
 - name: upload ignite_uninstall.sh
   template:
-    src: "/ansible-playbook/kibana/config/ignite_uninstall.sh.j2"
+    src: "/ansible-playbook/ignite/config/ignite_uninstall.sh.j2"
     dest: "$HOME/ignite_uninstall.sh"
     mode: 0755
   check_mode: no

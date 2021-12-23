@@ -2,18 +2,28 @@
 
 case "$1" in
 start)
-  pid=`ps ax | grep -i '[i]gnite' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.ignite.startup.cmdline.CommandLineStartup' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
     echo "Ignite is already running"
   else
     echo "Starting Ignite"
-    {{ ignite_home_dir }}/{{ tar_unzip_dir }}s/bin/kibana
+    $IGNITE_HOME/bin/ignite.sh {{ ignite.jvm_opts }} \
+      -J-DIGNITE_QUIET={{ ignite.config.quiet_mode }} \
+      -J-DIGNITE_TO_STRING_INCLUDE_SENSITIVE=false \
+      -J-DIGNITE_LOG_DIR={{ ignite.directory.log }} \
+      -J-DIGNITE_WORK_DIR={{ ignite.directory.work }} \
+      {{ ignite.directory.config }}/ignite-config.xml
   fi
   ;;
 
 stop)
   echo "Shutting down Ignite"
+  pid=`ps ax | grep -i '[o]rg.apache.ignite.startup.cmdline.CommandLineStartup' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    kill $pid
+  fi
   ;;
 
 restart)
@@ -23,7 +33,7 @@ restart)
   ;;
 
 status)
-  pid=`ps ax | grep -i '[i]gnite' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.ignite.startup.cmdline.CommandLineStartup' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
     echo "Ignite is Running as PID: $pid"
