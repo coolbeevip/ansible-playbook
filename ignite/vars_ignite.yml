@@ -24,6 +24,7 @@ ignite:
     peerClassLoadingEnabled: "false"    # 生产环境建议设置为 false
     quiet_mode: "false"
     includeEventTypes: false
+    authenticationEnabled: true         # 开启安全认证
     connector:
       port: 11211                       # TCP 连接端口
     sqlConnector:

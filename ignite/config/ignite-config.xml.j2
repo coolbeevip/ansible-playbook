@@ -64,5 +64,19 @@
             </bean>
 {% endif %}
         </property>
+
+{% if ignite.config.authenticationEnabled %}
+        <!-- default username/password is ignite/ignite -->
+        <property name="authenticationEnabled" value="true"/>
+        <property name="dataStorageConfiguration">
+          <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+            <property name="defaultDataRegionConfiguration">
+              <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                <property name="persistenceEnabled" value="true"/>
+              </bean>
+            </property>
+          </bean>
+        </property>
+{% endif %}
     </bean>
 </beans>
