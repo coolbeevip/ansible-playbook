@@ -49,6 +49,7 @@
                 <property name="ipFinder">
 {% if ignite.config.discoverySpi.tcp.ipfinder == 'multicast' %}
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
+                      <property name="multicastPort" value="{{ ignite.config.discoverySpi.tcp.multicast.multicastPort }}"/>
                       <property name="multicastGroup" value="{{ ignite.config.discoverySpi.tcp.multicast.multicastGroup }}"/>
                       <property name="addresses">
                         <list>
