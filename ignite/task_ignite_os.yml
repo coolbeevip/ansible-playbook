@@ -49,3 +49,11 @@
     line: "export PATH=$IGNITE_HOME/bin:$PATH"
     state: present
   check_mode: no
+
+- name: configuring environment USER_LIBS
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: "^export USER_LIBS=.*$"
+    line: "export USER_LIBS={{ ignite.directory.libs }}"
+    state: present
+  check_mode: no

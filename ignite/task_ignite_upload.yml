@@ -33,7 +33,7 @@
   synchronize:
     src: /ansible-playbook/packages/{{ item }}
     dest: "{{ ignite.directory.libs }}"
-  loop: "{{ ignite.external_libs }}"
+  loop: "{{ ignite.libs }}"
   check_mode: no
 
 # 上传配置文件

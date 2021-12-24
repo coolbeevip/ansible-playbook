@@ -20,6 +20,8 @@ ignite:
     - ignite-schedule
     - ignite-visor-console
   jvm_opts: "-J-Xmx4G -J-XX:+UseG1GC -J-XX:MaxDirectMemorySize=60M"
+  libs:
+    - mysql-connector-java-8.0.20.jar
   config:
     clientMode: "false"
     peerClassLoadingEnabled: "false"    # 生产环境建议设置为 false

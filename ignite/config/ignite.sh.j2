@@ -13,7 +13,6 @@ start)
       -J-DIGNITE_QUIET={{ ignite.config.quiet_mode }} \
       -J-DIGNITE_TO_STRING_INCLUDE_SENSITIVE=false \
       -J-DIGNITE_WORK_DIR={{ ignite.directory.work }} \
-      -J-DEXTERNAL_LIBS={{ ignite.directory.libs }} \
       {{ ignite.directory.config }}/ignite-config.xml < /dev/null > ~/ignite.out 2>&1 &
   fi
   ;;
