@@ -11,7 +11,6 @@ ignite:
     home: "/opt/ignite"
     config: "/data01/ignite/config"
     work: "/data01/ignite/work"
-    libs: "/data01/ignite/libs"
   modules:
     - ignite-kafka
     - ignite-slf4j

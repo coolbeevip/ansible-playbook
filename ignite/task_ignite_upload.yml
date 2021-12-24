@@ -28,11 +28,20 @@
   check_mode: no
   when: not check_result.stat.exists
 
+- name: create user libs directories
+  file:
+    path: "{{ ignite.directory.home }}/{{ ignite.tar_unzip_dir }}/libs/user_libs"
+    state: directory
+    owner: "{{ ignite_user }}"
+    group: "{{ ignite_group }}"
+    mode: "2750"
+  check_mode: no
+
 # 上传外部扩展库
 - name: upload ignite external libs
   synchronize:
     src: /ansible-playbook/packages/{{ item }}
-    dest: "{{ ignite.directory.libs }}"
+    dest: "{{ ignite.directory.home }}/{{ ignite.tar_unzip_dir }}/libs/user_libs"
   loop: "{{ ignite.libs }}"
   check_mode: no
 

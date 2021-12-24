@@ -30,7 +30,6 @@
   with_items:
     - "{{ ignite.directory.config }}"
     - "{{ ignite.directory.work }}"
-    - "{{ ignite.directory.libs }}"
   become: yes
   check_mode: no
 
@@ -47,13 +46,5 @@
     dest: ~/.bashrc
     regexp: "^export PATH=.*"
     line: "export PATH=$IGNITE_HOME/bin:$PATH"
-    state: present
-  check_mode: no
-
-- name: configuring environment USER_LIBS
-  lineinfile:
-    dest: ~/.bashrc
-    regexp: "^export USER_LIBS=.*$"
-    line: "export USER_LIBS={{ ignite.directory.libs }}"
     state: present
   check_mode: no
