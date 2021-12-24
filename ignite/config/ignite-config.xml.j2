@@ -7,10 +7,25 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
+{% if ignite.config.datasources is defined %}
+{% for datasource in ignite.config.datasources %}
+    <!-- datasource -->
+    <bean class="{{ datasource.class }}" id="{{ datasource.id }}">
+        <property name="URL" value="{{ datasource.url }}"/>
+        <property name="user" value="{{ datasource.username }}"/>
+        <property name="password" value="{{ datasource.password }}"/>
+    </bean>
+{% endfor %}
+{% endif %}
+
     <bean id="grid.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
         <property name="workDirectory" value="{{ ignite.directory.work }}"/>
         <property name="clientMode" value="{{ ignite.config.clientMode }}"/>
         <property name="peerClassLoadingEnabled" value="{{ ignite.config.peerClassLoadingEnabled }}"/>
+{% if ignite.config.authenticationEnabled %}
+        <!-- default username/password is ignite/ignite -->
+        <property name="authenticationEnabled" value="true"/>
+{% endif %}
         <property name="communicationSpi">
           <bean class="org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi">
             <property name="localPort" value="{{ ignite.config.communication.port }}"/>
@@ -41,6 +56,8 @@
             </list>
         </property>
 {% endif %}
+
+        <!-- cluster -->
         <property name="discoverySpi">
 {% if ignite.config.discoverySpi.tcp.enabled %}
             <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
@@ -66,8 +83,7 @@
         </property>
 
 {% if ignite.config.authenticationEnabled %}
-        <!-- default username/password is ignite/ignite -->
-        <property name="authenticationEnabled" value="true"/>
+        <!-- persistence -->
         <property name="dataStorageConfiguration">
           <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
             <property name="defaultDataRegionConfiguration">

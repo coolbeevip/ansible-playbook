@@ -45,10 +45,11 @@ cd ~/my-docker-volume/ansible-playbook
 git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
-下载 Kibana 和 Metricbeat 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
+下载 Ignite 安装包和扩展库到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
 wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/ignite/2.11.1/apache-ignite-2.11.1-bin.zip --no-check-certificate
+wget -P ~/my-docker-volume/ansible-playbook/packages https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar --no-check-certificate
 ```
 
 ## 配置安装脚本

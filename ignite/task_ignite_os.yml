@@ -30,6 +30,7 @@
   with_items:
     - "{{ ignite.directory.config }}"
     - "{{ ignite.directory.work }}"
+    - "{{ ignite.directory.libs }}"
   become: yes
   check_mode: no
 

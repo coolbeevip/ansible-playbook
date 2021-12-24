@@ -3,4 +3,5 @@
 *.rpm
 *.tgz
 *.zip
+*.jar
 .DS_Store

@@ -11,6 +11,7 @@ ignite:
     home: "/opt/ignite"
     config: "/data01/ignite/config"
     work: "/data01/ignite/work"
+    libs: "/data01/ignite/libs"
   modules:
     - ignite-kafka
     - ignite-slf4j
@@ -44,3 +45,10 @@ ignite:
           - 10.1.207.180
           - 10.1.207.181
           - 10.1.207.182
+    datasources:
+       - id: nc_resource
+         class: com.mysql.cj.jdbc.MysqlDataSource
+         # 特殊字符转码规则 https://www.freeformatter.com/xml-escape.html
+         url: "jdbc:mysql://10.1.207.183:3810/nc_resource?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=GMT%2B8&amp;allowMultiQueries=true&amp;allowPublicKeyRetrieval=true"
+         username: nc_resource_user
+         password: PbF1_02QqF

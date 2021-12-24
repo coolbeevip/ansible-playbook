@@ -28,6 +28,14 @@
   check_mode: no
   when: not check_result.stat.exists
 
+# 上传外部扩展库
+- name: upload ignite external libs
+  synchronize:
+    src: /ansible-playbook/packages/{{ item }}
+    dest: "{{ ignite.directory.libs }}"
+  loop: "{{ ignite.external_libs }}"
+  check_mode: no
+
 # 上传配置文件
 - name: upload ignite-config.xml
   template:
