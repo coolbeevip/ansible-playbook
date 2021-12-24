@@ -125,6 +125,113 @@ Elasticsearch is Running as PID: 17353
 Elasticsearch is Running as PID: 30660
 ```
 
+如果您在安装时启用了认证参数 `authenticationEnabled=true`，那么集群初始化时为 **INACTIVE** 状态，你需要任选一个节点执行以下命令激活集群
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'echo y | control.sh --host 10.1.207.181 --port 11211 --user ignite --password ignite --set-state ACTIVE'
+10.1.207.180 | CHANGED | rc=0 >>
+Warning: the command will change state of cluster with name "956b92aed71-e2b27fe4-32ac-4500-8d60-5431ea3a4202" to ACTIVE.
+Press 'y' to continue . . . Control utility [ver. 2.11.1#20211220-sha1:eae1147d]
+2021 Copyright(C) Apache Software Foundation
+User: ignite
+Time: 2021-12-24T10:02:54.240
+Warning: --password is insecure. Whenever possible, use interactive prompt for password (just discard --password option).
+Command [SET-STATE] started
+Arguments: --host 10.1.207.181 --port 11211 --user ignite --password ***** --set-state ACTIVE
+--------------------------------------------------------------------------------
+Cluster state changed to ACTIVE
+Command [SET-STATE] finished with code: 0
+Control utility has completed execution at: 2021-12-24T10:02:55.579
+Execution time: 1339 ms
+```
+
+任选一个节点查看集群状态，执行以下命令并查看结果中是否显示 **Cluster is active**，如果显示
+
+```shell
+bash-5.0# ansible 10.1.207.180 -m shell -a 'control.sh --host 10.1.207.181 --port 11211 --user ignite --password ignite --state'
+10.1.207.180 | CHANGED | rc=0 >>
+Control utility [ver. 2.11.1#20211220-sha1:eae1147d]
+2021 Copyright(C) Apache Software Foundation
+User: ignite
+Time: 2021-12-24T09:55:11.037
+Warning: --password is insecure. Whenever possible, use interactive prompt for password (just discard --password option).
+Command [STATE] started
+Arguments: --host 10.1.207.181 --port 11211 --user ignite --password ***** --state
+--------------------------------------------------------------------------------
+Cluster  ID: 600845d1-e538-4c15-8541-97e6fe03d924
+Cluster tag: vigilant_poincare
+--------------------------------------------------------------------------------
+Cluster is active
+Command [STATE] finished with code: 0
+Control utility has completed execution at: 2021-12-24T09:55:11.868
+Execution time: 831 ms
+```
+
+登录任意节点，使用 SQLLine 连接到 ignite 集群，开启认证后默认账号密码是 **ignite**。
+
+```shell
+$ sqlline.sh -u "jdbc:ignite:thin://127.0.0.1:10800;user=ignite;password=ignite"
+Enter username for jdbc:ignite:thin://127.0.0.1:10800;user=ignite;password=ignite:
+Enter password for jdbc:ignite:thin://127.0.0.1:10800;user=ignite;password=ignite:
+sqlline version 1.9.0
+0: jdbc:ignite:thin://127.0.0.1:10800>
+```
+
+修改管理员用户 **ignite** 的密码为  **ignite123**
+
+```sql
+0: jdbc:ignite:thin://127.0.0.1:10800> ALTER USER "ignite" WITH PASSWORD 'ignite123';
+No rows affected (0.19 seconds)
+
+增加一个测试用户 **test**，密码为 **test123**
+
+0: jdbc:ignite:thin://127.0.0.1:10800> CREATE USER "test" WITH PASSWORD 'test123';
+No rows affected (0.334 seconds)
+```
+
+**提示：** 用户名用双引号扩起来表示大小写敏感，否则都会被认为是大写。
+
+使用新建的 **test** 用户连接，**退出 SQLLine 使用 !quit 命令**
+
+```shell
+0: jdbc:ignite:thin://127.0.0.1:10800>!quit
+
+$ sqlline.sh -u "jdbc:ignite:thin://127.0.0.1:10800;user=test;password=test123"
+Enter username for jdbc:ignite:thin://127.0.0.1:10800;user=test;password=test123:
+Enter password for jdbc:ignite:thin://127.0.0.1:10800;user=test;password=test123:
+sqlline version 1.9.0
+0: jdbc:ignite:thin://127.0.0.1:10800>
+```
+
+创建表
+
+```shell
+0: jdbc:ignite:thin://127.0.0.1:10800> CREATE TABLE city (id LONG PRIMARY KEY, name VARCHAR) WITH "template=replicated";
+No rows affected (1.831 seconds)
+```
+
+插入数据
+
+```shell
+0: jdbc:ignite:thin://127.0.0.1:10800> INSERT INTO city (id, name) values (1,'北京');
+1 row affected (0.485 seconds)
+```
+
+查询数据
+
+```shell
+0: jdbc:ignite:thin://127.0.0.1:10800> select * from city;
++----+------+
+| ID | NAME |
++----+------+
+| 1  | 北京   |
++----+------+
+1 row selected (0.109 seconds)
+```
+
+* Ignite SQL[参考](https://ignite.apache.org/docs/latest/sql-reference/ddl)
+* SQLLine 工具命令[参考](http://sqlline.sourceforge.net/#manual)
+
 ## 常用运维命令
 
 启动服务
@@ -172,7 +279,7 @@ Ignite is Running as PID: 32625
 获取集群状态
 
 ```shell
-$ control.sh --host 10.1.207.181 --port 11211 --state
+$ control.sh --host 10.1.207.181 --port 11211 --user ignite --password ignite --state
 Control utility [ver. 2.11.1#20211220-sha1:eae1147d]
 2021 Copyright(C) Apache Software Foundation
 User: ignite
