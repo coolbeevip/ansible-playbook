@@ -1,0 +1,57 @@
+- name: include vars
+  include_vars: "vars_kibana.yml"
+
+# 配置 kibana.yml
+- name: Configure kibana.yml server.host
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^server.host:.*'
+    line: 'server.host: "{{ inventory_hostname }}"'
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+- name: Configure kibana.yml server.name
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^server.name:.*'
+    line: 'server.name: "kibana-{{ inventory_hostname }}"'
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+- name: Configure kibana.yml elasticsearch.hosts
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^elasticsearch.hosts:.*'
+    line: "elasticsearch.hosts: {{ kibana.config.elasticsearch_hosts }}"
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+- name: Configure kibana.yml server.port
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^server.port:.*'
+    line: "server.port: {{ kibana.config.server_port }}"
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+- name: Configure kibana.yml i18n.locale
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^i18n.locale:.*'
+    line: 'i18n.locale: "{{ kibana.config.i18n_locale }}"'
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+- name: Configure kibana.yml pid.file
+  lineinfile:
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}/config/kibana.yml"
+    regexp: '^pid.file:.*'
+    line: "pid.file: {{ kibana_log_dir }}/kibana.pid"
+    state: present
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)

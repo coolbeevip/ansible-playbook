@@ -1,0 +1,32 @@
+- hosts: 10.1.207.180
+  user: kibana
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kibana_os.yml
+    - include_tasks: task_kibana_upload.yml
+    - include_tasks: task_kibana_config.yml
+    - include_tasks: task_metricbeat_upload.yml
+
+- hosts: 10.1.207.181
+  user: kibana
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kibana_os.yml
+    - include_tasks: task_kibana_upload.yml
+    - include_tasks: task_kibana_config.yml
+    - include_tasks: task_metricbeat_upload.yml
+
+- hosts: 10.1.207.182
+  user: kibana
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_kibana_os.yml
+    - include_tasks: task_kibana_upload.yml
+    - include_tasks: task_kibana_config.yml
+    - include_tasks: task_metricbeat_upload.yml

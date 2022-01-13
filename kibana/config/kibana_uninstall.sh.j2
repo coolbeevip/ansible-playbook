@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo 'Delete Kibana programs'
+rm -rf {{ kibana_home_dir }}/{{ kibana.tar_unzip_dir}}
+
+echo 'Delete kibana_uninstall.sh'
+rm -rf $HOME/kibana_uninstall.sh

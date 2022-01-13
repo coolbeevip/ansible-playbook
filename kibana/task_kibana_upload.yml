@@ -1,0 +1,47 @@
+- name: include vars
+  include_vars: "vars_kibana.yml"
+
+
+# 上传 Kibana 安装包
+- name: check upload kibana
+  stat:
+    path: "{{ kibana_home_dir }}/{{ kibana.tar }}"
+  register: check_result
+  check_mode: no
+- name: upload kibana
+  synchronize:
+    src: /ansible-playbook/packages/{{ kibana.tar }}
+    dest: "{{ kibana_home_dir }}/{{ kibana.tar }}"
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts) and (not check_result.stat.exists)
+
+# 解压缩 Kibana 安装包
+- name: check unzip kibana
+  stat:
+    path: "{{ kibana_home_dir }}/{{ kibana.tar_unzip_dir }}"
+  register: check_result
+  check_mode: no
+- name: unzip kibana
+  shell: |
+    cd "{{ kibana_home_dir }}"
+    tar zxf {{ kibana.tar }}
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts) and (not check_result.stat.exists)
+
+# 上传启动文件
+- name: upload kibana.sh
+  template:
+    src: "/ansible-playbook/kibana/config/kibana.sh.j2"
+    dest: "$HOME/kibana.sh"
+    mode: 0755
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)
+
+# 上传启动文件
+- name: upload kibana_uninstall.sh
+  template:
+    src: "/ansible-playbook/kibana/config/kibana_uninstall.sh.j2"
+    dest: "$HOME/kibana_uninstall.sh"
+    mode: 0755
+  check_mode: no
+  when: (inventory_hostname in kibana.on_hosts)

@@ -46,10 +46,11 @@ ignite:
           - 10.1.207.180
           - 10.1.207.181
           - 10.1.207.182
-    datasources:
-       - id: nc_resource
-         class: com.mysql.cj.jdbc.MysqlDataSource
-         # 特殊字符转码规则 https://www.freeformatter.com/xml-escape.html
-         url: "jdbc:mysql://10.1.207.183:3810/nc_resource?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=GMT%2B8&amp;allowMultiQueries=true&amp;allowPublicKeyRetrieval=true"
-         username: nc_resource_user
-         password: PbF1_02QqF
+    # 绑定数据源
+    #datasources:
+    #   - id: nc_resource
+    #     class: com.mysql.cj.jdbc.MysqlDataSource
+    #     # 特殊字符转码规则 https://www.freeformatter.com/xml-escape.html
+    #     url: "jdbc:mysql://10.1.207.183:3810/nc_resource?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=GMT%2B8&amp;allowMultiQueries=true&amp;allowPublicKeyRetrieval=true"
+    #     username: nc_resource_user
+    #     password: PbF1_02QqF

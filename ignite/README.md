@@ -328,6 +328,187 @@ Control utility has completed execution at: 2021-12-23T15:54:57.291
 Execution time: 1462 ms
 ```
 
+使用 Visor 查看缓存统计信息
+
+```shell
+$ ignitevisorcmd.sh -cfg=/data01/ignite/config/ignite-config.xml
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128M; support was removed in 8.0
+十二月 27, 2021 10:34:33 上午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
+信息: Loading XML bean definitions from URL [file:/data01/ignite/config/ignite-config.xml]
+十二月 27, 2021 10:34:34 上午 org.springframework.context.support.AbstractApplicationContext prepareRefresh
+信息: Refreshing org.springframework.context.support.GenericApplicationContext@3b07a0d6: startup date [Mon Dec 27 10:34:34 CST 2021]; root of context hierarchy
+[10:34:36]    __________  ________________
+[10:34:36]   /  _/ ___/ |/ /  _/_  __/ __/
+[10:34:36]  _/ // (7 7    // /  / / / _/
+[10:34:36] /___/\___/_/|_/___/ /_/ /___/
+[10:34:36]
+[10:34:36] ver. 2.11.1#20211220-sha1:eae1147d
+[10:34:36] 2021 Copyright(C) Apache Software Foundation
+[10:34:36]
+[10:34:36] Ignite documentation: http://ignite.apache.org
+[10:34:36]
+[10:34:36] Quiet mode.
+[10:34:36]   ^-- Logging to file '/data01/ignite/work/log/ignite-303135e2.0.log'
+[10:34:36]   ^-- Logging by 'JavaLogger [quiet=true, config=null]'
+[10:34:36]   ^-- To see **FULL** console log here add -DIGNITE_QUIET=false or "-v" to ignite.{sh|bat}
+[10:34:36]
+[10:34:36] OS: Linux 3.10.0-957.el7.x86_64 amd64
+[10:34:36] VM information: Java(TM) SE Runtime Environment 1.8.0_202-b08 Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 25.202-b08
+[10:34:36] Please set system property '-Djava.net.preferIPv4Stack=true' to avoid possible problems in mixed environments.
+[10:34:36] Configured plugins:
+[10:34:36]   ^-- None
+[10:34:36]
+[10:34:36] Configured failure handler: [hnd=StopNodeOrHaltFailureHandler [tryStop=false, timeout=0, super=AbstractFailureHandler [ignoredFailureTypes=UnmodifiableSet [SYSTEM_WORKER_BLOCKED, SYSTEM_CRITICAL_OPERATION_TIMEOUT]]]]
+[10:34:36] Message queue limit is set to 0 which may lead to potential OOMEs when running cache operations in FULL_ASYNC or PRIMARY_SYNC modes due to message queues growth on sender and receiver sides.
+[10:34:37] Security status [authentication=on, sandbox=off, tls/ssl=off]
+[10:34:38] Failed to send multicast message (is multicast enabled on this node?).
+[10:34:40] Performance suggestions for grid  (fix if possible)
+[10:34:40] To disable, set -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
+[10:34:40]   ^-- Enable G1 Garbage Collector (add '-XX:+UseG1GC' to JVM options)
+[10:34:40]   ^-- Set max direct memory size if getting 'OOME: Direct buffer memory' (add '-XX:MaxDirectMemorySize=<size>[g|G|m|M|k|K]' to JVM options)
+[10:34:40]   ^-- Speed up flushing of dirty pages by OS (alter vm.dirty_expire_centisecs parameter by setting to 500)
+[10:34:40] Refer to this page for more performance suggestions: https://apacheignite.readme.io/docs/jvm-and-system-tuning
+[10:34:40]
+[10:34:40] To start Console Management & Monitoring run ignitevisorcmd.{sh|bat}
+[10:34:40]
+[10:34:40] Ignite node started OK (id=303135e2)
+[10:34:40] >>> Ignite cluster is in INACTIVE state (limited functionality available). Use control.(sh|bat) script or IgniteCluster.state(ClusterState.ACTIVE) to change the state.
+
+Some useful commands:
++--------------------------------------------+
+| Type 'top'    | to see full topology.      |
+| Type 'node'   | to see node statistics.    |
+| Type 'cache'  | to see cache statistics.   |
+| Type 'tasks'  | to see tasks statistics.   |
+| Type 'config' | to see node configuration. |
++--------------------------------------------+
+
+Type 'help' to get help.
+
++----------------------------------------------------------------+
+| Status               | Connected                               |
+| Ignite instance name | <default>                               |
+| Config path          | /data01/ignite/config/ignite-config.xml |
+| Uptime               | 00:00:00                                |
++----------------------------------------------------------------+
+___    _________________________ ________
+__ |  / /____  _/__  ___/__  __ \___  __ \
+__ | / /  __  /  _____ \ _  / / /__  /_/ /
+__ |/ /  __/ /   ____/ / / /_/ / _  _, _/
+_____/   /___/   /____/  \____/  /_/ |_|
+
+ADMIN CONSOLE
+2021 Copyright(C) Apache Software Foundation
+
++----------------------------------------------------------------+
+| Status               | Connected                               |
+| Ignite instance name | <default>                               |
+| Config path          | /data01/ignite/config/ignite-config.xml |
+| Uptime               | 00:00:00                                |
++----------------------------------------------------------------+
+
+Type 'help' for more information.
+Type 'open' to join the grid.
+Type 'quit' to quit form Visor console.
+
+visor> cache -a
+Time of the snapshot: 2021-12-27 10:36:27
++==================================================================================================================================================================+
+|       Name(@)        |    Mode     | Nodes | Total entries (Heap / Off-heap) | Primary entries (Heap / Off-heap) |   Hits    |  Misses   |   Reads   |  Writes   |
++==================================================================================================================================================================+
+| ADDRESS_CACHE(@c0)   | PARTITIONED | 3     | 2080 (0 / 2080)                 | min: 661 (0 / 661)                | min: 0    | min: 0    | min: 0    | min: 0    |
+|                      |             |       |                                 | avg: 693.33 (0.00 / 693.33)       | avg: 0.00 | avg: 0.00 | avg: 0.00 | avg: 0.00 |
+|                      |             |       |                                 | max: 728 (0 / 728)                | max: 0    | max: 0    | max: 0    | max: 0    |
++----------------------+-------------+-------+---------------------------------+-----------------------------------+-----------+-----------+-----------+-----------+
+| SQL_PUBLIC_CITY(@c1) | REPLICATED  | 3     | 0 (0 / 0)                       | min: 0 (0 / 0)                    | min: 0    | min: 0    | min: 0    | min: 0    |
+|                      |             |       |                                 | avg: 0.00 (0.00 / 0.00)           | avg: 0.00 | avg: 0.00 | avg: 0.00 | avg: 0.00 |
+|                      |             |       |                                 | max: 0 (0 / 0)                    | max: 0    | max: 0    | max: 0    | max: 0    |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Cache 'ADDRESS_CACHE(@c0)':
++------------------------------------------------------+
+| Name(@)                         | ADDRESS_CACHE(@c0) |
+| Total entries (Heap / Off-heap) | 2080 (0 / 2080)    |
+| Nodes                           | 3                  |
+| Total size Min/Avg/Max          | 661 / 693.33 / 728 |
+|   Heap size Min/Avg/Max         | 0 / 0.00 / 0       |
+|   Off-heap size Min/Avg/Max     | 661 / 693.33 / 728 |
++------------------------------------------------------+
+
+Nodes for: ADDRESS_CACHE(@c0)
++====================================================================================================================+
+|       Node ID8(@), IP       | CPUs | Heap Used | CPU Load |   Up Time    |  Size (Primary / Backup)  | Hi/Mi/Rd/Wr |
++====================================================================================================================+
+| C58242AF(@n0), 10.1.207.181 | 4    | 2.53 %    | 0.43 %   | 00:41:14.599 | Total: 728 (728 / 0)      | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)     | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 728 (728 / 0) | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: <n/a>  | Wr: 0       |
++-----------------------------+------+-----------+----------+--------------+---------------------------+-------------+
+| 7D07604D(@n1), 10.1.207.180 | 4    | 2.40 %    | 0.57 %   | 00:41:14.683 | Total: 661 (661 / 0)      | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)     | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 661 (661 / 0) | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: <n/a>  | Wr: 0       |
++-----------------------------+------+-----------+----------+--------------+---------------------------+-------------+
+| 0E95B5BE(@n2), 10.1.207.182 | 4    | 0.99 %    | 0.50 %   | 00:41:14.493 | Total: 691 (691 / 0)      | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)     | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 691 (691 / 0) | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: <n/a>  | Wr: 0       |
++--------------------------------------------------------------------------------------------------------------------+
+'Hi' - Number of cache hits.
+'Mi' - Number of cache misses.
+'Rd' - number of cache reads.
+'Wr' - Number of cache writes.
+
+Aggregated queries metrics:
+  Minimum execution time: 00:00:00.000
+  Maximum execution time: 00:00:00.000
+  Average execution time: 00:00:00.000
+  Total number of executions: 0
+  Total number of failures:   0
+
+Cache 'SQL_PUBLIC_CITY(@c1)':
++--------------------------------------------------------+
+| Name(@)                         | SQL_PUBLIC_CITY(@c1) |
+| Total entries (Heap / Off-heap) | 0 (0 / 0)            |
+| Nodes                           | 3                    |
+| Total size Min/Avg/Max          | 0 / 0.00 / 0         |
+|   Heap size Min/Avg/Max         | 0 / 0.00 / 0         |
+|   Off-heap size Min/Avg/Max     | 0 / 0.00 / 0         |
++--------------------------------------------------------+
+
+Nodes for: SQL_PUBLIC_CITY(@c1)
++==================================================================================================================+
+|       Node ID8(@), IP       | CPUs | Heap Used | CPU Load |   Up Time    | Size (Primary / Backup) | Hi/Mi/Rd/Wr |
++==================================================================================================================+
+| C58242AF(@n0), 10.1.207.181 | 4    | 2.53 %    | 0.43 %   | 00:41:14.599 | Total: 0 (0 / 0)        | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)   | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 0 (0 / 0)   | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: 0    | Wr: 0       |
++-----------------------------+------+-----------+----------+--------------+-------------------------+-------------+
+| 7D07604D(@n1), 10.1.207.180 | 4    | 2.40 %    | 0.57 %   | 00:41:14.683 | Total: 0 (0 / 0)        | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)   | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 0 (0 / 0)   | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: 0    | Wr: 0       |
++-----------------------------+------+-----------+----------+--------------+-------------------------+-------------+
+| 0E95B5BE(@n2), 10.1.207.182 | 4    | 0.99 %    | 0.50 %   | 00:41:14.493 | Total: 0 (0 / 0)        | Hi: 0       |
+|                             |      |           |          |              |   Heap: 0 (0 / <n/a>)   | Mi: 0       |
+|                             |      |           |          |              |   Off-Heap: 0 (0 / 0)   | Rd: 0       |
+|                             |      |           |          |              |   Off-Heap Memory: 0    | Wr: 0       |
++------------------------------------------------------------------------------------------------------------------+
+'Hi' - Number of cache hits.
+'Mi' - Number of cache misses.
+'Rd' - number of cache reads.
+'Wr' - Number of cache writes.
+
+Aggregated queries metrics:
+  Minimum execution time: 00:00:00.000
+  Maximum execution time: 00:00:00.000
+  Average execution time: 00:00:00.000
+  Total number of executions: 0
+  Total number of failures:   0
+visor>
+```
+
 ## Q & A
 
 #### 如何彻底删除 Ignite 集群

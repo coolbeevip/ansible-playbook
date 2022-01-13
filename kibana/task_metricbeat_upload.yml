@@ -1,0 +1,28 @@
+- name: include vars
+  include_vars: "vars_kibana.yml"
+
+# 上传 Metricbeat 安装包
+- name: check upload metricbeat
+  stat:
+    path: "{{ kibana_home_dir }}/{{ metricbeat.tar }}"
+  register: check_result
+  check_mode: no
+- name: upload metricbeat
+  synchronize:
+    src: /ansible-playbook/packages/{{ metricbeat.tar }}
+    dest: "{{ kibana_home_dir }}/{{ metricbeat.tar }}"
+  check_mode: no
+  when: (not check_result.stat.exists) and (inventory_hostname in metricbeat.modules.keys())
+
+# 解压缩 Metricbeat 安装包
+- name: check unzip metricbeat
+  stat:
+    path: "{{ kibana_home_dir }}/{{ metricbeat.tar_unzip_dir }}"
+  register: check_result
+  check_mode: no
+- name: unzip metricbeat
+  shell: |
+    cd "{{ kibana_home_dir }}"
+    tar zxf {{ metricbeat.tar }}
+  check_mode: no
+  when: (not check_result.stat.exists) and (inventory_hostname in metricbeat.modules.keys())

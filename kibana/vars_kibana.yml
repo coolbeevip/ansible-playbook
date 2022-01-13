@@ -1,0 +1,42 @@
+---
+# 用户
+kibana_user: "kibana"
+kibana_group: "kibana"
+
+# Kibana install directory
+kibana_home_dir: "/opt/kibana"
+kibana_log_dir: "/data01/kibana/logs"
+
+# Kibana
+kibana:
+  tar: "kibana-7.16.1-linux-x86_64.tar.gz"
+  tar_unzip_dir: "kibana-7.16.1-linux-x86_64"
+  on_hosts: [10.1.207.180]
+  config:
+    server_port: 56011
+    i18n_locale: zh-CN
+    elasticsearch_hosts: "[http://10.1.207.180:39200,http://10.1.207.181:39200,http://10.1.207.182:39200]"
+
+# Metricbeat
+metricbeat:
+  tar: "metricbeat-7.16.1-linux-x86_64.tar.gz"
+  tar_unzip_dir: "metricbeat-7.16.1-linux-x86_64"
+  output_elasticsearch:
+    hosts: "[10.1.207.180:39200,10.1.207.181:39200,10.1.207.182:39200]"
+    protocol: "http"
+  modules:
+    10.1.207.180:
+      elasticsearch-xpack:
+        hosts: "[http://10.1.207.180:39200]"
+        xpack.enabled: true
+        period: 10s
+    10.1.207.181:
+      elasticsearch-xpack:
+        hosts: "[http://10.1.207.181:39200]"
+        xpack.enabled: true
+        period: 10s
+    10.1.207.182:
+      elasticsearch-xpack:
+        hosts: "[http://10.1.207.182:39200]"
+        xpack.enabled: true
+        period: 10s

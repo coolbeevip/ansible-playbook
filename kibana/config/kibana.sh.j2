@@ -1,0 +1,40 @@
+#!/bin/bash
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i '[k]ibana' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Kibana is already running"
+  else
+    echo "Starting Kibana"
+    /opt/kibana/kibana-7.16.1-linux-x86_64/bin/kibana
+  fi
+  ;;
+
+stop)
+  echo "Shutting down Kibana" 
+  ;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+  ;;
+
+status)
+  pid=`ps ax | grep -i '[k]ibana' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "Kibana is Running as PID: $pid"
+  else
+    echo "Kibana is not Running"
+  fi
+  ;;
+
+*)
+  echo "Usage: $0 {start|stop|restart|status}"
+  exit 1
+esac
+
+exit 0

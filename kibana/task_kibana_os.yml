@@ -1,0 +1,25 @@
+- name: include vars
+  include_vars: "vars_kibana.yml"
+
+# 初始化程序目录
+- name: Create kibana home
+  file:
+    path: "{{ kibana_home_dir }}"
+    state: directory
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode: "2750"
+  become: yes
+  check_mode: no
+
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_user }}"
+    mode: "2750"
+  with_items:
+    - "{{ kibana_log_dir }}"
+  become: yes
+  check_mode: no
