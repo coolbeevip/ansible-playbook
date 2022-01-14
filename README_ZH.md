@@ -138,13 +138,13 @@ bash-5.0# ansible all -m debug -a "msg={{ '123456' | password_hash('sha512', 'my
 创建用户组
 
 ```shell
-bash-5.0# ansible all -m group -a 'name=mysql state=present'
+bash-5.0# ansible all --become --become-method su --become-user root -m group -a 'name=mysql state=present'
 ```
 
 创建用户，密码为第一步生成的加密字符串
 
 ```shell
-bash-5.0# ansible all -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
+bash-5.0# ansible all --become --become-method su --become-user root -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
 ```
 
 至此你已经掌握了如何启动 ansible 工具连接多台目标服务器，并执行了一些简单的命令，我们可以通过 playbook 脚本可以编排更复杂脚本。

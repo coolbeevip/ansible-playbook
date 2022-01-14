@@ -138,13 +138,13 @@ bash-5.0# ansible all -m debug -a "msg={{ '123456' | password_hash('sha512', 'my
 Create Group
 
 ```shell
-bash-5.0# ansible all -m group -a 'name=mysql state=present'
+bash-5.0# ansible all --become --become-method su --become-user root -m group -a 'name=mysql state=present'
 ```
 
 Greate User
 
 ```shell
-bash-5.0# ansible all -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
+bash-5.0# ansible all --become --become-method su --become-user root -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
 ```
 
 By now, you have mastered how to start the Ansible tool to connect to multiple target servers and execute some simple commands, Later, you can see the middleware deployment script written using Ansible playbook script, and you can experience it directly.
