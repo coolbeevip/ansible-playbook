@@ -144,17 +144,13 @@ PLAY RECAP *********************************************************************
 
 #### 验证集群
 
-查看每个目标服务器 IoTDB 进程信息
+在每个节点上尝试登录并执行一个简单的 CLi 命令
 
 ```shell
-bash-5.0# ansible all -m shell -a '~/iotdb.sh status'
-10.19.32.53 | CHANGED | rc=0 >>
-IoTDB is Running as PID: 16649
-10.19.32.52 | CHANGED | rc=0 >>
-IoTDB is Running as PID: 23052
-10.19.32.51 | CHANGED | rc=0 >>
-IoTDB is Running as PID: 8780
+bash-5.0# ansible all -m shell -a 'start-cli.sh -h {{ inventory_hostname }} -p 6667 -u root -pw root -e "SHOW STORAGE GROUP"'
 ```
+
+start-cli.sh -h 10.19.32.52 -p 6667 -u root -pw root -e "SHOW STORAGE GROUP"
 
 ## 常用运维命令
 

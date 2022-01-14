@@ -79,7 +79,7 @@
   lineinfile:
     dest: ~/.bashrc
     regexp: '^export PATH=.*'
-    line: "export PATH={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/bin:${JAVA_HOME}/bin:$PATH"
+    line: "export PATH={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/sbin:{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/tools:${JAVA_HOME}/bin:$PATH"
     state: present
   check_mode: no
 
