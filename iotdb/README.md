@@ -1,7 +1,5 @@
 # Ansible Playbook 自动化安装 IoTDB 集群 | [English](README.md)
 
-请先在目标服务器创建 `iotdb` 用户
-
 ## 安装计划
 
 服务器规划
@@ -16,19 +14,22 @@
 
 集群节点规划
 
-| IP | IoTDB | Grafana |
-| ---- | ---- | ---- |
-| 10.1.207.180 | ✓ |  |
-| 10.1.207.181 | ✓ |  |
-| 10.1.207.182 | ✓ |  |
+| IP | IoTDB |
+| ---- | ---- |
+| 10.1.207.180 | ✓ |
+| 10.1.207.181 | ✓ |
+| 10.1.207.182 | ✓ |
 
 节点安装路径
 
 | 路径 | 描述 |
 | ---- | ---- |
-| /opt/iotdb | 源代码上传路径 |
+| /opt/iotdb | 程序安装路径 |
 | ~/iotdb_uninstall.sh | 集群卸载脚本 |
 | ~/iotdb.sh | 启停脚本 |
+| /data01/iotdb/conf | 配置脚本目录 |
+| /data01/iotdb/data | 配置存储目录 |
+| /data01/iotdb/logs | 日志存储目录 |
 
 ## 下载安装包和 Playbook 脚本
 
@@ -60,13 +61,13 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/io
 您可以在此处定义目标服务器，您可以看到这里定义了三个目标服务器，使用 `iotdb` 用户登录。
 
 ```yaml
-- hosts: 10.1.207.180
+- hosts: 10.19.32.51
   user: iotdb
   ...
-- hosts: 10.1.207.181
+- hosts: 10.19.32.52
   user: iotdb
   ...
-- hosts: 10.1.207.182
+- hosts: 10.19.32.53
   user: iotdb
   ...
 ```
@@ -76,23 +77,38 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/io
 您可以在此处定义安装目录，版本，端口，默认主节点地址等配置信息。
 
 ```shell
-# 源码包
-redis_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 源码包文件名
-redis_tar_unzip_dir: "apache-iotdb-0.12.4-cluster"    # 源码包解压后的目录名
+# 系统内核参数
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '65535'
+limits_soft_nofile: '65535'
+
+# 安装介质
+iotdb_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 安装包
+iotdb_tar_unzip_dir: "apache-iotdb-0.12.4-cluster-bin"    # 安装包解压后的目录名
 
 # 安装目录
-redis_home_dir: "/opt/iotdb"          # 源码包上传目录
-redis_bin_dir: "/data01/iotdb/bin"    # 编译后程序文件
-redis_log_dir: "/data01/iotdb/logs"   # 运行日志，PID 文件
-redis_data_dir: "/data01/iotdb/data"  # 数据文件
-redis_conf_dir: "/data01/iotdb/conf"  # 配置文件
+iotdb_home_dir: "/opt/iotdb"          # 程序安装目录
+iotdb_log_dir: "/data01/iotdb/logs"   # 运行日志
+iotdb_data_dir: "/data01/iotdb/data"  # 数据文件
+iotdb_conf_dir: "/data01/iotdb/conf"  # 配置文件
 
 # 操作系统用户和组
 os_user: "iotdb"                   # 操作系统用户名
 os_group: "iotdb"                  # 操作系统组名
+
+# 集群相关配置
+iotdb:
+  cluster:
+    seed_nodes: 10.19.32.51:9003,10.19.32.52:9003,10.19.32.53:9003
+    default_replica_num: 3
+    internal_meta_port: 9003
+    internal_data_port: 40010
+  engine:
+    rpc_port: 6667
 ```
 
-您可以在 `iotdb/config/iotdb-cluster.properties.j2` 和 `iotdb/config/iotdb-engine.properties.j2` 文件中找到更多的默认配置
+您可以在 `iotdb/config/` 目录下找到更多的默认配置文件
 
 ## 开始安装
 
@@ -124,7 +140,6 @@ bash-5.0#
 * 配置 IoTDB
 * 启动 IoTDB
 
-
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/iotdb/main-install.yml
 ```
@@ -138,19 +153,36 @@ PLAY RECAP *********************************************************************
 10.19.32.53                : ok=28   changed=6    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0
 ```
 
-**提示:** 因为第一次执行脚本时，会上传 Redis 源码包（约 2.5MB）到所有服务器并在服务器上编译（每服务器约 1分钟）。在我本地环境首次安装大概耗时 5 分钟
-
-**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `Redis has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/redis_uninstall.sh'` 命令卸载之前的安装。
+**提示:** 此脚本只适合初始化安装，重复执行此命令可能会收到 `IoTDB has been installed, please uninstall and then reinstall` 提示，此时需要先要使用 `ansible all -m shell -a '~/iotdb_uninstall.sh'` 命令卸载之前的安装。
 
 #### 验证集群
 
-在每个节点上尝试登录并执行一个简单的 CLi 命令
+在每个节点上尝试登录并执行一个简单的 CLI 命令
 
 ```shell
 bash-5.0# ansible all -m shell -a 'start-cli.sh -h {{ inventory_hostname }} -p 6667 -u root -pw root -e "SHOW STORAGE GROUP"'
+10.19.32.51 | CHANGED | rc=0 >>
++-------------+
+|storage group|
++-------------+
++-------------+
+Empty set.
+It costs 0.290s
+10.19.32.53 | CHANGED | rc=0 >>
++-------------+
+|storage group|
++-------------+
++-------------+
+Empty set.
+It costs 0.491s
+10.19.32.52 | CHANGED | rc=0 >>
++-------------+
+|storage group|
++-------------+
++-------------+
+Empty set.
+It costs 0.512s
 ```
-
-start-cli.sh -h 10.19.32.52 -p 6667 -u root -pw root -e "SHOW STORAGE GROUP"
 
 ## 常用运维命令
 

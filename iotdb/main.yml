@@ -4,6 +4,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
     - include_tasks: task_iotdb_start.yml
@@ -14,6 +15,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
     - include_tasks: task_iotdb_start.yml
@@ -24,6 +26,7 @@
   become_user: root
   become_method: su
   tasks:
+    - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
     - include_tasks: task_iotdb_start.yml
