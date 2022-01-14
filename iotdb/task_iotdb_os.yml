@@ -1,0 +1,72 @@
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+# Install linux package
+- name: Yum install packages
+  yum:
+    name:
+      - nc # 测试 zookeeper 工具
+      - rsync
+      - unzip
+      - wget
+      - curl
+    state: present
+  check_mode: no
+  become: yes
+
+# File Descriptors
+- name: Add or modify hard nofile limits
+  pam_limits:
+    domain: '{{ os_user }}'
+    limit_type: hard
+    limit_item: nofile
+    value: '{{ limits_hard_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nofile limits
+  pam_limits:
+    domain: '{{ os_user }}'
+    limit_type: soft
+    limit_item: nofile
+    value: '{{ limits_soft_nofile }}'
+  check_mode: no
+  become: yes
+- name: Add or modify hard nproc limits
+  pam_limits:
+    domain: '{{ os_user }}'
+    limit_type: hard
+    limit_item: nproc
+    value: '{{ limits_hard_nproc }}'
+  check_mode: no
+  become: yes
+- name: Add or modify soft nproc limits
+  pam_limits:
+    domain: '{{ os_user }}'
+    limit_type: soft
+    limit_item: nproc
+    value: '{{ limits_soft_nproc }}'
+  check_mode: no
+  become: yes
+
+# 初始化目录
+- name: create iotdb home
+  file:
+    path: "{{ iotdb_home_dir }}"
+    state: directory
+    owner: "{{ os_user }}"
+    group: "{{ os_group }}"
+  become: yes
+  check_mode: no
+- name: create others directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ os_user }}"
+    group: "{{ os_group }}"
+    mode: "2750"
+  with_items:
+    - "{{ iotdb_conf_dir }}"
+    - "{{ iotdb_data_dir }}"
+    - "{{ iotdb_logs_dir }}"
+  become: yes
+  check_mode: no

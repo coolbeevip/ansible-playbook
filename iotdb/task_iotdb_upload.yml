@@ -1,0 +1,113 @@
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+# 上传安装包
+- name: check upload iotdb
+  stat:
+    path: "{{ iotdb_home_dir }}/{{ iotdb_tar }}"
+  register: check_result
+  check_mode: no
+  become: no
+- name: upload iotdb
+  synchronize:
+    src: /ansible-playbook/packages/{{ iotdb_tar }}
+    dest: "{{ iotdb_home_dir }}/{{ iotdb_tar }}"
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 解压缩安装包
+- name: check unzip iotdb
+  stat:
+    path: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}"
+  register: check_result
+  check_mode: no
+- name: unzip iotdb
+  shell: |
+    cd "{{ iotdb_home_dir }}"
+    unzip {{ iotdb_tar }}
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 上传 java 安装包
+- name: check upload java
+  stat:
+    path: "{{ iotdb_home_dir }}/{{ java_tar }}"
+  register: check_result
+- name: upload java
+  synchronize:
+    src: /ansible-playbook/packages/{{ java_tar }}
+    dest: "{{ iotdb_home_dir }}/{{ java_tar }}"
+  when: not check_result.stat.exists
+  check_mode: no
+
+# 解压缩 java 安装包
+- name: check unzip java
+  stat:
+    path: "{{ iotdb_home_dir }}/{{ java_tar_unzip_dir }}"
+  register: check_result
+  check_mode: no
+- name: unzip java
+  shell: |
+    cd "{{ iotdb_home_dir }}"
+    tar zxf {{ java_tar }} -C {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}
+  check_mode: no
+  when: not check_result.stat.exists
+
+# 配置 JAVA 环境变量
+- name: configuring environment JAVA_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JAVA_HOME=.*$'
+    line: "export JAVA_HOME={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/{{ java_tar_unzip_dir }}"
+    state: present
+  check_mode: no
+- name: configuring environment JRE_HOME
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JRE_HOME=.*$'
+    line: "export JRE_HOME={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/{{ java_tar_unzip_dir }}/jre"
+    state: present
+  check_mode: no
+- name: configuring environment CLASSPATH
+  lineinfile:
+    dest: "~/.bashrc"
+    regexp: "^export CLASSPATH=.*$"
+    line: "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH"
+    state: present
+  check_mode: no
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/bin:${JAVA_HOME}/bin:$PATH"
+    state: present
+  check_mode: no
+
+# 上传卸载脚本
+- name: copy iotdb_uninstall.sh
+  template:
+    src: "/ansible-playbook/iotdb/config/iotdb_uninstall.sh.j2"
+    dest: "$HOME/iotdb_uninstall.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
+
+# 上传启停脚本
+- name: copy iotdb.sh
+  template:
+    src: "/ansible-playbook/iotdb/config/iotdb.sh.j2"
+    dest: "$HOME/iotdb.sh"
+    mode: u=rwx,g=rx,o=rx
+  check_mode: no
+
+# 上传配置文件
+- name: copy iotdb-engine.properties
+  template:
+    src: "/ansible-playbook/iotdb/config/iotdb-engine.properties.j2"
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+  check_mode: no
+
+- name: copy iotdb-cluster.properties
+  template:
+    src: "/ansible-playbook/iotdb/config/iotdb-cluster.properties.j2"
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+  check_mode: no

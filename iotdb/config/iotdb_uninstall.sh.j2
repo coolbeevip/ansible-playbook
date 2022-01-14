@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+echo 'Delete IoTDB unzip directory'
+rm -rf {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}
+
+echo 'Delete IoTDB Data directory'
+rm -rf {{ iotdb_conf_dir }}
+rm -rf {{ iotdb_data_dir }}
+rm -rf {{ iotdb_logs_dir }}
+
+rm -rf $HOME/iotdb_uninstall.sh

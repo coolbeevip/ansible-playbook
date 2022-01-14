@@ -1,0 +1,34 @@
+---
+# Linux System
+limits_hard_nproc: '65535'
+limits_soft_nproc: '65535'
+limits_hard_nofile: '65535'
+limits_soft_nofile: '65535'
+
+# 源码包
+iotdb_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 源码包文件名
+iotdb_tar_unzip_dir: "apache-iotdb-0.12.4-cluster-bin"    # 源码包解压后的目录名
+
+# Java package
+java_tar: "jdk-8u202-linux-x64.tar.gz"
+java_tar_unzip_dir: "jdk1.8.0_202"
+
+# 安装目录
+iotdb_home_dir: "/opt/iotdb"          # 源码包上传目录
+iotdb_conf_dir: "/data01/iotdb/conf"  # 配置文件
+iotdb_data_dir: "/data01/iotdb/data"  # 配置文件
+iotdb_logs_dir: "/data01/iotdb/logs"  # 配置文件
+
+# 操作系统用户和组
+os_user: "iotdb"                   # 操作系统用户名
+os_group: "iotdb"                  # 操作系统组名
+
+# iotdb 配置
+iotdb:
+  cluster:
+    seed_nodes: 10.19.32.51:9003,10.19.32.52:9003,10.19.32.53:9003
+    default_replica_num: 3
+    internal_meta_port: 9003
+    internal_data_port: 40010
+  engine:
+    rpc_port: 6667

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+case "$1" in
+start)
+  pid=`ps ax | grep -i '[k]afka.Kafka {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "IoTDB is already running"
+  else
+    echo "Starting IoTDB"
+    nohup {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/sbin/start-node.sh {{ iotdb_conf_dir }} >/dev/null 2>&1 &
+  fi
+  ;;
+
+stop)
+  echo "Shutting down IoTDB"
+  ;;
+
+restart)
+  $0 stop
+  sleep 2
+  $0 start
+  ;;
+
+status)
+  pid=`ps ax | grep -i '[k]afka.Kafka {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
+  if [ -n "$pid" ]
+  then
+    echo "IoTDB is Running as PID: $pid"
+  else
+    echo "IoTDB is not Running"
+  fi
+  ;;
+
+*)
+  echo "Usage: $0 {start|stop|restart|status}"
+  exit 1
+esac
+
+exit 0

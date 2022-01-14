@@ -1,0 +1,26 @@
+- hosts: 10.19.32.51
+  user: iotdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_iotdb_os.yml
+    - include_tasks: task_iotdb_upload.yml
+
+- hosts: 10.19.32.52
+  user: iotdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_iotdb_os.yml
+    - include_tasks: task_iotdb_upload.yml
+
+- hosts: 10.19.32.53
+  user: iotdb
+  become: no
+  become_user: root
+  become_method: su
+  tasks:
+    - include_tasks: task_iotdb_os.yml
+    - include_tasks: task_iotdb_upload.yml
