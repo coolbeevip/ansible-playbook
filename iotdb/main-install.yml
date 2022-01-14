@@ -6,6 +6,7 @@
   tasks:
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_start.yml
 
 - hosts: 10.19.32.52
   user: iotdb
@@ -15,6 +16,7 @@
   tasks:
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_start.yml
 
 - hosts: 10.19.32.53
   user: iotdb
@@ -24,3 +26,4 @@
   tasks:
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_start.yml

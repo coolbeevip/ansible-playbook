@@ -2,6 +2,9 @@
 
 source ~/.bashrc
 
+echo 'Kill IoTDB Process'
+$HOME/iotdb.sh stop
+
 echo 'Delete IoTDB unzip directory'
 rm -rf {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}
 

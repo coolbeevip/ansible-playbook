@@ -4,7 +4,7 @@ source ~/.bashrc
 
 case "$1" in
 start)
-  pid=`ps ax | grep -i '[k]afka.Kafka {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.iotdb.cluster.ClusterMain' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
     echo "IoTDB is already running"
@@ -16,6 +16,7 @@ start)
 
 stop)
   echo "Shutting down IoTDB"
+  {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/sbin/stop-node.sh
   ;;
 
 restart)
@@ -25,7 +26,7 @@ restart)
   ;;
 
 status)
-  pid=`ps ax | grep -i '[k]afka.Kafka {{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/config/server.properties' | grep -v grep | awk '{print $1}'`
+  pid=`ps ax | grep -i '[o]rg.apache.iotdb.cluster.ClusterMain' | grep -v grep | awk '{print $1}'`
   if [ -n "$pid" ]
   then
     echo "IoTDB is Running as PID: $pid"

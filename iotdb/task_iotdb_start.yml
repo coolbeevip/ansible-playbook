@@ -1,0 +1,6 @@
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: Start IoTDB
+  shell: $HOME/iotdb.sh start
+  check_mode: no
