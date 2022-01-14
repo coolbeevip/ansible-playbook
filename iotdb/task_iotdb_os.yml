@@ -70,3 +70,12 @@
     - "{{ iotdb_logs_dir }}"
   become: yes
   check_mode: no
+
+# 设置  PATH
+- name: configuring environment PATH
+  lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export PATH=.*'
+    line: "export PATH={{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/sbin:{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/tools:$PATH"
+    state: present
+  check_mode: no

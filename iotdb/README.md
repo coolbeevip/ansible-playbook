@@ -88,11 +88,11 @@ redis_data_dir: "/data01/iotdb/data"  # 数据文件
 redis_conf_dir: "/data01/iotdb/conf"  # 配置文件
 
 # 操作系统用户和组
-redis_user: "iotdb"                   # 操作系统用户名
-redis_group: "iotdb"                  # 操作系统组名
+os_user: "iotdb"                   # 操作系统用户名
+os_group: "iotdb"                  # 操作系统组名
 ```
 
-您可以在 `redis/config/redis.conf.j2` 和 `redis/config/sentinel.conf.j2` 文件中找到更多的默认配置
+您可以在 `iotdb/config/iotdb-cluster.properties.j2` 和 `iotdb/config/iotdb-engine.properties.j2` 文件中找到更多的默认配置
 
 ## 开始安装
 
@@ -120,11 +120,10 @@ bash-5.0#
 
 这个脚本将自动化完成如下操作：
 
-* 安装 Redis 编译用依赖库
-* 上传 Redis 源码包到每个服务器
-* 配置 Redis 执行文件 PATH 路径
-* 配置 Redis 和 Sentinel 配置文件
-* 启动 Redis 和 Sentinel 服务
+* 上传 IoTDB 安装包到每个服务器
+* 配置 IoTDB
+* 启动 IoTDB
+
 
 ```shell
 bash-5.0# ansible-playbook -C /ansible-playbook/iotdb/main-install.yml
@@ -133,10 +132,10 @@ bash-5.0# ansible-playbook -C /ansible-playbook/iotdb/main-install.yml
 如果你看到如下信息，说明安装完成
 
 ```shell
-TASK [Install Succeed] ********************************************************************************************************************************************************************************************************
-ok: [10.1.207.180] => {
-    "msg": "Install Succeed!"
-}
+PLAY RECAP *****************************************************************************************************************************************************************************************************************************
+10.19.32.51                : ok=29   changed=7    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+10.19.32.52                : ok=29   changed=7    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+10.19.32.53                : ok=28   changed=6    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0
 ```
 
 **提示:** 因为第一次执行脚本时，会上传 Redis 源码包（约 2.5MB）到所有服务器并在服务器上编译（每服务器约 1分钟）。在我本地环境首次安装大概耗时 5 分钟
@@ -145,175 +144,44 @@ ok: [10.1.207.180] => {
 
 #### 验证集群
 
-查看每个目标服务器 redis 进程信息，可以看到每个节点 redis 和 sentinel 进程都已经启动
+查看每个目标服务器 IoTDB 进程信息
 
 ```shell
-bash-5.0# ansible all -m shell -a 'ps -ef | grep [b]in/redis-'
-10.1.207.180 | CHANGED | rc=0 >>
-redis    19121     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
-redis    20011     1  0 19:01 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-
-10.1.207.182 | CHANGED | rc=0 >>
-redis    22537     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
-redis    23467     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
-
-10.1.207.181 | CHANGED | rc=0 >>
-redis    10009     1  0 18:55 ?        00:00:00 /data01/redis/bin/redis-server 0.0.0.0:7000
-redis    11187     1  0 18:59 ?        00:00:00 /data01/redis/bin/redis-sentinel 0.0.0.0:27000 [sentinel]
+bash-5.0# ansible all -m shell -a '~/iotdb.sh status'
+10.19.32.53 | CHANGED | rc=0 >>
+IoTDB is Running as PID: 16649
+10.19.32.52 | CHANGED | rc=0 >>
+IoTDB is Running as PID: 23052
+10.19.32.51 | CHANGED | rc=0 >>
+IoTDB is Running as PID: 8780
 ```
-
-查看每个节点的复制信息
-
-```shell
-bash-5.0# ansible all -m shell -a 'redis-cli -h 0.0.0.0 -p 7000 -a redis info Replication'
-
-10.1.207.182 | CHANGED | rc=0 >>
-# Replication
-role:slave
-master_host:10.1.207.180
-master_port:7000
-master_link_status:up
-master_last_io_seconds_ago:1
-master_sync_in_progress:0
-slave_read_repl_offset:73780
-slave_repl_offset:73780
-slave_priority:100
-slave_read_only:1
-replica_announced:1
-connected_slaves:0
-master_failover_state:no-failover
-master_replid:4dc6d9bc49043bc1bc8c495f88c470523af3b030
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:73780
-second_repl_offset:-1
-repl_backlog_active:1
-repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
-
-10.1.207.181 | CHANGED | rc=0 >>
-# Replication
-role:slave
-master_host:10.1.207.180
-master_port:7000
-master_link_status:up
-master_last_io_seconds_ago:0
-master_sync_in_progress:0
-slave_read_repl_offset:73919
-slave_repl_offset:73919
-slave_priority:100
-slave_read_only:1
-replica_announced:1
-connected_slaves:0
-master_failover_state:no-failover
-master_replid:4dc6d9bc49043bc1bc8c495f88c470523af3b030
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:73919
-second_repl_offset:-1
-repl_backlog_active:1
-repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:73919Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
-
-10.1.207.180 | CHANGED | rc=0 >>
-# Replication
-role:master
-connected_slaves:2
-slave0:ip=10.1.207.182,port=7000,state=online,offset=73502,lag=0
-slave1:ip=10.1.207.181,port=7000,state=online,offset=73502,lag=1
-master_failover_state:no-failover
-master_replid:4dc6d9bc49043bc1bc8c495f88c470523af3b030
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:73780
-second_repl_offset:-1
-repl_backlog_active:1
-repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:73780Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
-
-bash-5.0#
-```
-
-连接任意哨兵节点获取 Redis Master 地址
-
-```shell
-bash-5.0# ansible all -m shell -a 'redis-cli -h 10.1.207.182 -p 27000 sentinel get-master-addr-by-name mymaster | head -n 1'
-10.1.207.181 | CHANGED | rc=0 >>
-10.1.207.180
-
-10.1.207.182 | CHANGED | rc=0 >>
-10.1.207.180
-
-10.1.207.180 | CHANGED | rc=0 >>
-10.1.207.180
-```
-
-执行基准测试，对每个命令执行 10000 次操作，数据大小为 65536 bytes(64KB)，使用随机十万分之一KEY。这个命令在我的环境执行需要 1 分钟
-
-```shell
-bash-5.0# ansible all -m shell -a 'redis-benchmark -h 10.1.207.180 -p 7000 -a redis -r 10000 -n 10000 -t get,set,hset,lpush,lpop -q -d 65536'
-10.1.207.181 | CHANGED | rc=0 >>
-SET: 300.51 requests per second, p50=135.551 msec
-GET: 785.85 requests per second, p50=42.847 msec
-LPUSH: 216.22 requests per second, p50=154.495 msec
-LPOP: 953.29 requests per second, p50=36.191 msec
-HSET: 835.77 requests per second, p50=48.127 msec
-
-10.1.207.180 | CHANGED | rc=0 >>
-SET: 300.77 requests per second, p50=138.111 msec
-GET: 888.42 requests per second, p50=38.559 msec
-LPUSH: 216.29 requests per second, p50=156.799 msec
-LPOP: 988.04 requests per second, p50=33.919 msec
-HSET: 780.34 requests per second, p50=51.551 msec
-
-10.1.207.182 | CHANGED | rc=0 >>
-SET: 290.66 requests per second, p50=137.087 msec
-GET: 841.89 requests per second, p50=38.463 msec
-LPUSH: 210.99 requests per second, p50=157.311 msec
-LPOP: 967.12 requests per second, p50=35.103 msec
-HSET: 902.04 requests per second, p50=45.375 msec
-```
-
-**提示：** 例如 `GET: 841.89 requests per second, p50=38.463 msec` 表示每秒完成 841 次请求，每秒吞吐大约为53MB（841*64KB），这基本匹配我的网络带宽
 
 ## 常用运维命令
 
 **提示：** 哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个节点
 
-启动 Redis
+启动 IoTDB
 
 ```shell
-bash-5.0# ansible all -m shell -a '~/redis.sh start'
+bash-5.0# ansible all -m shell -a '~/iotdb.sh start'
 ```
 
-停止 Redis
+停止 IoTDB
 
 ```shell
-bash-5.0# ansible all -m shell -a '~/redis.sh stop'
+bash-5.0# ansible all -m shell -a '~/iotdb.sh stop'
 ```
 
-重启 Redis
+重启 IotDB
 
 ```shell
-bash-5.0# ansible all -m shell -a '~/redis.sh restart'
+bash-5.0# ansible all -m shell -a '~/iotdb.sh restart'
 ```
 
-启动 Sentinel
+查看 IoTDB
 
 ```shell
-bash-5.0# ansible all -m shell -a '~/sentinel.sh start'
-```
-
-停止 Sentinel
-
-```shell
-bash-5.0# ansible all -m shell -a '~/sentinel.sh stop'
-```
-
-重启 Sentinel
-
-```shell
-bash-5.0# ansible all -m shell -a '~/sentinel.sh restart'
+bash-5.0# ansible all -m shell -a '~/iotdb.sh status'
 ```
 
 ## Q & A
@@ -324,24 +192,4 @@ A: `~/iotdb_uninstall.sh` 脚本将 **kill IoTDB 删除程序文件和所有数�
 
 ```shell
 bash-5.0# ansible all -m shell -a '~/iotdb_uninstall.sh'
-10.1.207.182 | CHANGED | rc=0 >>
-Kill Redis Process
-Kill Sentinel Process
-Delete Redis Data Files
-Delete Redis Package
-Delete redis_uninstall.sh
-
-10.1.207.181 | CHANGED | rc=0 >>
-Kill Redis Process
-Kill Sentinel Process
-Delete Redis Data Files
-Delete Redis Package
-Delete redis_uninstall.sh
-
-10.1.207.180 | CHANGED | rc=0 >>
-Kill Redis Process
-Kill Sentinel Process
-Delete Redis Data Files
-Delete Redis Package
-Delete redis_uninstall.sh
 ```

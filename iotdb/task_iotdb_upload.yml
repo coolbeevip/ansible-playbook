@@ -111,3 +111,27 @@
     src: "/ansible-playbook/iotdb/config/iotdb-cluster.properties.j2"
     dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
   check_mode: no
+
+- name: copy logback.xml
+  template:
+    src: "/ansible-playbook/iotdb/config/logback.xml.j2"
+    dest: "{{ iotdb_conf_dir }}/logback.xml"
+  check_mode: no
+
+- name: copy iotdb-env.sh
+  template:
+    src: "/ansible-playbook/iotdb/config/iotdb-env.sh.j2"
+    dest: "{{ iotdb_conf_dir }}/iotdb-env.sh"
+  check_mode: no
+
+- name: copy jmx.access
+  template:
+    src: "/ansible-playbook/iotdb/config/jmx.access.j2"
+    dest: "{{ iotdb_conf_dir }}/jmx.access"
+  check_mode: no
+
+- name: copy jmx.password
+  template:
+    src: "/ansible-playbook/iotdb/config/jmx.password.j2"
+    dest: "{{ iotdb_conf_dir }}/jmx.password"
+  check_mode: no
