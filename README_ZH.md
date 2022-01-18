@@ -157,7 +157,7 @@ bash-5.0# ansible all --become --become-method su --become-user root -m user -a 
 * [Ansible Playbook 自动化安装 MySQL InnoDB 集群](./mysql/README_ZH.md)
 * [Ansible Playbook 自动化安装 AntDB 分布式集群](./antdb/README_ZH.md)
 * [Ansible Playbook 自动化安装 Kafka 集群](./kafka/README_ZH.md)
-* [Ansible Playbook 自动化安装 IoTDB 集群](./iotdb/README.md)
+* [Ansible Playbook 自动化安装 IoTDB 集群](./iotdb/README_ZH.md)
 
 ## License
 
