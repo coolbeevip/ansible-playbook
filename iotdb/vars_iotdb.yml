@@ -32,3 +32,5 @@ iotdb:
     internal_data_port: 40010
   engine:
     rpc_port: 6667
+    avg_series_point_number_threshold: 500000 # 每个序列最多缓存这么多点就会刷盘
+    memtable_size_threshold: 1073741824 # 这个参数越大，写入速度快, 默认 1GB
