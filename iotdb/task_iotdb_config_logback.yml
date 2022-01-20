@@ -17,9 +17,15 @@
   check_mode: no
 
 - name: logback.xml loghome
-  lineinfile:
-    dest: "{{ iotdb_conf_dir }}/logback.xml"
-    regexp: "${IOTDB_HOME}/logs"
-    line: "{{ iotdb_logs_dir }}"
-    state: present
+  replace:
+    path: "{{ iotdb_conf_dir }}/logback.xml"
+    regexp: "\\${IOTDB_HOME}/logs"
+    replace: "{{ iotdb_logs_dir }}"
   check_mode: no
+
+  # lineinfile:
+  #   dest: "{{ iotdb_conf_dir }}/logback.xml"
+  #   search_string: "${IOTDB_HOME}/logs"
+  #   line: "{{ iotdb_logs_dir }}"
+  #   state: present
+  # check_mode: no

@@ -1,12 +1,12 @@
 - name: include vars
   include_vars: "vars_iotdb.yml"
 
-- name: check the files in the installation directory
-  find:
-    paths: "{{ iotdb_home_dir }}"
-    file_type: directory
-  register: iotdb_files
-  check_mode: no
-- fail:
-     msg: 'IoTDB has been installed, please uninstall and then reinstall'
-  when: iotdb_files.matched > 0
+# - name: check the files in the installation directory
+#   find:
+#     paths: "{{ iotdb_home_dir }}"
+#     file_type: directory
+#   register: iotdb_files
+#   check_mode: no
+# - fail:
+#      msg: 'IoTDB has been installed, please uninstall and then reinstall'
+#   when: iotdb_files.matched > 0
