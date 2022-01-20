@@ -1,0 +1,90 @@
+# Configure iotdb-engine.properties
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: copy iotdb-engine.properties template
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/iotdb-engine.properties"
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    remote_src: yes
+  check_mode: no
+
+- name: iotdb-engine rpc_address
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^rpc_address=.*"
+    line: "rpc_address={{ inventory_hostname }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine rpc_port
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^rpc_port=.*"
+    line: "rpc_port={{ iotdb.engine.rpc_port }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine system_dir
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# system_dir=.*"
+    line: "system_dir={{ iotdb_system_dir }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine data_dirs
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# data_dirs=.*"
+    line: "data_dirs={{ iotdb_data_dirs | join(',') }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine wal_dir
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# wal_dir=.*"
+    line: "wal_dir={{ iotdb_wal_dir }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine tracing_dir
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# tracing_dir=.*"
+    line: "tracing_dir={{ iotdb_tracing_dir }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine udf_root_dir
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# udf_root_dir=.*"
+    line: "udf_root_dir={{ iotdb_system_dir }}/udf"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine index_root_dir
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# index_root_dir=.*"
+    line: "index_root_dir={{ iotdb_index_dir }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine avg_series_point_number_threshold
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# avg_series_point_number_threshold=.*"
+    line: "avg_series_point_number_threshold={{ iotdb.engine.avg_series_point_number_threshold }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-engine memtable_size_threshold
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# memtable_size_threshold=.*"
+    line: "memtable_size_threshold={{ iotdb.engine.memtable_size_threshold }}"
+    state: present
+  check_mode: no

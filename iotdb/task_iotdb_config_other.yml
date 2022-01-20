@@ -1,0 +1,24 @@
+# Configure others
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: copy iotdb-env.sh
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/iotdb-env.sh"
+    dest: "{{ iotdb_conf_dir }}/iotdb-env.sh"
+    remote_src: yes
+  check_mode: no
+
+- name: copy iotdb-rest.properties
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/iotdb-rest.properties"
+    dest: "{{ iotdb_conf_dir }}/iotdb-rest.properties"
+    remote_src: yes
+  check_mode: no
+
+- name: copy iotdb-metric.yml
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/iotdb-metric.yml"
+    dest: "{{ iotdb_conf_dir }}/iotdb-metric.yml"
+    remote_src: yes
+  check_mode: no  

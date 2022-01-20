@@ -28,8 +28,14 @@
 | ~/iotdb_uninstall.sh | 集群卸载脚本 |
 | ~/iotdb.sh | 启停脚本 |
 | /data01/iotdb/conf | 配置脚本目录 |
-| /data01/iotdb/data | 数据存储目录 |
-| /data01/iotdb/logs | 日志存储目录 |
+| /data01/iotdb/wal | 数据目录 |
+| /data01/iotdb/traacing | 数据目录 |
+| /data01/iotdb/udf | 数据目录 |
+| /data01/iotdb/index | 数据目录 |
+| /data01/iotdb/system | 数据目录 |
+| /data01/iotdb/data/data01 | 数据目录 |
+| /data01/iotdb/data/data02 | 数据目录 |
+| /data01/iotdb/logs | 日志目录 |
 
 ## 下载安装包和 Playbook 脚本
 
@@ -49,7 +55,10 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 下载 iotdb 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/iotdb/0.12.4/apache-iotdb-0.12.4-cluster-bin.zip --no-check-certificate
+git clone git@github.com:apache/iotdb.git
+cd iotdb
+mvn clean package -DskipTests
+cp cluster/target/iotdb-cluster-0.13.0-SNAPSHOT.zip ~/my-docker-volume/ansible-playbook/packages
 ```
 
 ## 配置安装脚本
@@ -88,10 +97,15 @@ iotdb_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 安装包
 iotdb_tar_unzip_dir: "apache-iotdb-0.12.4-cluster-bin"    # 安装包解压后的目录名
 
 # 安装目录
-iotdb_home_dir: "/opt/iotdb"          # 程序安装目录
-iotdb_log_dir: "/data01/iotdb/logs"   # 运行日志
-iotdb_data_dir: "/data01/iotdb/data"  # 数据文件
-iotdb_conf_dir: "/data01/iotdb/conf"  # 配置文件
+iotdb_home_dir: "/opt/iotdb"          # 源码包上传目录
+iotdb_conf_dir: "/data01/iotdb/conf"  # 配置目录
+iotdb_data_dirs: ["/data01/iotdb/data/data01","/data01/iotdb/data/data02"]  # 数据目录
+iotdb_wal_dir: "/data01/iotdb/wal"  # 数据目录
+iotdb_tracing_dir: "/data01/iotdb/tracing"  # 数据目录
+iotdb_udf_dir: "/data01/iotdb/udf"  # 数据目录
+iotdb_index_dir: "/data01/iotdb/index"  # 数据目录
+iotdb_system_dir: "/data01/iotdb/system"  # 数据目录
+iotdb_logs_dir: "/data01/iotdb/logs"  # 日志目录
 
 # 操作系统用户和组
 os_user: "iotdb"                   # 操作系统用户名
@@ -106,6 +120,8 @@ iotdb:
     internal_data_port: 40010
   engine:
     rpc_port: 6667
+    avg_series_point_number_threshold: 500000 # 每个序列最多缓存这么多点就会刷盘
+    memtable_size_threshold: 1073741824 # 这个参数越大，写入速度快, 默认 1GB    
 ```
 
 您可以在 `iotdb/config/` 目录下找到更多的默认配置文件
@@ -183,8 +199,6 @@ It costs 0.512s
 ```
 
 ## 常用运维命令
-
-**提示：** 哨兵模式集群需要按 `Master->Slave->Sentinel` 顺序启动各个节点
 
 启动 IoTDB
 

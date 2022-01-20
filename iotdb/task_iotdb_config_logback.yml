@@ -1,0 +1,25 @@
+# Configure logback
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: copy logback.xml template
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/logback.xml"
+    dest: "{{ iotdb_conf_dir }}/logback.xml"
+    remote_src: yes
+  check_mode: no
+
+- name: copy logback-tool.xml template
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/logback-tool.xml"
+    dest: "{{ iotdb_conf_dir }}/logback-tool.xml"
+    remote_src: yes
+  check_mode: no
+
+- name: logback.xml loghome
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/logback.xml"
+    regexp: "${IOTDB_HOME}/logs"
+    line: "{{ iotdb_logs_dir }}"
+    state: present
+  check_mode: no

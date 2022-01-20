@@ -1,0 +1,17 @@
+# Configure jmx
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: copy jmx.access
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/jmx.access"
+    dest: "{{ iotdb_conf_dir }}/jmx.access"
+    remote_src: yes
+  check_mode: no
+
+- name: copy jmx.password
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/jmx.password"
+    dest: "{{ iotdb_conf_dir }}/jmx.password"
+    remote_src: yes
+  check_mode: no

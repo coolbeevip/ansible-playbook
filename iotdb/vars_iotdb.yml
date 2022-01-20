@@ -6,8 +6,8 @@ limits_hard_nofile: '65535'
 limits_soft_nofile: '65535'
 
 # 源码包
-iotdb_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 源码包文件名
-iotdb_tar_unzip_dir: "apache-iotdb-0.12.4-cluster-bin"    # 源码包解压后的目录名
+iotdb_tar: "apache-iotdb-0.13.0-SNAPSHOT-cluster-bin.zip"       # 源码包文件名
+iotdb_tar_unzip_dir: "apache-iotdb-0.13.0-SNAPSHOT-cluster-bin"    # 源码包解压后的目录名
 
 # Java package
 java_tar: "jdk-8u202-linux-x64.tar.gz"
@@ -15,9 +15,13 @@ java_tar_unzip_dir: "jdk1.8.0_202"
 
 # 安装目录
 iotdb_home_dir: "/opt/iotdb"          # 源码包上传目录
-iotdb_conf_dir: "/data01/iotdb/conf"  # 配置文件
-iotdb_data_dir: "/data01/iotdb/data"  # 配置文件
-iotdb_logs_dir: "/data01/iotdb/logs"  # 配置文件
+iotdb_conf_dir: "/data01/iotdb/conf"  # 配置目录
+iotdb_data_dirs: ["/data01/iotdb/data/data01","/data01/iotdb/data/data02"]  # 数据目录
+iotdb_wal_dir: "/data01/iotdb/data/wal"  # 写前日志目录, 建议使用 SSD 盘
+iotdb_tracing_dir: "/data01/iotdb/data/tracing"  # 性能追踪目录
+iotdb_index_dir: "/data01/iotdb/data/index"  # 数据目录
+iotdb_system_dir: "/data01/iotdb/data/system"  # 系统文件目录
+iotdb_logs_dir: "/data01/iotdb/logs"  # 日志目录
 
 # 操作系统用户和组
 os_user: "iotdb"                   # 操作系统用户名

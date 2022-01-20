@@ -7,6 +7,11 @@
     - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_config_engine.yml
+    - include_tasks: task_iotdb_config_cluster.yml
+    - include_tasks: task_iotdb_config_logback.yml
+    - include_tasks: task_iotdb_config_jmx.yml
+    - include_tasks: task_iotdb_config_other.yml
     - include_tasks: task_iotdb_start.yml
 
 - hosts: 10.19.32.52
@@ -18,6 +23,11 @@
     - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_config_engine.yml
+    - include_tasks: task_iotdb_config_cluster.yml
+    - include_tasks: task_iotdb_config_logback.yml
+    - include_tasks: task_iotdb_config_jmx.yml
+    - include_tasks: task_iotdb_config_other.yml
     - include_tasks: task_iotdb_start.yml
 
 - hosts: 10.19.32.53
@@ -29,4 +39,9 @@
     - include_tasks: task_iotdb_pre_checks.yml
     - include_tasks: task_iotdb_os.yml
     - include_tasks: task_iotdb_upload.yml
+    - include_tasks: task_iotdb_config_engine.yml
+    - include_tasks: task_iotdb_config_cluster.yml
+    - include_tasks: task_iotdb_config_logback.yml
+    - include_tasks: task_iotdb_config_jmx.yml
+    - include_tasks: task_iotdb_config_other.yml
     - include_tasks: task_iotdb_start.yml

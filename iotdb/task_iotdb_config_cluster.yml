@@ -1,0 +1,50 @@
+# Configure iotdb-cluster.properties
+- name: include vars
+  include_vars: "vars_iotdb.yml"
+
+- name: copy iotdb-cluster.properties template
+  copy:
+    src: "{{ iotdb_home_dir }}/{{ iotdb_tar_unzip_dir }}/conf/iotdb-cluster.properties"
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    remote_src: yes
+  check_mode: no
+
+- name: iotdb-cluster internal_ip
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^internal_ip=.*"
+    line: "internal_ip={{ inventory_hostname }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster internal_meta_port
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^internal_meta_port=.*"
+    line: "internal_meta_port={{ iotdb.cluster.internal_meta_port }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster internal_data_port
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^internal_data_port=.*"
+    line: "internal_data_port={{ iotdb.cluster.internal_data_port }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster seed_nodes
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "seed_nodes=.*"
+    line: "seed_nodes={{ iotdb.cluster.seed_nodes }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster default_replica_num
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^default_replica_num=.*"
+    line: "default_replica_num={{ iotdb.cluster.default_replica_num }}"
+    state: present
+  check_mode: no

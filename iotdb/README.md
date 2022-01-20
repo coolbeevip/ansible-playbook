@@ -29,7 +29,13 @@ Planning for installation directory
 | ~/iotdb_uninstall.sh | IoTDB Cluster Uninstall script |
 | ~/iotdb.sh | start & stop & status shell |
 | /data01/iotdb/conf | configuration directory |
-| /data01/iotdb/data | data directory |
+| /data01/iotdb/wal | data directory |
+| /data01/iotdb/traacing | data directory |
+| /data01/iotdb/udf | data directory |
+| /data01/iotdb/index | data directory |
+| /data01/iotdb/system | data directory |
+| /data01/iotdb/data/data01 | data directory |
+| /data01/iotdb/data/data02 | data directory |
 | /data01/iotdb/logs | log directory |
 
 ## Download Kafka & Java & Ansible Playbook Scripts
@@ -48,10 +54,12 @@ git clone https://github.com/coolbeevip/ansible-playbook.git
 ```
 
 Download IoTDB tar ball from the https://iotdb.apache.org/Download/ web site to `~/my-docker-volume/ansible-playbook/packages`
-下载 iotdb 安装包到 `~/my-docker-volume/ansible-playbook/packages` 目录
 
 ```shell
-wget -P ~/my-docker-volume/ansible-playbook/packages https://dlcdn.apache.org/iotdb/0.12.4/apache-iotdb-0.12.4-cluster-bin.zip --no-check-certificate
+git clone git@github.com:apache/iotdb.git
+cd iotdb
+mvn clean package -DskipTests
+cp cluster/target/iotdb-cluster-0.13.0-SNAPSHOT.zip ~/my-docker-volume/ansible-playbook/packages
 ```
 
 Download JDK tar ball `jdk-8u202-linux-x64.tar.gz` to `~/my-docker-volume/ansible-playbook/packages`
@@ -86,14 +94,19 @@ limits_hard_nofile: '65535'
 limits_soft_nofile: '65535'
 
 # 安装介质
-iotdb_tar: "apache-iotdb-0.12.4-cluster-bin.zip"       # 安装包
-iotdb_tar_unzip_dir: "apache-iotdb-0.12.4-cluster-bin"    # 安装包解压后的目录名
+iotdb_tar: "apache-iotdb-0.13.0-SNAPSHOT-cluster-bin.zip"       # 安装包
+iotdb_tar_unzip_dir: "apache-iotdb-0.13.0-SNAPSHOT-cluster-bin"    # 安装包解压后的目录名
 
 # 安装目录
-iotdb_home_dir: "/opt/iotdb"          # 程序安装目录
-iotdb_log_dir: "/data01/iotdb/logs"   # 运行日志
-iotdb_data_dir: "/data01/iotdb/data"  # 数据文件
-iotdb_conf_dir: "/data01/iotdb/conf"  # 配置文件
+iotdb_home_dir: "/opt/iotdb"          # 源码包上传目录
+iotdb_conf_dir: "/data01/iotdb/conf"  # 配置目录
+iotdb_data_dirs: ["/data01/iotdb/data/data01","/data01/iotdb/data/data02"]  # 数据目录, 建议使用不同的磁盘
+iotdb_wal_dir: "/data01/iotdb/wal"  # 数据目录
+iotdb_tracing_dir: "/data01/iotdb/tracing"  # 数据目录
+iotdb_udf_dir: "/data01/iotdb/udf"  # 数据目录
+iotdb_index_dir: "/data01/iotdb/index"  # 数据目录
+iotdb_system_dir: "/data01/iotdb/system"  # 数据目录
+iotdb_logs_dir: "/data01/iotdb/logs"  # 日志目录
 
 # 操作系统用户和组
 os_user: "iotdb"                   # 操作系统用户名
@@ -108,6 +121,8 @@ iotdb:
     internal_data_port: 40010
   engine:
     rpc_port: 6667
+    avg_series_point_number_threshold: 500000 # 每个序列最多缓存这么多点就会刷盘
+    memtable_size_threshold: 1073741824 # 这个参数越大，写入速度快, 默认 1GB    
 ```
 
 For more default configuration, please refer to the `iotdb/config/` directory
