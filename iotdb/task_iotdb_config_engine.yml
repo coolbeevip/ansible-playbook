@@ -25,6 +25,14 @@
     state: present
   check_mode: no
 
+- name: iotdb-engine influxdb_rpc_port
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
+    regexp: "^# influxdb_rpc_port=.*"
+    line: "influxdb_rpc_port={{ iotdb.engine.influxdb_rpc_port }}"
+    state: present
+  check_mode: no
+
 - name: iotdb-engine system_dir
   lineinfile:
     dest: "{{ iotdb_conf_dir }}/iotdb-engine.properties"
