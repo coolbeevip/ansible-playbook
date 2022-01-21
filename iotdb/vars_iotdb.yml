@@ -30,10 +30,14 @@ os_group: "iotdb"                  # 操作系统组名
 # iotdb 配置
 iotdb:
   cluster:
+    cluster_name: default
     seed_nodes: 10.19.32.51:9003,10.19.32.52:9003,10.19.32.53:9003
-    default_replica_num: 3
+    default_replica_num: 2 # 3节点2副本容错1节点; 5节点3副本容错2节点; 7节点4副本容错3节点
     internal_meta_port: 9003
     internal_data_port: 40010
+    cluster_info_public_port: 6567
+    consistency_level: mid # 一致性级别, strong:强一致; mid:无leader后只读; weak:弱一致
+    is_enable_raft_log_persistence: true
   engine:
     rpc_port: 6667
     avg_series_point_number_threshold: 500000 # 每个序列最多缓存这么多点就会刷盘

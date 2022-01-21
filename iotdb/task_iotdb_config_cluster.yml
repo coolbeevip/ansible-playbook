@@ -9,6 +9,14 @@
     remote_src: yes
   check_mode: no
 
+- name: iotdb-cluster cluster_name
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^# cluster_name=.*"
+    line: "cluster_name={{ iotdb.cluster.cluster_name }}"
+    state: present
+  check_mode: no
+
 - name: iotdb-cluster internal_ip
   lineinfile:
     dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
@@ -46,5 +54,29 @@
     dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
     regexp: "^default_replica_num=.*"
     line: "default_replica_num={{ iotdb.cluster.default_replica_num }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster consistency_level
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^# consistency_level=.*"
+    line: "consistency_level={{ iotdb.cluster.consistency_level }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster cluster_info_public_port
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^#cluster_info_public_port=.*"
+    line: "cluster_info_public_port={{ iotdb.cluster.cluster_info_public_port }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster is_enable_raft_log_persistence
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^# is_enable_raft_log_persistence=.*"
+    line: "is_enable_raft_log_persistence={{ iotdb.cluster.is_enable_raft_log_persistence }}"
     state: present
   check_mode: no
