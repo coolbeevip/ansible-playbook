@@ -38,6 +38,8 @@ iotdb:
     cluster_info_public_port: 6567
     consistency_level: mid # 一致性级别, strong:强一致; mid:无leader后只读; weak:弱一致
     is_enable_raft_log_persistence: true
+    max_number_of_persist_raft_log_files: 5 # raft 日志文件数量
+    max_raft_log_persist_data_size_per_file: 1073741824 # 每个 raft 日志文件大小(默认1GB)
   engine:
     rpc_port: 6667
     influxdb_rpc_port: 8086

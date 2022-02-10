@@ -80,3 +80,19 @@
     line: "is_enable_raft_log_persistence={{ iotdb.cluster.is_enable_raft_log_persistence }}"
     state: present
   check_mode: no
+
+- name: iotdb-cluster max_number_of_persist_raft_log_files
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^# max_number_of_persist_raft_log_files=.*"
+    line: "max_number_of_persist_raft_log_files={{ iotdb.cluster.max_number_of_persist_raft_log_files }}"
+    state: present
+  check_mode: no
+
+- name: iotdb-cluster max_raft_log_persist_data_size_per_file
+  lineinfile:
+    dest: "{{ iotdb_conf_dir }}/iotdb-cluster.properties"
+    regexp: "^# max_raft_log_persist_data_size_per_file=.*"
+    line: "max_raft_log_persist_data_size_per_file={{ iotdb.cluster.max_raft_log_persist_data_size_per_file }}"
+    state: present
+  check_mode: no
