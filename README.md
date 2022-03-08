@@ -10,7 +10,7 @@ Requires Docker runtime environment and pull Docker image `coolbeevip/ansible:2.
 
 ### Target Serve
 
-For example, you have three servers
+For example, you have three servers.
 
 | IP | SSH PORT | SSH USER | SSH PASSWORD | ROOT PASSWORD |
 | ---- | ---- | ---- | ---- | ---- |
@@ -20,7 +20,7 @@ For example, you have three servers
 
 ## Run Ansible Tools
 
-We will use the Ansible tool to connect to the above three servers and execute some simple commands
+We will use the Ansible tool to connect to the above three servers and execute simple commands.
 
 ```shell
 docker run --name ansible --rm -it \
@@ -33,7 +33,7 @@ docker run --name ansible --rm -it \
   /bin/bash
 ```
 
-After execution, you can see the following information and enter the command line interactive mode
+After execution, you can see the following information and enter the interactive command line.
 
 ```shell
 =============================
@@ -52,7 +52,7 @@ add hosts 10.1.207.182
 bash-5.0#
 ```
 
-You can use the `ansible all -m ping` command to view the server connection status
+You can use the `ansible all -m ping` command to view the server connection status.
 
 ```shell
 bash-5.0# ansible all -m ping
@@ -80,7 +80,7 @@ bash-5.0# ansible all -m ping
 bash-5.0#
 ```
 
-Check time of three servers
+Check the time of the three servers.
 
 ```shell
 bash-5.0# ansible all -m shell -a "date"
@@ -96,7 +96,7 @@ Wed Nov  3 15:08:00 CST 2021
 bash-5.0#
 ```
 
-Check the memory of the three servers
+Check the memory of the three servers.
 
 ```shell
 bash-5.0# ansible all -m shell -a "free -h"
@@ -147,7 +147,7 @@ Greate User
 bash-5.0# ansible all --become --become-method su --become-user root -m user -a 'name=mysql group=mysql password="$6$mysql$kZbSYnD6D4oEljcod1yfqC8.4bApunnOyN21C/QDW1pFTLi0jITwgY85wfMJEg8T9UgalpNCj3ODTkUgmRDqw." comment="create by ansible"'
 ```
 
-By now, you have mastered how to start the Ansible tool to connect to multiple target servers and execute some simple commands, Later, you can see the middleware deployment script written using Ansible playbook script, and you can experience it directly.
+By now, you have mastered how to start the Ansible tool to connect to multiple target servers and execute some simple commands. Later, you can see the middleware deployment script written using the Ansible playbook script, and you can experience it directly.
 
 ## Install Middleware use Ansible Playbook
 
@@ -161,5 +161,5 @@ By now, you have mastered how to start the Ansible tool to connect to multiple t
 
 ## License
 
-All content in is licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) unless
+All content is licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) unless
 otherwise stated.
