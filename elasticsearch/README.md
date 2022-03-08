@@ -1,6 +1,6 @@
 # Automate Install Elasticsearch Cluster with Ansible Playbook | [中文](README_ZH.md)
 
-Please create a `elasticsearch` user and defautl password is `123456` on the linux server before starting. This playbook script install three node clusters.
+Please create an `elasticsearch` user, and the default password is `123456` on the Linux server before starting. This playbook script installs three node clusters.
 Since the 7.x version will use the bundled JDK, there is no need to install the Java in advance.
 
 ## Planning Your Installation
@@ -23,7 +23,7 @@ Planning for nodes
 | 10.1.207.181 | ✓ |
 | 10.1.207.182 | ✓ |
 
-Planning for installation directory
+Planning for the installation directory
 
 | PATH | DESCRIPTION |
 | /opt/elasticsearch | programs |
@@ -61,7 +61,7 @@ wget -P ~/my-docker-volume/ansible-playbook/packages https://artifacts.elastic.c
 
 #### main.yml
 
-This file mainly defines the address of the target server, the login user name
+This file mainly defines the address of the target server the login user name.
 
 ```yaml
 - hosts: 10.1.207.180
@@ -161,9 +161,9 @@ ex_xpack_security_users:
 
 Start the Ansible container tool to connect to the target server, And mount directory `~/my-docker-volume/ansible-playbook` in the container.
 
-**NOTICE:** ANSIBLE_SSH_USERS，ANSIBLE_SSH_PASSS is linux user elasticsearch and password
+**NOTICE:** ANSIBLE_SSH_USERS， ANSIBLE_SSH_PASSS is Linux user elasticsearch and password
 
-**NOTICE:** ANSIBLE_SU_PASSS is user root password
+**NOTICE:** ANSIBLE_SU_PASSS is the user root password
 
 ```shell
 docker run --name ansible --rm -it \
@@ -192,7 +192,7 @@ PLAY RECAP *********************************************************************
 10.1.207.182               : ok=37   changed=9    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
 ```
 
-**TIPS:** Because the Elasticsearch installation package will be uploaded to all servers (about 327MB) when the script is executed for the first time, so take longer to execute. The first installation on my local machine takes < 5 minutes(upload package taske about 2 minutes, others take about 3 minutes.)
+**TIPS:** Because the Elasticsearch installation package will be uploaded to all servers (about 327MB) when the script is executed for the first time, so take longer to run. The first installation on my local machine takes < 5 minutes(upload package takes about 2 minutes, others bring about 3 minutes.)
 
 **TIPS:** This script is only used for initial installation. Repeated execution of this command may receive a prompt of `Elasticsearch has been installed, please uninstall and then reinstall`. At this time, you need to use `ansible all -m shell -a '~/elasticsearch_uninstall.sh'` uninstalls.
 
